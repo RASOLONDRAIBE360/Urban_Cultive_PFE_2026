@@ -1,0 +1,91 @@
+.container2 {
+    position: relative;
+    display: flex;
+    padding-left: 150px;
+    background-color: rgb(232, 232, 232);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 650px;
+}
+
+.container2 div{
+    background-color: white;
+    margin: 30px 30px 60px 30px;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.container2 #img1{
+    position: relative;
+    width: 330px;
+    height: 250px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.container2 #img2{
+    position: relative;
+    width: 330px;
+    height: 250px;
+    border-radius: 10px 10px 0px 0px;
+    text-align: center;
+}
+
+.container2 #img3{
+    position: relative;
+    justify-content: center;
+    width: 330px;
+    height: 250px;
+    border-radius: 10px 10px 0px 0px;
+    text-align: center;
+}
+
+.container2 h3{
+    position: relative;
+    font-size: 35px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.container2 button{
+    width: 170px;
+    height: 40px;
+    position: relative;
+    left: 85px;
+    bottom: 10px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.container2 button:hover{
+    cursor: pointer;
+}
+
+.e1 img{
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+}
+
+.e2 img{
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+}
+
+.e3 img{
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+}
+
+.e1 p{
+    position: relative;
+    font-size: 20px;
+}
+
+.e2 p{
+    font-size: 20px;
+}
+
+.e3 p{
+    font-size: 20px;
+}

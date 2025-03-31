@@ -1,0 +1,260 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2d6a4f;
+}
+
+nav a {
+    display: inline-block;
+    margin: 0 15px;
+    text-decoration: none;
+    color: #2d6a4f;
+    font-weight: bold;
+}
+
+nav a.active {
+    text-decoration: underline; /* Surligner le texte */
+    color: rgb(13, 16, 15); /* Appliquer une couleur différente */
+    font-weight: bold; /* Optionnel : mettre le texte en gras */
+}
+
+.btn {
+    padding: 10px 15px;
+    background-color: #d8f3dc;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #2d6a4f;
+    font-weight: bold;
+}
+
+/* Conteneur principal */
+.container {
+    position: relative;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px 0 40px 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Titre principal */
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #2d6a4f;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Paragraphe */
+p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Effet sous le titre */
+h1::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #2d6a4f;
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+/* Partage de conseil - Style amélioré */
+.partage-conseil {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+/* Champs de formulaire */
+.partage-conseil label {
+    display: block;
+    font-weight: bold;
+    margin: 15px 0 5px;
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+}
+
+.partage-conseil input,
+.partage-conseil textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+    background: #f9f9f9;
+    font-family: 'Georgia', serif;
+}
+
+.partage-conseil input:focus,
+.partage-conseil textarea:focus {
+    border-color: #2d6a4f;
+    outline: none;
+    background: white;
+}
+
+/* Bouton d'envoi */
+.partage-conseil button {
+    background-color: #2d6a4f;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+    margin-top: 15px;
+}
+
+.partage-conseil button:hover {
+    background-color: #245a3c;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Section des conseils */
+.conseils {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+.conseils h2 {
+    font-size: 30px;
+    color: #2d6a4f;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+.conseils h2::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #2d6a4f;
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+/* Cartes des conseils */
+.conseil {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #2d6a4f;
+    transition: all 0.3s ease-in-out;
+    text-align: left;
+}
+
+.conseil:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* En-tête du conseil */
+.conseil-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* Style du titre du conseil */
+.titre-conseil {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2d6a4f;
+    margin-top: 10px;
+    font-family: 'Georgia', serif;
+}
+
+/* Texte du conseil */
+.texte-conseil {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+    font-family: 'Georgia', serif;
+}
+
+/* Bouton de suppression */
+.conseil form {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.conseil button {
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.conseil button:hover {
+    background-color: #c9302c;
+    transform: scale(1.05);
+}
+
+
+/* Footer Styles */
+footer {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 40px;
+}

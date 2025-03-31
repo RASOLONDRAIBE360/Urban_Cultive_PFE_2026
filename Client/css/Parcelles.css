@@ -1,0 +1,19 @@
+.content {
+    display: none;
+}
+.active {
+    display: block;
+}
+
+/* Style pour la barre de navigation */
+.nav {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+.nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}

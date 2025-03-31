@@ -1,0 +1,92 @@
+/* styles.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('Projet_HTML_CSS/pexels-cup-of-couple-6177670.jpg');
+    background-size: 1500px 1100px;
+    background-repeat: no-repeat;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-container {
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+.input-container input:focus {
+    border-color: #007BFF;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+.form-actions button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-actions button:hover {
+    background-color: #0056b3;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-link a {
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,89 @@
+/*Logo*/
+header{
+    display: flex;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    position: relative;
+    top: 10px;
+}
+
+header img{
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-right: 25px;
+}
+
+/*Barre de navigation*/
+nav ul{
+    display: flex; /*Affiche les éléments sur une ligne*/
+    list-style: none;
+    margin: 0;
+    padding-top: 20px;
+    padding-right: 150px;
+}
+
+nav ul li{
+    position: relative;
+    top: 70px;
+    margin: 0 30px; /*Espacement horizontal entre les elements*/
+}
+
+nav ul li a{
+    color: rgb(0, 0, 0);
+    text-decoration: none; /*Supprimer le soulignement*/
+    font-size: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+nav ul li:active {
+    transform: scale(0.9);
+}
+
+nav ul li #s1{
+    border: 2px solid black;
+    border-radius: 10px 10px 10px 10px;
+    background-color: white;
+    color: black;
+    padding: 10px;
+}
+
+/*Alignement de header avec la barre de navigation*/
+.class1{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 100px;
+}
+
+/*Section2 : RECHERCHE*/
+/*Texte*/
+.T1{
+    position: relative;
+    top: 50px;
+    left: 500px;
+}
+/*REGROUPEMENT DES ZONES DE SAISIE*/
+.search-container input{
+    margin-right: 20px; /*Pour ajout d'espacement entre les zones de saisie*/
+}
+
+/*LES ZONES DE SAISIE*/
+.T1 #search{
+    border-radius: 10px 10px 10px 10px;
+}
+
+.T1 #location{
+    border-radius: 10px 10px 10px 10px;
+}
+
+.T1 #filter{
+    border-radius: 10px 10px 10px 10px;
+}
+
+.T1 button{
+    position: relative;
+    top: 35px;
+    border-radius: 10px 10px 10px 10px;
+    background-color: rgb(216, 252, 216);
+}

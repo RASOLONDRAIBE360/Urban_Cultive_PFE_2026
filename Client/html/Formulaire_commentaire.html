@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partage de Conseils de Jardinage</title>
+    <link rel="stylesheet" href="css/Commentaire.css">
+</head>
+<body>
+
+    <main>
+        <div class="container">
+            <!-- Formulaire pour partager un conseil -->
+            <section class="partage-conseil">
+
+                <form action="CRUD/GestionCommentaire.php" method="post">
+                    
+                    <label for="titre">Titre :</label>
+                    <input type="text" id="titre" name="titre" required placeholder="Ex. Comment bien arroser vos plantes...">
+                    
+                    <label for="nom_parc">Nom Parcelle :</label>
+                    <select name="" id=""></select>
+
+                    <label for="conseil">Votre conseil :</label>
+                    <textarea id="conseil" name="conseil" required placeholder="Décrivez votre conseil de jardinage..." rows="4"></textarea>
+
+                    <button type="submit">Partager</button>
+                </form>
+            </section>
+        </div>
+    </main>
+    
+</body>
+</html>

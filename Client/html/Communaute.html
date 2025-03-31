@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Communaute.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!--Section1 : Header et barre de navigation-->
+
+    <section class="section1">
+        <div>
+        <!-- Balise pour mettre un logo-->
+        <div class="class1">
+        <header>
+            <img src="Projet_HTML_CSS/leaf.png" alt="Logo de mon site">
+            <h1>Urbancultive</h1>
+        </header>
+
+        <!-- Balise pour insérer un menu/barre de navigation sur notre site-->
+        <nav>
+            <ul>
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#parcelles">Parcelles</a></li>
+                <li><a href="#communaute">Communauté</a></li>
+                <li><a href="#evenements">Evénements</a></li>
+                <li><a id="s1" href="#Connexion">Connexion</a></li>
+            </ul>
+        </nav>
+        </div>
+    </section>
+
+    <!--Section2 : Pour la recherche-->
+
+    <section>
+        <div class="T1">
+            <h1> La Communauté des Jardiniers Urbains </h1>
+            <p> Rejoignez une communauté passionnée de jardiniers urbains, partagez vos expériences et contribuez à rendre notre ville plus verte. </p>
+            <div class="search-container">
+                <form action="#" method="get">
+                    <!-- Zone de recherche -->
+                    <input type="text" id="search" name="search" placeholder="Recherche..." class="ic1">
+        
+                    <!-- Zone de saisie pour la localisation -->
+                    <input type="text" id="location" name="location" placeholder="Localisation" class="ic2">
+        
+        
+                    <!-- Bouton de recherche -->
+                    <button type="submit" class="submit-btn">Filtrer</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <section>
+        <p>Membres de la communauté</p>
+
+        <!-- Menu déroulant pour le filtrage -->
+        <select id="filter" name="filter" class="input-field">
+            <option value="">Trier par</option>
+            <option value="option1">Expert</option>
+            <option value="option2">Avancé</option>
+            <option value="option3">Novice</option>
+        </select>
+    </section>
+    <section>
+        <div class="container2">
+            <div>
+                <img id="img1" src="https://images.pexels.com/photos/5561310/pexels-photo-5561310.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Jardin">
+                <h3>Jardin des Lilas</h3>
+                <div class="e1">
+                    <p><img src="https://img.icons8.com/?size=100&id=OBmVbH2qOGwK&format=png&color=000000" alt="Location1">11ème arrondissement</p>
+                    <p><img src="https://img.icons8.com/?size=100&id=Gm14jOnt49Ve&format=png&color=000000" alt="Plane1">120m<sup>2</sup></p>
+                </div>
+                <button> En savoir plus</button>
+            </div>
+            <div>
+                <img id="img2" src="Projet_HTML_CSS/Potager_collectif.jpeg" alt="Jardin_partage">
+                <h3>Potager Collectif</h3>
+                <div class="e2">
+                    <p><img src="https://img.icons8.com/?size=100&id=OBmVbH2qOGwK&format=png&color=000000" alt="Location2">18ème arrondissement</p>
+                    <p><img src="https://img.icons8.com/?size=100&id=Gm14jOnt49Ve&format=png&color=000000" alt="Plane2">200m<sup>2</sup></p>
+                </div>
+                <button> En savoir plus</button>
+            </div>
+            <div>
+                <img id="img3" src="Projet_HTML_CSS/Jardin_partage.jpeg" alt="">
+                <h3>Les Jardins Partagés</h3>
+                <div class="e3">
+                    <p><img src="https://img.icons8.com/?size=100&id=OBmVbH2qOGwK&format=png&color=000000" alt="Location3">20ème arrondissement</p>
+                    <p><img src="https://img.icons8.com/?size=100&id=Gm14jOnt49Ve&format=png&color=000000" alt="Plane3">150m<sup>2</sup></p>
+                </div>
+                <button> En savoir plus</button>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

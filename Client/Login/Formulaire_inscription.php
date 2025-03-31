@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'Inscription</title>
+    <link rel="stylesheet" href="../css/Formulaire_inscription.css">
+</head>
+<body>
+    <div class="signup-container">
+        <form class="signup-form" action="../CRUD/Insertion.php" method="post">
+            <h2>Créer un compte</h2>
+
+            <!-- Champ pour le nom -->
+            <div class="input-container">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" required placeholder="Entrez votre Nom">
+            </div>
+
+            <!-- Champ pour le prénom -->
+            <div class="input-container">
+                <label for="prenom">Prenom</label>
+                <input type="text" id="prenom" name="prenom" required placeholder="Entrez votre Prenom">
+            </div>
+
+            <!-- Champ pour la date de naissance -->
+            <div class="input-container">
+                <label for="date">Date de naissance</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <!-- Champ pour l'email -->
+            <div class="input-container">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Entrez votre email">
+            </div>
+
+            <!-- Champ pour le mot de passe -->
+            <div class="input-container">
+                <label for="motDePasse">Mot de passe</label>
+                <input type="password" id="motDePasse" name="motDePasse" required placeholder="Créez un mot de passe">
+            </div>
+
+            <!-- Champ pour la confirmation du mot de passe -->
+            <div class="input-container">
+                <label for="conf_password">Confirmer le mot de passe</label>
+                <input type="password" id="conf_password" name="conf_password" required placeholder="Confirmez votre mot de passe">
+            </div>
+
+            <!-- Bouton pour soumettre le formulaire -->
+            <div class="form-actions">
+                <button type="submit">S'inscrire</button>
+            </div>
+
+            <!-- Lien pour la page de connexion -->
+            <div class="login-link">
+                <p>Vous avez déjà un compte ? <a href="Formulaire_connexion.php">Se connecter</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

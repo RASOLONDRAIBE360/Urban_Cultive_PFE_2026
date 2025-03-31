@@ -1,0 +1,123 @@
+/* Importation d'une belle police */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+}
+
+/* HEADER */
+header {
+    background-color: #0073e6;
+    color: white;
+    padding: 20px;
+    font-size: 22px;
+}
+
+/* SECTION HERO */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    background: url('https://source.unsplash.com/1600x900/?urban,city,park') center/cover no-repeat;
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hero h2 {
+    font-size: 26px;
+    color: #0073e6;
+}
+
+.hero p {
+    font-size: 18px;
+    margin: 15px 0;
+    color: #555;
+}
+
+/* BOUTONS */
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    background: #0073e6;
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #005bb5;
+    transform: translateY(-3px);
+}
+
+/* SECTION FONCTIONNALITÉS */
+.features {
+    background-color: white;
+    padding: 40px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.features h2 {
+    font-size: 24px;
+    color: #0073e6;
+    margin-bottom: 15px;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.features li {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #555;
+}
+
+/* FOOTER */
+footer {
+    background-color: #222;
+    color: white;
+    padding: 15px;
+    font-size: 14px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
