@@ -8,9 +8,14 @@
 </head>
 <body>
 
+    <?php session_start();?>
+
     <?php require_once(__DIR__.'/Header/Header.php')?>
 
     <section class="hero">
+        <?php foreach($users as $user) :?>
+            <h1><?php echo "Bienvenue sur mon site {$_SESSION['Nom']} {$_SESSION['Prenom']}";?></h1>
+        <?php endforeach;?>
         <h1>Trouvez votre <span style="color:#2d6a4f">parcelle idéale</span></h1>
         <p>Explorez notre sélection de parcelles urbaines et donnez vie à votre projet de jardinage</p>
     </section>

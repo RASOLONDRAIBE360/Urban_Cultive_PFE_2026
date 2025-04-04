@@ -63,7 +63,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     ]);
 
                         if ($dbprepare->rowCount() > 0) {
-                            echo "<script> alert('Inscription réussie. Bienvenue, {$nom} {$prenom} !'); window.location.href = '../Accueil.php';</script>";
+                            echo "<script> alert('Inscription reussi.'); window.location.href = '../Login/Formulaire_connexion.php';</script>";
                         } else {
                             echo "<script> alert('Erreur lors de l\'inscription.'); window.location.href = '../Login/Formulaire_inscription.php';</script>";
                         }
@@ -73,9 +73,6 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
             }
-        }
-
-        $sqlQuery = "SELECT COUNT(*) FROM users WHERE "
-        
+        }        
 
 ?>

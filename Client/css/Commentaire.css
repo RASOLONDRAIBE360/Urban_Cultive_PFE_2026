@@ -107,6 +107,37 @@ h1::after {
     text-align: left;
 }
 
+/* Style de la liste déroulante */
+/*
+.select-container {
+    margin: 20px auto;
+    text-align: left;
+    max-width: 300px;
+}
+
+.select-container label {
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+}
+
+.parcelle-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #2d6a4f;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #f9f9f9;
+    font-family: 'Georgia', serif;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.parcelle-select:focus {
+    border-color: #245a3c;
+    outline: none;
+    background: white;
+}
+    */
 .partage-conseil input,
 .partage-conseil textarea {
     width: 100%;

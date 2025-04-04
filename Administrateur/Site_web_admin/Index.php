@@ -15,35 +15,18 @@
     <?php require_once(__DIR__.'/../CRUD/Select.php')?>
     <?php require_once(__DIR__.'/../CRUD/Locataires.php')?>
 
-    <?php require_once(__DIR__.'/../Header/Header.php')?>
+    <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
 
     <div class="main-content">
-        <h1>Vue d'ensemble</h1>
-        <div class="cards">
-            <div class="card">
-                <h2>Locataire(s)</h2>
-                <?php if ($count == 0) :?>
-                    <p>La liste utilisateur est vide.</p>
-                
-                <?php else :?>  
-                    <p><?php echo "$count"?></p>
-                <?php endif;?>
-            </div>
-            <div class="card">
-                <h2>Reservation(s)</h2>
-                <p>320</p>
-            </div>
-            <div class="card">
-                <h2>Parcelle(s)</h2>
-                <p>128</p>
-            </div>
-        </div>
+    
+    <?php require_once(__DIR__.'/../Header/Header.php')?>
 
     <div class="recent-orders">
-        <h2>Commandes récentes</h2>
+        <h2>Liste Utilisateur</h2>
         <table>
             <thead>
                 <tr>
+                    <th>User_ID</th>
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>Date de Naissance</th>
@@ -55,6 +38,7 @@
             <tbody>
                 <?php foreach($listeUtilisateurs as $utilisateur) : ?>
                     <tr>
+                        <td><?php echo $utilisateur['User_id']; ?></td>
                         <td><?php echo $utilisateur['Nom']; ?></td>
                         <td><?php echo $utilisateur['Prenom']; ?></td>
                         <td><?php echo $utilisateur['Date_Naissance']; ?></td>
@@ -64,7 +48,7 @@
                             <button class="btn edit-btn" onclick="ouvrirModal('modal1')">Modifier</button>
 
                             <form action="../CRUD/Suppression.php" method="post">
-
+                                
                                 <input type="hidden" name="email" value="<?php echo $utilisateur['Email']; ?>">
                                 <input type="hidden" name="password" value="<?php echo $utilisateur['Mot_de_Passe']; ?>">
 
@@ -90,6 +74,12 @@
 
     
     <form action="../CRUD/Modification.php" method="post">
+    
+        <select id="id" name="id">
+            <?php foreach($listeUtilisateurs as $utilisateur) : ?>
+                <option><?php echo $utilisateur['User_id'];?></option>
+            <?php endforeach; ?>
+        </select>
 
         <label for="nom">Nom</label>
         <input type="text" id="nom" name="nom">

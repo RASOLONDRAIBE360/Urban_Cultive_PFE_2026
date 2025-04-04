@@ -4,9 +4,12 @@ require_once (__DIR__.'/../../Config/MySQL.php');
 $nom = $_POST['nom'] ?? null;
 $prenom = $_POST['prenom'] ?? null;
 $email = $_POST['email'] ?? null;
-$tel = $_POST['numerotel'] ?? null;
-$tailleparc = $_POST['tailleparc'] ?? null;
-$date = $_POST['date'] ?? null;
+$tel = $_POST['tel'] ?? null;
+$id_parc = $_POST['id_parc'] ?? null;
+$prix_parc = $_POST['prix'] ?? null;
+$taille_parc = $_POST['taille'] ?? null;
+$duree_res = $_POST['duree'] ?? null;
+$date_debut = $_POST['date_debut'] ?? null;
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../Reservation.php";</script>';
@@ -21,7 +24,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "INSERT INTO reservation_parc (Nom, Prenom, Email, Numero_tel, Taille_parc, Date_res) VALUES (:nom, :prenom, :email, :tel, :tailleparc, :date)";
+            $sqlQuery = "INSERT INTO reservation_parc (Nom, Prenom, Email, Numero_tel, Id_parc, Taille_parc, Prix_parc, Date_res, Duree_res) VALUES (:nom, :prenom, :email, :tel, :id_parc, :prix, :taille, :duree, :date_debut)";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -30,8 +33,11 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         ':prenom' => $prenom,
                         ':email' => $email,
                         ':tel' => $tel,
-                        ':tailleparc' => $tailleparc,
-                        ':date' => $date,
+                        ':id_parc'=>$id_parc,
+                        ':prix'=>$prix_parc,
+                        ':taille'=>$taille_parc,
+                        ':duree'=>$duree_res,
+                        ':date_debut' => $date_debut,
                     ]);
 
                         if ($dbprepare->rowCount() > 0) {
@@ -39,12 +45,11 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         } else {
                             echo "<script> alert('Erreur lors de la réservation.'); window.location.href = '../Reservation.php';</script>";
                         }
-            }
 
-            $sqlRequest = "SELECT INTO reservation_parc ("
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
-            }
+        }
+    }
         
 
 ?>

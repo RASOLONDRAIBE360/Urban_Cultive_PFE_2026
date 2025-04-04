@@ -1,4 +1,5 @@
 <?php
+
 require_once (__DIR__.'/../../Config/MySQL.php');
 
 $name = $_POST(['nom']);

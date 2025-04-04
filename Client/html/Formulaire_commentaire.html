@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Partage de Conseils de Jardinage</title>
-    <link rel="stylesheet" href="css/Commentaire.css">
+    <link rel="stylesheet" href="../css/Commentaire.css">
 </head>
 <body>
 
@@ -18,8 +18,15 @@
                     <label for="titre">Titre :</label>
                     <input type="text" id="titre" name="titre" required placeholder="Ex. Comment bien arroser vos plantes...">
                     
-                    <label for="nom_parc">Nom Parcelle :</label>
-                    <select name="" id=""></select>
+                    <!-- Liste déroulante des parcelles -->
+                <div class="select-container">
+                    <label for="nom_parc">Nom parcelle</label>
+                    <select id="parcelles" class="parcelle-select">
+                        <option value="Parcelle1">Parcelle1</option>
+                        <option value="Parcelle2">Parcelle2</option>
+                        <option value="Parcelle3">Parcelle3</option>
+                    </select>
+                </div>
 
                     <label for="conseil">Votre conseil :</label>
                     <textarea id="conseil" name="conseil" required placeholder="Décrivez votre conseil de jardinage..." rows="4"></textarea>

@@ -30,16 +30,16 @@
                 <div class="conseil">
                     <div class="conseil-header">
 
-                        <span class="auteur"><?php echo $utilisateur['Email']?></span>
-                        <span class="date"><?php echo $utilisateur['Date']?></span>
+                        <span class="auteur"><?php echo $utilisateur['Email'];?></span>
+                        <span class="date"><?php echo $utilisateur['Date'];?></span>
                     </div>
-                    <h3 class="titre-conseil"><?php echo $utilisateur['Titre']?></h3>
-                    <p class="texte-conseil"><?php echo $utilisateur['Conseil']?></p>
+                    <h3 class="titre-conseil"><?php echo $utilisateur['Titre'];?></h3>
+                    <p class="texte-conseil"><?php echo $utilisateur['Conseil'];?></p>
 
                     <form action="CRUD/DeleteCommentaire.php" method="post">
 
-                        <input type="hidden" name="email" value="<?php echo $utilisateur['Email']?>">
-                        <input type="hidden" name="date" value="<?php echo $utilisateur['Date']?>">
+                        <input type="hidden" name="email" value="<?php echo $utilisateur['Email'];?>">
+                        <input type="hidden" name="date" value="<?php echo $utilisateur['Date'];?>">
                         <button type="submit">Supprimer</button>
 
                     </form>

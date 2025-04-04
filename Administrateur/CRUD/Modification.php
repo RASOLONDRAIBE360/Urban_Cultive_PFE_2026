@@ -1,19 +1,19 @@
 <?php
 require_once (__DIR__.'/../../Config/MySQL.php');
 
+
 $nom = $_POST['nom'];
 $prenom = $_POST['prenom'];
 $date = $_POST['date'];
 $email = $_POST['email'];
-$password = $_POST['password'];
-$role = $_POST['role'];
-if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-    echo "Verifier le format de l'email saisie.";
-} else if(strlen($motDePasse) <= 4) {
-    echo '<script>alert("Mot de passe trop court"); window.location.href = "../Site_web_admin/Index.php";</script>';
+$id = $_POST['id'];
+
+if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+    echo '<script>alert("Verifier le format de l\'email saisie."); window.location.href="../Site_web_admin/Index.php";</script>';
 } else {
 
         try{
+
             $MysqlClient = new PDO(
                 sprintf("mysql:host=%s;dbname=%s;port=%s;charset=utf8", MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
                 MYSQL_USER,
@@ -21,25 +21,24 @@ if(filter_var($email, FILTER_VALIDATE_EMAIL)){
             );
 
             $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sqlRequest = "UPDATE users SET Nom = :nom AND Prenom = :prenom AND Date_Naissance = :date AND Email = :email AND Mot_de_Passe = :password AND Role = :role WHERE Email = :email AND Mot_de_Passe = :password";
+            $sqlRequest = "UPDATE users SET Nom = :nom, Prenom = :prenom, Date_Naissance = :date, Email = :email WHERE User_id = :id";
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
             $pdoStatement->execute([
                 ':nom'=>$nom,
                 ':prenom'=>$prenom,
                 ':date'=>$date,
                 ':email'=>$email,
-                ':password'=>$password,
-                ':role'=>$role,
-            ])
-
-            if($pdoStatement->rowCount() > 0){
-                echo "Modification(s) enregistrée(s)";
+                ':id' => $id,
+            ]);
+             
+            if ($pdoStatement->rowCount() > 0){
+                echo '<script>alert("Modification(s) enregistrée(s)."); window.location.href="../Site_web_admin/Index.php";</script>';
             } else {
-                echo "Modification du champ échouée.";
+                echo '<script>alert("Modification du champ échouée."); window.location.href="../Site_web_admin/Index.php";</script>';
             }
 
-        }catch(Exception exception){
-            die('Erreur :'.exception->getMessage());
+        }catch(Exception $exception){
+            die('Erreur :'. $exception->getMessage());
         }
 }
 ?>

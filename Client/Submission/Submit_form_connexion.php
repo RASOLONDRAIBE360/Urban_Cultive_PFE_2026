@@ -1,57 +1,71 @@
 <?php
+
+session_start();
+
 require_once (__DIR__.'/../../Config/MySQL.php');
 
 $nom = $_POST['nom'] ?? null;
 $prenom = $_POST['prenom'] ?? null;
+$email = $_POST['email'] ?? null;
 $motDePasse = $_POST['motDePasse'] ?? null;
 
-try {
-    $mysqlClient = new PDO(
-        sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
-        MYSQL_USER,
-        MYSQL_PASSWORD
-    );
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+} else if(strlen($motDePasse) < 5){
+    echo '<script>alert("Mot de passe trop court"); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+} else {
 
-    $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
+        $mysqlClient = new PDO(
+            sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
+            MYSQL_USER,
+            MYSQL_PASSWORD
+        );
 
-    $sql = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom";
+        $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $mysqlClient->prepare($sql);
-    $stmt->execute([
-        ':nom' => $nom,
-        ':prenom' => $prenom,
-    ]);
+        $sql = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom AND Email = :email";
 
-    $count = $stmt->fetchColumn(); // Récupère la valeur de COUNT(*)
-    $sql1 = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom AND Mot_de_Passe = :motDePasse"; 
+        $stmt = $mysqlClient->prepare($sql);
+        $stmt->execute([
+            ':nom' => $nom,
+            ':prenom' => $prenom,
+            ':email' => $email,
+        ]);
 
-    $verif_pwd = $mysqlClient->prepare($sql1);
+        $count = $stmt->fetchColumn(); // Récupère la valeur de COUNT(*)
+        $sql1 = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom AND Mot_de_Passe = :motDePasse"; 
 
-    $verif_pwd->execute([
-        ':nom' => $nom,
-        ':prenom' => $prenom,
-        ':motDePasse' => $motDePasse,
-    ]);
+        $verif_pwd = $mysqlClient->prepare($sql1);
 
-    $count1 = $verif_pwd->fetchColumn();
+        $verif_pwd->execute([
+            ':nom' => $nom,
+            ':prenom' => $prenom,
+            ':motDePasse' => $motDePasse,
+        ]);
 
-    if($count == 0 ){
-        echo '<script>alert("Compte invalide. Veuillez vous inscrire."); window.location.href = "../Login/Formulaire_inscription.php";</script>';
+        $count1 = $verif_pwd->fetchColumn();
 
-    } else if($count1 == 0) {
-        echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+        if($count == 0 ){
+            echo '<script>alert("Compte invalide. Veuillez vous inscrire."); window.location.href = "../Login/Formulaire_inscription.php";</script>';
 
-    } else {
-        // Stocker les informations de l'utilisateur dans la session
-        $_SESSION['nom'] = $nom;
-        $_SESSION['prenom'] = $prenom;
-        $_SESSION['motDePasse'] = $motDePasse;
-        //header('Location: ../Accueil.php');
-        echo "<script>alert('Bjr {$nom} {$prenom}.'); window.location.href = '../Accueil.php';</script>";
-        exit();
+        } else if($count1 == 0) {
+            echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+
+        } else {
+            // Stocker les informations de l'utilisateur dans la session
+            $_SESSION['nom'] = $nom;
+            $_SESSION['prenom'] = $prenom;
+            $_SESSION['motDePasse'] = $motDePasse;
+            $_SESSION['email'] = $email;
+            //header('Location: ../Accueil.php');
+            echo "<script>window.location.href = '../Accueil.php';</script>";
+            exit();
+        }
+
+    } catch (Exception $exception) {
+        die('Erreur : ' . $exception->getMessage());
     }
-    
-} catch (Exception $exception) {
-    die('Erreur : ' . $exception->getMessage());
+
 }
 ?>

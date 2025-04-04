@@ -19,7 +19,12 @@
 
             <div class="input-container">
                 <label for="prenom">Prenom</label>
-                <input type="text" id="Prenom" name="prenom" required placeholder="Entrez votre Prenom">
+                <input type="text" id="prenom" name="prenom" required placeholder="Entrez votre Prenom">
+            </div>
+
+            <div class="input-container">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Entrez votre Email">
             </div>
 
             <div class="input-container">
