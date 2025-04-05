@@ -1,6 +1,8 @@
 <?php
 require_once (__DIR__.'/../../Config/MySQL.php');
 
+session_start();
+
 $nom = $_POST['nom'] ?? null;
 $prenom = $_POST['prenom'] ?? null;
 $email = $_POST['email'] ?? null;
@@ -38,7 +40,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['prenom'] = $prenom;
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $role;
-                echo "<script> alert('Connexion réussie. Bienvenue, {$nom} {$prenom} !'); window.location.href = '../Site_web_admin/Index.php';</script>";
+
+                echo "<script> window.location.href = '../Site_web_admin/Index.php';</script>";
+
             } else {
                 echo "<script> alert('Page reserver uniquement aux administrateurs.'); window.location.href = '../../Client/Login/Formulaire_connexion.php';</script>";
             }

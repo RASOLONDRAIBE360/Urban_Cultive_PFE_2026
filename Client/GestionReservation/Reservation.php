@@ -9,6 +9,8 @@
 </head>
 <body>
 
+  <?php require_once(__DIR__.'/../CRUD/Select.php')?>
+
   <!-- En-tête -->
   <header>
     <div class="container">
@@ -34,23 +36,15 @@
 
         <label for="tel">Numero telephone</label>
         <input type="text" id="tel" name="tel" placeholder="Entrer votre numero de telephone" required>
-      
-      <?php ?>
-      
-    <?php require_once(__DIR__.'../CRUD/Select.php')?>
 
-      <?php foreach($parcelles as $parcelle) :?>
-
-        <label for="id_parc">ID parcelle</label>
-        <input type="text" id="id_parc" name="id_parc" value=<?php echo $parcelle['Id_parc'];?> disabled>
+        <label for="nom_parc">Nom parcelle</label>
+        <input type="text" id="nom_parc" name="nom_parc" value=<?php echo $_SESSION['nom_parc'];?> disabled>
         
         <label for="prix">Prix parcelle</label>
-        <input type="text" id="prix" name="prix" value=<?php echo $parcelle['Prix_parc'];?> disabled>
+        <input type="text" id="prix" name="prix" value=<?php echo $_SESSION['prix'];?> disabled>
 
         <label for="taille">Taille parcelle</label>
-        <input type="text" id="taille" name="taille" value=<?php echo $parcelle['Taille_parc'];?> disabled>
-
-      <?php endforeach;?>
+        <input type="text" id="taille" name="taille" value="<?php echo $_SESSION['taille'];?>" disabled>
 
         <label for="duree">Durée de la réservation (en mois)</label>
         <input type="number" id="duree" name="duree" placeholder="Durée de la réservation" min="1" required>

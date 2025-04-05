@@ -1,8 +1,7 @@
 <?php
 require_once (__DIR__.'/../../Config/MySQL.php');
 
-
-        try {
+try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
                             MYSQL_USER,
@@ -22,6 +21,5 @@ require_once (__DIR__.'/../../Config/MySQL.php');
             } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
             }
-        //} 
 
 ?>

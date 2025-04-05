@@ -13,9 +13,13 @@
     <?php require_once(__DIR__.'/Header/Header.php')?>
 
     <section class="hero">
-        <?php foreach($users as $user) :?>
-            <h1><?php echo "Bienvenue sur mon site {$_SESSION['Nom']} {$_SESSION['Prenom']}";?></h1>
-        <?php endforeach;?>
+    
+    <?php if(isset($_SESSION['nom']) && isset($_SESSION['prenom'])): ?>
+        <h1> Bienvenue sur mon site <span style="font-weight: bold; font-size: 24px; color:#2d6a4f; font-style: italic; text-transform: capitalize; padding-left: 10px;"><?php echo "{$_SESSION['nom']} {$_SESSION['prenom']}";?></span></h1>
+    <?php else : ?>
+        <h1><?php echo "Bienvenue sur mon site";?></h1>
+    <?php endif;?>
+
         <h1>Trouvez votre <span style="color:#2d6a4f">parcelle idéale</span></h1>
         <p>Explorez notre sélection de parcelles urbaines et donnez vie à votre projet de jardinage</p>
     </section>
@@ -47,6 +51,60 @@
                 <p>220€/mois</p>
             </div>
         </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
+        <div class="card" onclick="ouvrirModal('modal1')">
+            <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
+            <div class="card-content">
+                <h3>Parcelle Zen</h3>
+                <p class="disponible">Disponible</p>
+                <p>120m² - Plein soleil - Point d'eau</p>
+                <p>180€/mois</p>
+            </div>
+        </div>
     </section>
 
     <!-- Modals --> 
@@ -63,7 +121,13 @@
         <p>Une parcelle parfaite pour ceux qui recherchent un espace ensoleillé et paisible pour cultiver leurs plantes ou aménager un petit coin de nature.</p>
 
         <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
-        <button class="reservation-btn" onclick='window.location.href="GestionReservation/Reservation.php"'>Réserver cette parcelle</button>
+
+        <form action="CRUD/Select.php" method="post">
+
+            <input type="hidden" name="nom_parc" value="parcelle zen">
+            <button class="reservation-btn" type="submit">Réserver cette parcelle</button>
+
+        </form>
     </div>
 </div>
 
@@ -80,13 +144,18 @@
         <p>Un espace équilibré entre ombre et lumière, idéal pour des plantes nécessitant un climat modéré. Parfait pour un jardin médicinal ou une petite exploitation.</p>
 
         <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
-        <button class="reservation-btn" onclick='window.location.href="GestionReservation/Reservation.php"'>Réserver cette parcelle</button>
+        <form action="CRUD/Select.php" method="post">
+
+            <input type="hidden" id="nom_parc" name="nom_parc" value="oasis verte">
+            <button type="submit" class="reservation-btn">Réserver cette parcelle</button>
+
+        </form>
     </div>
 </div>
 
-<div id="modal3" class="modal">
+<div id="modal4" class="modal">
     <div class="modal-content">
-        <span class="fermer" onclick="fermerModal('modal3')">&times;</span>
+        <span class="fermer" onclick="fermerModal('modal4')">&times;</span>
         <h2>🌾 Le Carré Fertile</h2>
         <img src="Projet_HTML_CSS/Photo3.jpg" alt="Le Carré Fertile" style="width: 100%; border-radius: 8px;">
         <p><strong>Surface :</strong> 150m²</p>
@@ -98,6 +167,75 @@
 
         <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
         <button class="reservation-btn" onclick='window.location.href="GestionReservation/Reservation.php"'>Réserver cette parcelle</button>
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
+        <h2>🌿 Parcelle Zen</h2>
+        <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen" style="width: 100%; border-radius: 8px;">
+        <p><strong>Surface :</strong> 120m²</p>
+        <p><strong>Exposition :</strong> Plein soleil</p>
+        <p><strong>Équipements :</strong> Point d'eau à proximité</p>
+        <p><strong>Idéal pour :</strong> Cultures potagères, arbres fruitiers, espace détente</p>
+        <p><strong>Prix :</strong> 180€/mois</p>
+        <p>Une parcelle parfaite pour ceux qui recherchent un espace ensoleillé et paisible pour cultiver leurs plantes ou aménager un petit coin de nature.</p>
+
+        <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
+
+        <form action="CRUD/Select.php" method="post">
+
+            <input type="hidden" name="nom_parc" value="parcelle zen">
+            <button class="reservation-btn" type="submit">Réserver cette parcelle</button>
+
+        </form>
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
+        <h2>🌿 Parcelle Zen</h2>
+        <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen" style="width: 100%; border-radius: 8px;">
+        <p><strong>Surface :</strong> 120m²</p>
+        <p><strong>Exposition :</strong> Plein soleil</p>
+        <p><strong>Équipements :</strong> Point d'eau à proximité</p>
+        <p><strong>Idéal pour :</strong> Cultures potagères, arbres fruitiers, espace détente</p>
+        <p><strong>Prix :</strong> 180€/mois</p>
+        <p>Une parcelle parfaite pour ceux qui recherchent un espace ensoleillé et paisible pour cultiver leurs plantes ou aménager un petit coin de nature.</p>
+
+        <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
+
+        <form action="CRUD/Select.php" method="post">
+
+            <input type="hidden" name="nom_parc" value="parcelle zen">
+            <button class="reservation-btn" type="submit">Réserver cette parcelle</button>
+
+        </form>
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
+        <h2>🌿 Parcelle Zen</h2>
+        <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen" style="width: 100%; border-radius: 8px;">
+        <p><strong>Surface :</strong> 120m²</p>
+        <p><strong>Exposition :</strong> Plein soleil</p>
+        <p><strong>Équipements :</strong> Point d'eau à proximité</p>
+        <p><strong>Idéal pour :</strong> Cultures potagères, arbres fruitiers, espace détente</p>
+        <p><strong>Prix :</strong> 180€/mois</p>
+        <p>Une parcelle parfaite pour ceux qui recherchent un espace ensoleillé et paisible pour cultiver leurs plantes ou aménager un petit coin de nature.</p>
+
+        <button class="avis-btn" onclick='window.location.href=""'> Voir les avis</button>
+
+        <form action="CRUD/Select.php" method="post">
+
+            <input type="hidden" name="nom_parc" value="parcelle zen">
+            <button class="reservation-btn" type="submit">Réserver cette parcelle</button>
+
+        </form>
     </div>
 </div>
 

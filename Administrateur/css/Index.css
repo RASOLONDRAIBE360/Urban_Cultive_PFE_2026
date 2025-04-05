@@ -104,20 +104,27 @@ table th {
 }
 
 .btn {
-    padding: 12px 18px;
     border: none;
+    margin: 5px;
     cursor: pointer;
     border-radius: 6px;
     color: white;
     font-weight: bold;
 }
 
-.edit-btn {
+.valid-btn {
+    padding: 12px 45px;
     background: #73af7691;
 }
 
 .delete-btn {
+    padding: 12px 45px;
     background: #d9534f;
+}
+
+.edit-btn {
+    padding: 12px 18px;
+    background: #5bc0de;
 }
 
 

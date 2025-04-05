@@ -58,8 +58,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['prenom'] = $prenom;
             $_SESSION['motDePasse'] = $motDePasse;
             $_SESSION['email'] = $email;
-            //header('Location: ../Accueil.php');
-            echo "<script>window.location.href = '../Accueil.php';</script>";
+
+            header('Location: ../Accueil.php');
             exit();
         }
 

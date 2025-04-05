@@ -5,7 +5,7 @@ $nom = $_POST['nom'] ?? null;
 $prenom = $_POST['prenom'] ?? null;
 $email = $_POST['email'] ?? null;
 $tel = $_POST['tel'] ?? null;
-$id_parc = $_POST['id_parc'] ?? null;
+$nom_parc = $_POST['nom_parc'] ?? null;
 $prix_parc = $_POST['prix'] ?? null;
 $taille_parc = $_POST['taille'] ?? null;
 $duree_res = $_POST['duree'] ?? null;
@@ -33,7 +33,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         ':prenom' => $prenom,
                         ':email' => $email,
                         ':tel' => $tel,
-                        ':id_parc'=>$id_parc,
+                        ':nom_parc'=>$nom_parc,
                         ':prix'=>$prix_parc,
                         ':taille'=>$taille_parc,
                         ':duree'=>$duree_res,

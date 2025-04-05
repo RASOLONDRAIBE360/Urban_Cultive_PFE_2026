@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Administrateur</title>
     <link rel="stylesheet" href="../css/Index.css">
-    <link rel="stylesheet" href="../css/Modifier.css">
+    <link rel="stylesheet" href="../css/Modal_update.css">
     <style>
         
     </style>
@@ -14,6 +14,7 @@
 
     <?php require_once(__DIR__.'/../CRUD/Select.php')?>
     <?php require_once(__DIR__.'/../CRUD/Locataires.php')?>
+    <?php require_once(__DIR__.'/../CRUD/Reservation.php')?>
 
     <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
 
@@ -82,16 +83,16 @@
         </select>
 
         <label for="nom">Nom</label>
-        <input type="text" id="nom" name="nom">
+        <input type="text" id="nom" name="nom" required>
 
         <label for="prenom">Prénom</label>
-        <input type="text" id="prenom" name="prenom">
+        <input type="text" id="prenom" name="prenom" required>
 
         <label for="date">Date de Naissance</label>
-        <input type="date" id="date" name="date">
+        <input type="date" id="date" name="date" required>
 
         <label for="email">Email</label>
-        <input type="email" id="email" name="email">
+        <input type="email" id="email" name="email" required>
 
         <button type="submit">Enregistrer</button>
     </form>

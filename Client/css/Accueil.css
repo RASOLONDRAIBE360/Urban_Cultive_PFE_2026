@@ -50,6 +50,7 @@ nav a.active {
     font-size: 36px;
     color: #1b4332;
 }
+
 .hero p {
     color: #6c757d;
 }
@@ -186,10 +187,8 @@ nav a.active {
     color: white;
     border: none;
     padding: 15px 72px;
-    /*text-align: center;*/
     text-decoration: none;
     display: inline-block;
-    margin: 15px;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
