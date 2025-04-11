@@ -1,6 +1,6 @@
 <?php
 
-    require_once (__DIR__.'/../config/MySQL.php');
+    require_once (__DIR__.'/../../Config/MySQL.php');
 
     $new_password = $_POST['new_pwd'] ?? null;
     $conf_password = $_POST['conf_pwd'] ?? null;

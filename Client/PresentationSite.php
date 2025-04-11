@@ -17,8 +17,8 @@
             <h2>Un projet innovant pour faciliter la gestion des parcelles</h2>
             <p>
                 Mon projet consiste à créer un site web permettant une gestion participative des parcelles urbaines.
-                Il offre aux locataires la possibilité de consulter le terrain et les parcelles disponibles afin de 
-                faciliter leur choix.
+                Il vise à rendre l’utilisation intuitive en proposant des fonctionnalités efficaces, garantissant ainsi 
+                une expérience fluide et facilitant les démarches de location.
             </p>
             <div class="buttons">
                 <button onclick='window.location.href="Login/Formulaire_inscription.php"'>S'inscrire</button>
@@ -30,10 +30,10 @@
     <section class="features">
         <h2>Les fonctionnalités implémentées</h2>
         <ul>
-            <li>📌 Ajout de nouveaux locataires souhaitant louer une parcelle disponible.</li>
-            <li>🗑️ Suppression des locataires qui ne font plus partie du projet.</li>
-            <li>✏️ Modification des informations des locataires (durée de location, détails personnels, etc.).</li>
-            <li>🏡 Mise à jour de l'état des parcelles (occupées ou disponibles).</li>
+            <li>📌 Reservation en ligne des parcelles disponibles.</li>
+            <li>🗑️ Partage d'avis et de conseils sur la culture d'une parcelle.</li>
+            <li>✏️ Reception de notification.</li>
+            <li>🏡 Acces aux parcelles deja louees.</li>
         </ul>
     </section>
 

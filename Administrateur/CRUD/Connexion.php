@@ -1,13 +1,13 @@
 <?php
 require_once (__DIR__.'/../../Config/MySQL.php');
 
-$nom = $_POST['nom'] ?? null;
-$prenom = $_POST['prenom'] ?? null;
+session_start();
+
 $email = $_POST['email'] ?? null;
 $password = $_POST['password'] ?? null;
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../Login/Formulaire_inscription.php";</script>';
+    echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../Login/Connexion.html";</script>';
 } else {
 
         try {
@@ -19,26 +19,31 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT Role FROM users WHERE Nom = :nom AND Prenom = :prenom AND Email = :email AND Mot_de_Passe = :password";
+            $sqlQuery = "SELECT * FROM users WHERE Email = :email AND Mot_de_Passe = :password";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
             $dbprepare->execute([
-                ':nom'=>$nom,
-                ':prenom'=>$prenom,
                 ':email'=>$email,
                 ':password'=>$password,
             ]);
                 
-            $role = $dbprepare->fetchColumn();
-
+            $utilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            foreach($utilisateurs as $utilisateur){
+                $nom = $utilisateur['Nom'];
+                $prenom = $utilisateur['Prenom'];
+                $role = $utilisateur['Role'];
+            }
+            
             if ($role == 'admin') {
                 // Stocker les informations de l'utilisateur dans la session
                 $_SESSION['nom'] = $nom;
                 $_SESSION['prenom'] = $prenom;
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $role;
-                echo "<script> alert('Connexion réussie. Bienvenue, {$nom} {$prenom} !'); window.location.href = '../Site_web_admin/Index.php';</script>";
+
+                echo '<script> window.location.href = "../Site_web_admin/Accueil.php";</script>';
+
             } else {
                 echo "<script> alert('Page reserver uniquement aux administrateurs.'); window.location.href = '../../Client/Login/Formulaire_connexion.php';</script>";
             }

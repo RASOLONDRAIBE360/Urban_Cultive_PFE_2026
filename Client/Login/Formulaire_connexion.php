@@ -9,22 +9,17 @@
 <body>
 
     <div class="login-container">
-        <form class="login-form" action="../Submission/Submit_form_connexion.php" method="post">
+        <form class="login-form" action="../CRUD/Submission/Submit_form_connexion.php" method="post">
             <h2>Connexion</h2>
 
             <div class="input-container">
-                <label for="nom">Nom</label>
-                <input type="text" id="nom" name="nom" required placeholder="Entrez votre Nom">
-            </div>
-
-            <div class="input-container">
-                <label for="prenom">Prenom</label>
-                <input type="text" id="Prenom" name="prenom" required placeholder="Entrez votre Prenom">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Entrez votre Email" required>
             </div>
 
             <div class="input-container">
                 <label for="motDePasse">Mot de passe</label>
-                <input type="password" id="motDePasse" name="motDePasse" required placeholder="Entrez votre mot de passe">
+                <input type="password" id="motDePasse" name="motDePasse" placeholder="Entrez votre mot de passe" required>
                 <a href="FormulaireUpdatePassword.php">Mot de passe oublié ?</a>
             </div>
         
