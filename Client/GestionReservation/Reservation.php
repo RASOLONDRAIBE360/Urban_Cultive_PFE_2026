@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="../css/Reservation.css">
 </head>
 <body>
+  
+  <?php session_start();?>
+
+  <button class="avis-btn" onclick='window.location.href="../Accueil.php"'>Retour</button>
+  <?php require_once(__DIR__.'/../CRUD/SelectReservation.php')?>
 
   <!-- En-tête -->
   <header>
@@ -21,26 +26,34 @@
   <section class="reservation-section">
     <div class="container">
       <h2>Réservez maintenant</h2>
-      <form action="#" method="POST" class="reservation-form">
+      <form action="../CRUD/Enregistrement.php" method="post" class="reservation-form">
         
-        <label for="nom">Nom complet</label>
-        <input type="text" id="nom" name="nom" placeholder="Entrez votre nom complet" required>
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
+
+        <label for="prenom">Prenom</label>
+        <input type="text" id="prenom" name="prenom" placeholder="Entrez votre prenom" required>
         
         <label for="email">Adresse e-mail</label>
         <input type="email" id="email" name="email" placeholder="Entrez votre adresse e-mail" required>
+
+        <label for="tel">Numero telephone</label>
+        <input type="text" id="tel" name="tel" placeholder="Entrer votre numero de telephone" required>
+
+        <label for="nom_parc">Nom parcelle</label>
+        <input type="text" id="nom_parc" name="nom_parc" value=<?php echo $_SESSION['nom_parc'];?> disabled>
         
-        <label for="parcelle">Choisissez votre parcelle</label>
-        <select id="parcelle" name="parcelle" required>
-          <option value="parcelle1">Parcelle 1 - 100m²</option>
-          <option value="parcelle2">Parcelle 2 - 150m²</option>
-          <option value="parcelle3">Parcelle 3 - 200m²</option>
-        </select>
+        <label for="prix">Prix parcelle</label>
+        <input type="text" id="prix" name="prix" value=<?php echo $_SESSION['prix'];?> disabled>
+
+        <label for="taille">Taille parcelle</label>
+        <input type="text" id="taille" name="taille" value="<?php echo $_SESSION['taille'];?>" disabled>
 
         <label for="duree">Durée de la réservation (en mois)</label>
         <input type="number" id="duree" name="duree" placeholder="Durée de la réservation" min="1" required>
 
-        <label for="date-debut">Date de début</label>
-        <input type="date" id="date-debut" name="date-debut" required>
+        <label for="date_debut">Date de début</label>
+        <input type="date" id="date_debut" name="date_debut" required>
 
         <button type="submit" class="btn">Réserver la parcelle</button>
       </form>

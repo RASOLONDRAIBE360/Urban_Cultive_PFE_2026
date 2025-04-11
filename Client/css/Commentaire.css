@@ -104,11 +104,52 @@ h1::after {
     margin: 15px 0 5px;
     font-size: 16px;
     color: #333;
-    text-align: left;
+    text-align: center;
 }
 
-.partage-conseil input,
+.parcelle-select {
+    position: relative;
+    right: 10px;
+    width: 30%;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background: #f4f4f4;
+    color: #333;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* Effet lorsqu'une option est sélectionnée */
+.parcelle-select:focus {
+    outline: none;
+    border-color: #2e7466; /* Teinte verte pour l’accent écologique */
+}
+
+/* Style des options */
+.parcelle-select option {
+    padding: 10px;
+    font-size: 14px;
+    background: white;
+}
+.partage-conseil input{
+    text-align: center;
+    position: relative;
+    right: 15px;
+    width: 50%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+    background: #f9f9f9;
+    font-family: 'Georgia', serif;
+}
 .partage-conseil textarea {
+    position: relative;
+    right: 15px;
     width: 100%;
     padding: 12px;
     border: 2px solid #ddd;
@@ -121,7 +162,7 @@ h1::after {
 
 .partage-conseil input:focus,
 .partage-conseil textarea:focus {
-    border-color: #2d6a4f;
+    border-color: #2e7466;
     outline: none;
     background: white;
 }
