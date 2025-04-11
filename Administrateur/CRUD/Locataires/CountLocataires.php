@@ -11,7 +11,7 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT COUNT(*) FROM reservation_parc";
+            $sqlQuery = "SELECT COUNT(*) FROM users";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 

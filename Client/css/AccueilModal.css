@@ -1,4 +1,3 @@
-
 .disponible {
     color: #2d6a4f;
     font-weight: bold;
@@ -117,3 +116,14 @@
 .avis-btn:hover{
     background-color: #28561bb6;
 }
+
+button:disabled {
+    background-color: #4CAF50;
+    cursor: not-allowed;
+  }
+
+  button:disabled:hover {
+    background-color: grey;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }

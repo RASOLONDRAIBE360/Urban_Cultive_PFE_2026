@@ -71,6 +71,8 @@ nav a.active {
     flex: 1; /* Permet aux cartes de s’adapter dynamiquement */
     max-width: 300px;
     min-width: 260px; /* Assure une taille minimale */
+    max-height: 400px;
+    min-height: 400px;
     background: white;
     border-radius: 10px;
     overflow: hidden;
@@ -92,7 +94,19 @@ nav a.active {
 }
 
 .card-content {
-    padding: 15px;
+    position: relative;
+    bottom: 15px;
+    padding: 16px;
+}
+
+.disponible {
+    color: #2d6a4f;
+    font-weight: bold;
+}
+
+.occupe {
+    color: red;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {

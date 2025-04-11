@@ -88,9 +88,7 @@
             
             <label for="id_parc">Id p.</label>
             <select id="id_parc" name="id_parc">
-                <?php foreach($parcelles as $parcelle) : ?>
-                    <option><?php echo $parcelle['Id_parc'];?></option>
-                <?php endforeach; ?>
+                <option><?php echo $_SESSION['my_id_parc'];?></option>
             </select>
         
         <?php $Uparcelles=$_SESSION['Uparcelles'];?>

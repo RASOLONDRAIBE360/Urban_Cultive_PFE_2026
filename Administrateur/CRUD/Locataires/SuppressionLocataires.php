@@ -23,9 +23,9 @@ $password = $_POST['password'] ?? null;
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script> alert('Utilisateur supprimer avec succès'); window.location.href = '../Site_web_admin/Index.php';</script>";
+                echo "<script> alert('Utilisateur supprimer avec succès'); window.location.href = '../../Site_web_admin/Accueil.php';</script>";
             } else {
-                echo "<script> alert('Erreur lors de la tentative de suppression utilisateur.'); window.location.href = '../Site_web_admin/Index.php';</script>";
+                echo "<script> alert('Erreur lors de la tentative de suppression utilisateur.'); window.location.href = '../../Site_web_admin/Accueil.php';</script>";
                    }
             
         } catch (Exception $exception) {

@@ -127,6 +127,11 @@ table th {
     background: #5bc0de;
 }
 
+.Sbtn {
+    padding: 12px 53px;
+    background: #5bc0de;
+}
+
 
 
 @media screen and (max-width: 768px) {

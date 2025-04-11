@@ -1,5 +1,4 @@
 <?php
-session_start();   
 
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
@@ -19,13 +18,6 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
                 
             $parcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             $_SESSION['parcelles'] = $parcelles;
-
-            if(!empty($parcelles)){
-                echo "<script>window.location.href = '../../Accueil.php';</script>";
-                exit();
-            } else {
-                echo "<script> alert('Parcelle vide.'); window.location.href = '../../Accueil.php';</script>"; 
-            }
 
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());

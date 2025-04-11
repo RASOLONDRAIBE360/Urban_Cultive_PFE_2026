@@ -17,7 +17,6 @@
         <p>Partagez vos opinions avec la communauté !</p>
     </div>
 
-        <?php require_once(__DIR__.'/CRUD/SelectParcelle.php');?>
         <main>
             <div class="container">
                 <!-- Formulaire pour partager un conseil -->

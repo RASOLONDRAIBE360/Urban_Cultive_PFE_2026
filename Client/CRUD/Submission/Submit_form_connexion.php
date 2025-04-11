@@ -29,17 +29,6 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         $count = $stmt->fetchColumn(); // Récupère la valeur de COUNT(*)
 
-        $sql1 = "SELECT COUNT(*) FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse"; 
-
-        $verif_pwd = $mysqlClient->prepare($sql1);
-
-        $verif_pwd->execute([
-            ':email' => $email,
-            ':motDePasse' => $motDePasse,
-        ]);
-
-        $count1 = $verif_pwd->fetchColumn();
-        
         $sql2 = "SELECT Nom, Prenom FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse";
         $stmt2 = $mysqlClient->prepare($sql2);
         $stmt2->execute([
@@ -54,24 +43,35 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
             echo '<script>alert("Compte invalide. Veuillez vous inscrire."); window.location.href = "../../Login/Formulaire_inscription.php";</script>';
 
-        } else if($count1 == 0) {
-            
-            echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../../Login/Formulaire_connexion.php";</script>';
-
         } else {
-            // Stocker les informations de l'utilisateur dans la session
-            $_SESSION['nom'] = $nom;
-            $_SESSION['prenom'] = $prenom;
-            $_SESSION['motDePasse'] = $motDePasse;
-            $_SESSION['email'] = $email;
+            $sql1 = "SELECT COUNT(*) FROM users WHERE Mot_de_Passe = :motDePasse"; 
 
-            header('Location: ../../Index.php');
-            exit();
-        }
+            $verif_pwd = $mysqlClient->prepare($sql1);
+
+            $verif_pwd->execute([
+                ':motDePasse' => $motDePasse,
+            ]);
+
+            $count1 = $verif_pwd->fetchColumn();
+            
+            if($count1 == 0){
+
+                echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../../Login/Formulaire_connexion.php";</script>';
+
+            } else {
+                // Stocker les informations de l'utilisateur dans la session
+                $_SESSION['nom'] = $nom;
+                $_SESSION['prenom'] = $prenom;
+                $_SESSION['motDePasse'] = $motDePasse;
+                $_SESSION['email'] = $email;
+
+                header('Location: ../../Accueil.php');
+                exit();
+                }
+            }
 
     } catch (Exception $exception) {
         die('Erreur : ' . $exception->getMessage());
     }
-
 }
 ?>
