@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 
 $id_res = $_POST["id_res"];
@@ -20,9 +20,9 @@ $id_res = $_POST["id_res"];
             ]);
              
             if ($pdoStatement->rowCount() > 0){
-                echo '<script>window.location.href="../Site_web_admin/Reservation.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             } else {
-                echo '<script>window.location.href="../Site_web_admin/Reservation.php?showModal=1";</script>';
+                echo '<script>alert("Erreur survenu lors du refus."); window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             }
 
         }catch(Exception $exception){

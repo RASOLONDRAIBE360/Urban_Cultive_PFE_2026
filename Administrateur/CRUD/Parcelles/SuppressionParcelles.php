@@ -1,8 +1,7 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$email = $_POST['email'] ?? null;
-$password = $_POST['password'] ?? null;
+$id_parc = $_POST['id_parc'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -13,19 +12,18 @@ $password = $_POST['password'] ?? null;
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "DELETE FROM users WHERE Email = :email AND Mot_de_Passe = :password";
+            $sqlQuery = "DELETE FROM info_parc WHERE Id_parc = :id_parc";
             
             $dbprepare = $mysqlClient->prepare($sqlQuery);
             
             $dbprepare->execute([
-                ':email' => $email,
-                ':password' => $password,
+                ':id_parc' => $id_parc,
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script> alert('Utilisateur supprimer avec succès'); window.location.href = '../Site_web_admin/Index.php';</script>";
+                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
             } else {
-                echo "<script> alert('Erreur lors de la tentative de suppression utilisateur.'); window.location.href = '../Site_web_admin/Index.php';</script>";
+                echo "<script> alert('Erreur lors de la tentative de suppression de parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
                    }
             
         } catch (Exception $exception) {

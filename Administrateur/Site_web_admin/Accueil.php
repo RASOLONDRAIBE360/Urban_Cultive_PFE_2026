@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Administrateur</title>
-    <link rel="stylesheet" href="../css/Index.css">
+    <link rel="stylesheet" href="../css/Accueil.css">
     <link rel="stylesheet" href="../css/Modal_update.css">
     <style>
         
     </style>
 </head>
 <body>
-
-    <?php require_once(__DIR__.'/../CRUD/Select.php')?>
-    <?php require_once(__DIR__.'/../CRUD/Locataires.php')?>
-    <?php require_once(__DIR__.'/../CRUD/Reservation.php')?>
+    <?php session_start(); ?>
+    <?php require_once(__DIR__.'/../CRUD/Locataires/SelectLocataires.php')?>
+    <?php require_once(__DIR__.'/../CRUD/Locataires/CountLocataires.php')?>
+    <?php require_once(__DIR__.'/../CRUD/Reservations/CountReservation.php')?>
+    <?php require_once(__DIR__.'/../CRUD/Parcelles/CountParcelles.php')?>
 
     <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
 
@@ -23,7 +24,7 @@
     <?php require_once(__DIR__.'/../Header/Header.php')?>
 
     <div class="recent-orders">
-        <h2>Liste Utilisateur</h2>
+        <h2>Liste Utilisateur(s)</h2>
         <table>
             <thead>
                 <tr>
@@ -48,7 +49,7 @@
                         <td>
                             <button class="btn edit-btn" onclick="ouvrirModal('modal1')">Modifier</button>
 
-                            <form action="../CRUD/Suppression.php" method="post">
+                            <form action="../CRUD/Locataires/SuppressionLocataires.php" method="post">
                                 
                                 <input type="hidden" name="email" value="<?php echo $utilisateur['Email']; ?>">
                                 <input type="hidden" name="password" value="<?php echo $utilisateur['Mot_de_Passe']; ?>">
@@ -75,7 +76,8 @@
 
     
     <form action="../CRUD/Modification.php" method="post">
-    
+        <label for="role">Rôle</label>
+        <label for="id">ID Utilisateur</label>
         <select id="id" name="id">
             <?php foreach($listeUtilisateurs as $utilisateur) : ?>
                 <option><?php echo $utilisateur['User_id'];?></option>
@@ -99,6 +101,6 @@
     </div>
 </div>
     
-<script src="../Javascript/Index.js"></script>
+<script src="../Javascript/Accueil.js"></script>
 </body>
 </html>

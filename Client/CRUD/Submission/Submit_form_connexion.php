@@ -2,17 +2,13 @@
 
 session_start();
 
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$nom = $_POST['nom'] ?? null;
-$prenom = $_POST['prenom'] ?? null;
 $email = $_POST['email'] ?? null;
 $motDePasse = $_POST['motDePasse'] ?? null;
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../Login/Formulaire_connexion.php";</script>';
-} else if(strlen($motDePasse) < 5){
-    echo '<script>alert("Mot de passe trop court"); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+    echo '<script>alert("L\'email saisie n\'est pas valide"); window.location.href = "../../Login/Formulaire_connexion.php";</script>';
 } else {
 
     try {
@@ -24,33 +20,43 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $sql = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom AND Email = :email";
+        $sql = "SELECT COUNT(*) FROM users WHERE Email = :email";
 
         $stmt = $mysqlClient->prepare($sql);
         $stmt->execute([
-            ':nom' => $nom,
-            ':prenom' => $prenom,
             ':email' => $email,
         ]);
 
         $count = $stmt->fetchColumn(); // Récupère la valeur de COUNT(*)
-        $sql1 = "SELECT COUNT(*) FROM users WHERE Nom = :nom AND Prenom = :prenom AND Mot_de_Passe = :motDePasse"; 
+
+        $sql1 = "SELECT COUNT(*) FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse"; 
 
         $verif_pwd = $mysqlClient->prepare($sql1);
 
         $verif_pwd->execute([
-            ':nom' => $nom,
-            ':prenom' => $prenom,
+            ':email' => $email,
             ':motDePasse' => $motDePasse,
         ]);
 
         $count1 = $verif_pwd->fetchColumn();
+        
+        $sql2 = "SELECT Nom, Prenom FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse";
+        $stmt2 = $mysqlClient->prepare($sql2);
+        $stmt2->execute([
+            ':email' => $email,
+            ':motDePasse' => $motDePasse,
+        ]);
+        $user = $stmt2->fetch(PDO::FETCH_ASSOC);
+        $nom = $user['Nom'];
+        $prenom = $user['Prenom'];
 
         if($count == 0 ){
-            echo '<script>alert("Compte invalide. Veuillez vous inscrire."); window.location.href = "../Login/Formulaire_inscription.php";</script>';
+
+            echo '<script>alert("Compte invalide. Veuillez vous inscrire."); window.location.href = "../../Login/Formulaire_inscription.php";</script>';
 
         } else if($count1 == 0) {
-            echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../Login/Formulaire_connexion.php";</script>';
+            
+            echo '<script>alert("Mot de passe incorrecte."); window.location.href = "../../Login/Formulaire_connexion.php";</script>';
 
         } else {
             // Stocker les informations de l'utilisateur dans la session
@@ -59,7 +65,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['motDePasse'] = $motDePasse;
             $_SESSION['email'] = $email;
 
-            header('Location: ../Accueil.php');
+            header('Location: ../../Index.php');
             exit();
         }
 

@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 
         try {
@@ -10,16 +10,8 @@ require_once (__DIR__.'/../../Config/MySQL.php');
                                 );
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            $sqlQuery = "SELECT COUNT(*) FROM reservation_parc WHERE Status_res = 'attente'";
 
-            $dbprepare = $mysqlClient->prepare($sqlQuery);
-
-            $dbprepare->execute();
-                
-            $count1 = $dbprepare->fetchColumn();
-
-            $sqlRequest = "SELECT Id_res, Email, Numero_tel, Nom_parc, Taille_parc, Prix_parc, Date_res, Duree_res, Status_res FROM info_parc INNER JOIN reservation_parc WHERE info_parc.Id_parc = reservation_parc.Id_parc";
+            $sqlRequest = "SELECT Id_res, Email, Numero_tel, Nom_parc, Taille_parc, Prix_parc, Date_res, Duree_res, Status_res FROM reservation_parc INNER JOIN info_parc, users WHERE reservation_parc.Id_parc = info_parc.Id_parc AND reservation_parc.User_id = users.User_id ORDER BY Date_res DESC";
 
             $pdoStatement = $mysqlClient->prepare($sqlRequest);
 
@@ -28,7 +20,7 @@ require_once (__DIR__.'/../../Config/MySQL.php');
             $reservations = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+                die('Erreur : ' . $exception->getMessage());
             }
         //} 
 

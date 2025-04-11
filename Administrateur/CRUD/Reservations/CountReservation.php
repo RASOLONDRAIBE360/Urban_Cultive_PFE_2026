@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 
         try {
@@ -11,16 +11,16 @@ require_once (__DIR__.'/../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT COUNT(*) FROM reservation_parc";
+            $sqlQuery = "SELECT COUNT(*) FROM reservation_parc WHERE Status_res = 'attente'";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
             $dbprepare->execute();
                 
-            $count = $dbprepare->fetchColumn();
+            $count1 = $dbprepare->fetchColumn();
 
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+                die('Erreur : ' . $exception->getMessage());
             }
         //} 
 

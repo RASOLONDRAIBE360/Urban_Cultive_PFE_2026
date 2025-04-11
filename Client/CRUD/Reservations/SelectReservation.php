@@ -1,8 +1,9 @@
 <?php
-
 session_start();
 
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
+
+$nom_parc = $_POST['nom_parc'] ?? null;
 
 unset($_SESSION['taille']);
 unset($_SESSION['prix']);
@@ -12,10 +13,9 @@ if (isset($_SESSION['nom_parc']) && isset($_SESSION['taille']) && isset($_SESSIO
     echo "<script>alert('Les variable de session est encore présent.');</script>";
 } else {
     
-    if(empty($_POST['nom_parc'])){
+    if(empty($nom_parc)){
         echo "La variable nom_parc n'est pas défini";
     } else{
-        $nom_parc = $_POST['nom_parc'];
 
             try {
                 $mysqlClient = new PDO(
@@ -26,11 +26,11 @@ if (isset($_SESSION['nom_parc']) && isset($_SESSION['taille']) && isset($_SESSIO
 
                 $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                $sqlRequest = "SELECT * FROM info_parc WHERE Nom_parc = :nom_parc";
+                $sqlRequest = "SELECT Nom_parc, Taille_parc, Prix_parc FROM info_parc WHERE Nom_parc = :nom_parc AND Status_parc = 'dispo'";
                 $dtoStatement = $mysqlClient->prepare($sqlRequest);
 
                 $dtoStatement->execute([
-                    ':nom_parc'=>$_POST['nom_parc'],
+                    ':nom_parc'=>$nom_parc,
                 ]);
                 
                 $parcelles = $dtoStatement->fetchAll(PDO::FETCH_ASSOC);

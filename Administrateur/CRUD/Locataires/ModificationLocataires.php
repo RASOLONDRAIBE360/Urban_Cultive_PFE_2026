@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 
 $nom = $_POST['nom'];

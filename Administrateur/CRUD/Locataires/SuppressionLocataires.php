@@ -1,8 +1,8 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $email = $_POST['email'] ?? null;
-$date = $_POST['date'] ?? null;
+$password = $_POST['password'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -13,22 +13,21 @@ $date = $_POST['date'] ?? null;
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "DELETE FROM commentaire WHERE Email = :email AND Date = :date";
-
+            $sqlQuery = "DELETE FROM users WHERE Email = :email AND Mot_de_Passe = :password";
+            
             $dbprepare = $mysqlClient->prepare($sqlQuery);
-
+            
             $dbprepare->execute([
                 ':email' => $email,
-                ':date' => $date,
+                ':password' => $password,
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script> window.location.href = '../Commentaire.php';</script>";
+                echo "<script> alert('Utilisateur supprimer avec succès'); window.location.href = '../Site_web_admin/Index.php';</script>";
             } else {
-                echo "<script> alert('Erreur lors de la tentative de suppression du commentaire.'); window.location.href = '../Commentaire.php';</script>";
+                echo "<script> alert('Erreur lors de la tentative de suppression utilisateur.'); window.location.href = '../Site_web_admin/Index.php';</script>";
                    }
             
-
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
         }

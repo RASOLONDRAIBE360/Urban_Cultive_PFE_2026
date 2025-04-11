@@ -8,8 +8,11 @@
   <link rel="stylesheet" href="../css/Reservation.css">
 </head>
 <body>
+  
+  <?php session_start();?>
 
-  <?php require_once(__DIR__.'/../CRUD/Select.php')?>
+  <button class="avis-btn" onclick='window.location.href="../Accueil.php"'>Retour</button>
+  <?php require_once(__DIR__.'/../CRUD/SelectReservation.php')?>
 
   <!-- En-tête -->
   <header>

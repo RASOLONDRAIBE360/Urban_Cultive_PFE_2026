@@ -1,13 +1,7 @@
 <?php
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$titre = $_POST['titre'] ?? null;
-$nom = $_POST['nom'] ?? null;
-$prenom = $_POST['prenom'] ?? null;
-$conseil = $_POST['conseil'] ?? null;
-
-
-        try {
+try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
                             MYSQL_USER,
@@ -16,20 +10,17 @@ $conseil = $_POST['conseil'] ?? null;
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT users.Email, commentaire.Date, commentaire.Titre, commentaire.Conseil FROM users INNER JOIN commentaire ON users.Email = commentaire.Email";
+            $sqlQuery = "SELECT * FROM info_parc";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
-
+                                
             $dbprepare->execute();
                 
-            $listeUtilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
-
-            if(empty($listeUtilisateurs))
-                echo "Aucune commentaire pour l'instant.";
+            $parcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $_SESSION['parcelles'] = $parcelles;
 
             } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
             }
-        //} 
 
 ?>

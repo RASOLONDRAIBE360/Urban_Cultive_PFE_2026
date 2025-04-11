@@ -12,13 +12,6 @@
             <h2>Se connecter</h2>
             <form action="../CRUD/Connexion.php" method="post">
                 <div class="input-group">
-                    <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" required>
-
-                    <label for="prenom">Prenom</label>
-                    <input type="text" id="prenom" name="prenom" required>
-                </div>
-                <div class="input-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required>
                 </div>

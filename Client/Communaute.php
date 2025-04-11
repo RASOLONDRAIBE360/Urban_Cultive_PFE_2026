@@ -8,50 +8,78 @@
     <link rel="stylesheet" href="css/Footer.css">
 </head>
 <body>
-    
+    <?php session_start();?>
+
     <?php require_once(__DIR__.'/Header/Header.php')?>
 
     <div class="container">
-        <h1>Partagez vos Conseils de Jardinage</h1>
-        <p>Échangez vos astuces et conseils pour un jardinage réussi !</p>
+        <h1>Avis et expérience sur les parcelles louées.</h1>
+        <p>Partagez vos opinions avec la communauté !</p>
     </div>
 
-        <?php require_once(__DIR__.'/html/Formulaire_commentaire.html');?>
-        <?php require_once(__DIR__.'/CRUD/Select_commentaire.php');?>
+        <?php require_once(__DIR__.'/CRUD/SelectParcelle.php');?>
+        <main>
+            <div class="container">
+                <!-- Formulaire pour partager un conseil -->
+                <section class="partage-conseil">
+                    
+                    <form action="../CRUD/EnregistrementAvis.php" method="post">
+                        
+                        <label for="email">Email :</label>
+                        <input type="email" id="email" name="email" required placeholder="Saisir votre mail">
+                        
+                    
+                        <label for="id_parc">Id parcelle :</label>
 
-            <!-- Section des conseils partagés -->
-            <section class="conseils">
-                <h2>Conseils récents</h2>
+                        <select id="parcelles" class="parcelle-select">
+                            
+                            <?php foreach($listeUtilisateurs as $utilisateur) : ?>
 
-                <!-- Exemple de conseil -->
+                                <option value="<?php echo $utilisateur['Id_parc']?>"><?php echo $utilisateur['Id_parc']?></option>
 
-                <?php foreach ($listeUtilisateurs as $utilisateur) :?>
+                            <?php endforeach;?>
 
-                <div class="conseil">
-                    <div class="conseil-header">
+                        </select>
 
-                        <span class="auteur"><?php echo $utilisateur['Email'];?></span>
-                        <span class="date"><?php echo $utilisateur['Date'];?></span>
-                    </div>
-                    <h3 class="titre-conseil"><?php echo $utilisateur['Titre'];?></h3>
-                    <p class="texte-conseil"><?php echo $utilisateur['Conseil'];?></p>
+                        <label for="avis">Votre Avis :</label>
+                        <textarea id="avis" name="avis" required placeholder="Laisser votre avis..." rows="4"></textarea>
 
-                    <form action="CRUD/DeleteCommentaire.php" method="post">
-
-                        <input type="hidden" name="email" value="<?php echo $utilisateur['Email'];?>">
-                        <input type="hidden" name="date" value="<?php echo $utilisateur['Date'];?>">
-                        <button type="submit">Supprimer</button>
-
+                        <button type="submit">Partager</button>
                     </form>
+                </section>
+            </div>
+        </main>
+   
+                <!-- Section des conseils partagés -->
+                <section class="conseils">
+                    <h2>Conseils récents</h2>
 
-                </div>
-                
-                <?php endforeach;?>
-            </section>
-        </div>
-    </main>
+                    <!-- Exemple de conseil -->
 
-    <?php require_once(__DIR__.'/Footer.php')?>
+                    <?php foreach ($listeUtilisateurs as $utilisateur) :?>
+
+                    <div class="conseil">
+                        <div class="conseil-header">
+
+                            <span class="auteur"><?php echo $_SESSION['email'];?></span>
+                            <span class="date"><?php echo $utilisateur['Date'];?></span>
+
+                        </div>
+                        <p class="texte-conseil"><?php echo $utilisateur['Avis'];?></p>
+
+                        <form action="CRUD/DeleteAvis.php" method="post">
+
+                            <input type="hidden" name="date" value="<?php echo $utilisateur['Date'];?>">
+                            <button type="submit">Supprimer</button>
+
+                        </form>
+
+                    </div>
+                    
+                    <?php endforeach;?>
+                </section>
+
+        <?php require_once(__DIR__.'/Footer.php')?>
     
     <script src="Javascript/Commentaire.js"></script>
 </body>
