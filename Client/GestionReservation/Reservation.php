@@ -60,7 +60,7 @@
     </div>
   </section>
 
-  <!-- Pied de page -->
+   <!-- Pied de page -->
   <footer>
     <div class="container">
       <p>&copy; 2025 Gestion des Parcelles Urbaines - Tous droits réservés</p>
