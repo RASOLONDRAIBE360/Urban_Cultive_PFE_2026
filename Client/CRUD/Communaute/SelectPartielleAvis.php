@@ -1,5 +1,6 @@
 <?php
 
+session_start();  
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $user_id = $_SESSION['user_id'] ?? null;
@@ -12,14 +13,14 @@ $user_id = $_SESSION['user_id'] ?? null;
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT * FROM avis WHERE User_id = :user_id";
+            $sqlQuery = "SELECT Id_parc FROM reservation_parc WHERE User_id = :user_id AND Status_res = 'valide' AND Date_fin >= NOW()";
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
             $dbprepare->execute([
                 ':user_id' => $user_id,
             ]);
                 
-            $utilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $listeUtilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());

@@ -29,7 +29,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         $count = $stmt->fetchColumn(); // Récupère la valeur de COUNT(*)
 
-        $sql2 = "SELECT Nom, Prenom FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse";
+        $sql2 = "SELECT Nom, Prenom, User_id FROM users WHERE Email = :email AND Mot_de_Passe = :motDePasse";
         $stmt2 = $mysqlClient->prepare($sql2);
         $stmt2->execute([
             ':email' => $email,
@@ -38,6 +38,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $user = $stmt2->fetch(PDO::FETCH_ASSOC);
         $nom = $user['Nom'];
         $prenom = $user['Prenom'];
+        $user_id = $user['User_id'];
 
         if($count == 0 ){
 
@@ -60,6 +61,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
             } else {
                 // Stocker les informations de l'utilisateur dans la session
+                $_SESSION['user_id'] = $user_id;
                 $_SESSION['nom'] = $nom;
                 $_SESSION['prenom'] = $prenom;
                 $_SESSION['motDePasse'] = $motDePasse;

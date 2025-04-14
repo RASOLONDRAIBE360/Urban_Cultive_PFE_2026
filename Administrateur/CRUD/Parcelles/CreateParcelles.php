@@ -20,26 +20,43 @@ $descrip = $_POST['descrip'];
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description) VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :status_parc, :expo, :equip, :pref, :descrip)";
+            $sqlRequest = "SELECT COUNT(*) FROM info_parc WHERE Id_parc = ?";
 
-            $dbprepare = $mysqlClient->prepare($sqlQuery);
+            $dbprepare = $mysqlClient->prepare($sqlRequest);
 
             $dbprepare->execute([
-                ':id_parc' => $id_parc,
-                ':taille_parc' => $taille_parc,
-                ':nom_parc' => $nom_parc,
-                ':prix_parc' => $prix_parc,
-                ':status_parc' => $status_parc,
-                ':equip'=>$equip,
-                ':expo'=>$expo,
-                ':pref'=>$pref,
-                ':descrip'=>$descrip,
+                $id_parc
             ]);
 
-            if ($dbprepare->rowCount() > 0) {
-                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+            $count = $dbprepare->fetchColumn();
+
+            if ($count > 0) {
+
+                echo "<script>alert('Cette parcelle existe déjà.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                exit();
+
             } else {
-                echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description) VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :status_parc, :expo, :equip, :pref, :descrip)";
+
+                $dbprepare = $mysqlClient->prepare($sqlQuery);
+
+                $dbprepare->execute([
+                    ':id_parc' => $id_parc,
+                    ':taille_parc' => $taille_parc,
+                    ':nom_parc' => $nom_parc,
+                    ':prix_parc' => $prix_parc,
+                    ':status_parc' => $status_parc,
+                    ':equip'=>$equip,
+                    ':expo'=>$expo,
+                    ':pref'=>$pref,
+                    ':descrip'=>$descrip,
+                ]);
+
+                if ($dbprepare->rowCount() > 0) {
+                    echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                } else {
+                    echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                }
             }
 
         } catch (Exception $exception) {

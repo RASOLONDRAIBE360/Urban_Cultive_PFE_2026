@@ -1,10 +1,11 @@
 <?php
 session_start();
 
-require_once (__DIR__.'/../../Config/MySQL.php');
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $email = $_SESSION['email'] ?? null;
 $date = $_POST['date'] ?? null;
+$user_id = $_SESSION['user_id'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -14,13 +15,6 @@ $date = $_POST['date'] ?? null;
                                 );
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $sqlRequest = "SELECT User_id FROM users WHERE Email = :email";
-            $pdoStatement = $mysqlClient->prepare($sqlRequest);
-            $pdoStatement->execute([
-                ':email' => $email,
-            ]);
-            $user_id = $pdoStatement->fetchColumn();
 
             $sqlQuery = "DELETE FROM avis WHERE User_id = :user_id AND Date = :date";
 
@@ -32,9 +26,9 @@ $date = $_POST['date'] ?? null;
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script> window.location.href = '../Communaute.php';</script>";
+                echo "<script> window.location.href = '../../Communaute.php';</script>";
             } else {
-                echo "<script> alert('Erreur lors de la tentative de suppression du commentaire.'); window.location.href = '../Communaute.php';</script>";
+                echo "<script> alert('Erreur lors de la tentative de suppression du commentaire.'); window.location.href = '../../Communaute.php';</script>";
                    }
             
 

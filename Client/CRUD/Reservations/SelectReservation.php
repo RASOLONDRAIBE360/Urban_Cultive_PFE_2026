@@ -1,20 +1,12 @@
 <?php
-session_start();
 
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$nom_parc = $_POST['nom_parc'] ?? null;
+$id_parc = $_SESSION['id_parc'] ?? null;
 
-unset($_SESSION['taille']);
-unset($_SESSION['prix']);
-unset($_SESSION['nom_parc']);
 
-if (isset($_SESSION['nom_parc']) && isset($_SESSION['taille']) && isset($_SESSION['prix'])) {
-    echo "<script>alert('Les variable de session est encore présent.');</script>";
-} else {
-    
-    if(empty($nom_parc)){
-        echo "La variable nom_parc n'est pas défini";
+    if(empty($id_parc)){
+        echo "La variable id_parc n'est pas défini";
     } else{
 
             try {
@@ -26,28 +18,22 @@ if (isset($_SESSION['nom_parc']) && isset($_SESSION['taille']) && isset($_SESSIO
 
                 $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                $sqlRequest = "SELECT Nom_parc, Taille_parc, Prix_parc FROM info_parc WHERE Nom_parc = :nom_parc AND Status_parc = 'dispo'";
+                $sqlRequest = "SELECT Id_res FROM reservation_parc WHERE Id_parc = ?";
                 $dtoStatement = $mysqlClient->prepare($sqlRequest);
 
                 $dtoStatement->execute([
-                    ':nom_parc'=>$nom_parc,
+                    $id_parc,
                 ]);
                 
-                $parcelles = $dtoStatement->fetchAll(PDO::FETCH_ASSOC);
-
-                foreach($parcelles as $parcelle){
-                    $_SESSION['taille'] = $parcelle['Taille_parc'];
-                    $_SESSION['prix'] = $parcelle['Prix_parc'];
-                    $_SESSION['nom_parc'] = $parcelle['Nom_parc'];
-                };
-
-                echo '<script>window.location.href="../GestionReservation/Reservation.php";</script>';
+                $MyParcelles1 = $dtoStatement->fetchAll(PDO::FETCH_ASSOC);
                 
+                foreach($MyParcelles1 as $MyParcelle1){
+                    $_SESSION['id_res'] = $MyParcelle1['Id_res'];
+                }   
 
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());
             }
         }
-    }
 
 ?>

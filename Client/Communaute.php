@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="css/Footer.css">
 </head>
 <body>
-    <?php session_start();?>
 
+    <?php require_once(__DIR__.'/CRUD/Communaute/SelectPartielleAvis.php');?>
+    <?php require_once(__DIR__.'/CRUD/Communaute/SelectAvis.php');?>
     <?php require_once(__DIR__.'/Header/Header.php')?>
 
     <div class="container">
@@ -22,26 +23,22 @@
                 <!-- Formulaire pour partager un conseil -->
                 <section class="partage-conseil">
                     
-                    <form action="../CRUD/EnregistrementAvis.php" method="post">
+                    <form action="CRUD/Communaute/CreateAvis.php" method="post">
                         
                         <label for="email">Email :</label>
-                        <input type="email" id="email" name="email" required placeholder="Saisir votre mail">
+                        <input type="email" id="email" name="email" placeholder="Saisir votre mail" required>
                         
-                    
                         <label for="id_parc">Id parcelle :</label>
-
-                        <select id="parcelles" class="parcelle-select">
+                        <select id="id_parc" name="id_parc" class="parcelle-select">
                             
                             <?php foreach($listeUtilisateurs as $utilisateur) : ?>
-
                                 <option value="<?php echo $utilisateur['Id_parc']?>"><?php echo $utilisateur['Id_parc']?></option>
-
                             <?php endforeach;?>
 
                         </select>
 
                         <label for="avis">Votre Avis :</label>
-                        <textarea id="avis" name="avis" required placeholder="Laisser votre avis..." rows="4"></textarea>
+                        <textarea id="avis" name="avis" placeholder="Laisser votre avis..." rows="4" required></textarea>
 
                         <button type="submit">Partager</button>
                     </form>
@@ -51,22 +48,23 @@
    
                 <!-- Section des conseils partagés -->
                 <section class="conseils">
-                    <h2>Conseils récents</h2>
+                    <h2>Vos avis :</h2>
 
                     <!-- Exemple de conseil -->
 
-                    <?php foreach ($listeUtilisateurs as $utilisateur) :?>
+                    <?php foreach ($utilisateurs as $utilisateur) :?>
 
                     <div class="conseil">
                         <div class="conseil-header">
 
                             <span class="auteur"><?php echo $_SESSION['email'];?></span>
+                            <span class="parcelle"><?php echo $utilisateur['Id_parc'];?></span>
                             <span class="date"><?php echo $utilisateur['Date'];?></span>
 
                         </div>
                         <p class="texte-conseil"><?php echo $utilisateur['Avis'];?></p>
 
-                        <form action="CRUD/DeleteAvis.php" method="post">
+                        <form action="CRUD/Communaute/DeleteAvis.php" method="post">
 
                             <input type="hidden" name="date" value="<?php echo $utilisateur['Date'];?>">
                             <button type="submit">Supprimer</button>

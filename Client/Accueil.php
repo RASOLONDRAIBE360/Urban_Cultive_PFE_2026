@@ -6,6 +6,7 @@
     <title>Jardins Urbains</title>
     <link rel="stylesheet" href="css/Accueil.css">
     <link rel="stylesheet" href="css/AccueilModal.css">
+    <link rel="stylesheet" href="css/Footer.css">
 </head>
 <body>
 
@@ -29,6 +30,7 @@
     <?php $parcelles = $_SESSION['parcelles'];?>
 
     <?php foreach($parcelles as $parcelle) :?>
+        
     <section class="parcelles">
         <div class="card" onclick="ouvrirModal('<?php echo $parcelle['Id_parc'];?>')">
             <img src="Projet_HTML_CSS/Photo1.jpg" alt="Parcelle Zen">
@@ -39,7 +41,6 @@
 
                 <p><?php echo $parcelle['Taille_parc'];?>m²</p>
                 <p><?php echo $parcelle['Exposition'];?></p>
-
                 <p><?php echo $parcelle['Prix_parc'];?>€/mois</p>
 
             </div>
@@ -64,9 +65,9 @@
 
             <button class="avis-btn" onclick='window.location.href="Avis.php"'>Voir les avis</button>
 
-            <form action="CRUD/Reservations/SelectReservation.php" method="post">
-                
-                <input type="hidden" id="nom_parc" name="nom_parc" value="<?php echo "parcelle zen"?>">
+            <form action="CRUD/Reservations/SelectPartielleReservation.php" method="post">
+
+                <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $parcelle['Id_parc']; ?>">
                 <?php $isOccupied = ($parcelle['Status_parc'] == 'occupe') ? "disabled" : "";?>
 
                 <button type="submit" class="reservation-btn" <?php echo $isOccupied; ?>>Réserver cette parcelle</button>
@@ -76,7 +77,9 @@
     </div>
 <?php endforeach;?>
 
-
+    <div class="footer">
+        <?php require_once(__DIR__.'/Footer.php');?>
+    </div>
 <script src="Javascript/Accueil.js"></script>
 </body>
 </html>
