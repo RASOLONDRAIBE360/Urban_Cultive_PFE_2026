@@ -32,9 +32,9 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             ]);
              
             if ($pdoStatement->rowCount() > 0){
-                echo '<script>alert("Modification(s) enregistrée(s)."); window.location.href="../Site_web_admin/Index.php";</script>';
+                echo '<script>window.location.href="../../Site_web_admin/Accueil.php";</script>';
             } else {
-                echo '<script>alert("Modification du champ échouée."); window.location.href="../Site_web_admin/Index.php";</script>';
+                echo '<script>alert("Modification du champ échouée."); window.location.href="../../Site_web_admin/Accueil.php";</script>';
             }
 
         }catch(Exception $exception){

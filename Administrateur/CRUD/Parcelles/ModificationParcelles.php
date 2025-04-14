@@ -36,7 +36,7 @@ $id_parc = $_POST['id_parc'];
         ]);
             
         if ($pdoStatement->rowCount() > 0){
-            echo '<script>alert("Mise à jour réussi."); window.location.href="../../Site_web_admin/Parcelle.php";</script>';
+            echo '<script>window.location.href="../../Site_web_admin/Parcelle.php";</script>';
         } else {
             echo '<script>alert("Modification du champ échouée."); window.location.href="../../Site_web_admin/Parcelle.php";</script>';
         }

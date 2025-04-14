@@ -10,9 +10,7 @@ $password = $_POST(['password']);
 
 if(empty($name)){
     echo '<script>alert("Veuillez vérifier le champ Nom."); window.location.href =';
-} else if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-    
-}
+} 
 
 try{
     $MysqlClient = new PDO(
@@ -27,10 +25,11 @@ try{
     $pdoStatement->execute([
         ':name'=>$name,
         ':prenom'=>$prenom,
-        ':age'=>$age
-    ])
-}catch(Exception exception){
-    die('Erreur :'.exception->getMessage());
-}
+        ':age'=>$age,
+    ]);
+
+    } catch(Exception $exception){
+        die('Erreur :'.exception->getMessage());
+    }
 
 ?>

@@ -29,9 +29,11 @@
                     <th>Email</th>
                     <th>N° tel</th>
                     <th>Nom p.</th>
+                    <th>Id p.</th>
                     <th>Prix p.</th>
                     <th>Date r.</th>
                     <th>Duree r.</th>
+                    <th>Date Fin</th>
                     <th>Status r.</th>
                     <th>Action</th>
                 </tr>
@@ -43,9 +45,11 @@
                         <td><?php echo $reservation['Email']; ?></td>
                         <td><?php echo $reservation['Numero_tel']; ?></td>
                         <td><?php echo $reservation['Nom_parc']; ?></td>
+                        <td><?php echo $reservation['Id_parc']; ?></td>
                         <td><?php echo $reservation['Prix_parc']; ?></td>
                         <td><?php echo $reservation['Date_res']; ?></td>
                         <td><?php echo $reservation['Duree_res']; ?></td>
+                        <td><?php echo $reservation['Date_fin']; ?></td>
                         <td><?php echo $reservation['Status_res']; ?></td>
                         <td>
 

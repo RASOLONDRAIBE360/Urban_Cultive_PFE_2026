@@ -1,7 +1,9 @@
 <?php
+
+session_start();  
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-
+$user_id = $_SESSION['user_id'] ?? null;
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -11,16 +13,17 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT COUNT(*) FROM users";
-
+            $sqlQuery = "SELECT Id_parc FROM reservation_parc WHERE User_id = :user_id AND Status_res = 'valide' AND Date_fin >= NOW()";
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
-            $dbprepare->execute();
+            $dbprepare->execute([
+                ':user_id' => $user_id,
+            ]);
                 
-            $count = $dbprepare->fetchColumn();
-
+            $listeUtilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+                die('Erreur : ' . $exception->getMessage());
             }
         //} 
 

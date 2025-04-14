@@ -8,19 +8,19 @@
 </head>
 <body>
     <div class="signup-container">
-        <form class="signup-form" action="../CRUD/Insertion.php" method="post">
+        <form class="signup-form" action="../CRUD/Locataires/CreateLocataire.php" method="post">
             <h2>Créer un compte</h2>
 
             <!-- Champ pour le nom -->
             <div class="input-container">
                 <label for="nom">Nom</label>
-                <input type="text" id="nom" name="nom" required placeholder="Entrez votre Nom">
+                <input type="text" id="nom" name="nom" placeholder="Entrez votre Nom" required>
             </div>
 
             <!-- Champ pour le prénom -->
             <div class="input-container">
                 <label for="prenom">Prenom</label>
-                <input type="text" id="prenom" name="prenom" required placeholder="Entrez votre Prenom">
+                <input type="text" id="prenom" name="prenom" placeholder="Entrez votre Prenom" required>
             </div>
 
             <!-- Champ pour la date de naissance -->
@@ -32,19 +32,19 @@
             <!-- Champ pour l'email -->
             <div class="input-container">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required placeholder="Entrez votre email">
+                <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
             </div>
 
             <!-- Champ pour le mot de passe -->
             <div class="input-container">
                 <label for="motDePasse">Mot de passe</label>
-                <input type="password" id="motDePasse" name="motDePasse" required placeholder="Créez un mot de passe">
+                <input type="password" id="motDePasse" name="motDePasse" placeholder="Créez un mot de passe" required>
             </div>
 
             <!-- Champ pour la confirmation du mot de passe -->
             <div class="input-container">
                 <label for="conf_password">Confirmer le mot de passe</label>
-                <input type="password" id="conf_password" name="conf_password" required placeholder="Confirmez votre mot de passe">
+                <input type="password" id="conf_password" name="conf_password" placeholder="Confirmez votre mot de passe" required>
             </div>
 
             <!-- Bouton pour soumettre le formulaire -->

@@ -7,17 +7,16 @@
             <div class="footer-section">
                 <h3>Liens Utiles</h3>
                 <ul>
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#parcelles">Parcelles</a></li>
-                    <li><a href="#communaute">Communauté</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="Accueil.php">Accueil</a></li>
+                    <li><a href="Communaute.php">Communauté</a></li>
+                    <li><a href="#MesParcelles">Mes Parcelles</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p>Email : contact@urbancultive.com</p>
-                <p>Téléphone : +123 456 789</p>
-                <p>Adresse : 123 Rue Verte, Paris</p>
+                <p>Email : sbrasolondraibe@student.udm.ac.mu</p>
+                <p>Téléphone : +230 5924 6166</p>
+                <p>Adresse : 05, RUE D'ARGENT CAMP LEVIEUX, ROSE-HILL-MAURITIUS</p>
             </div>
         </div>
         <div class="footer-bottom">
