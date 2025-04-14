@@ -109,8 +109,8 @@ h1::after {
 
 .parcelle-select {
     position: relative;
-    right: 10px;
-    width: 30%;
+    right: 15px;
+    width: 107vh;
     text-align: center;
     padding: 12px;
     font-size: 14px;
@@ -134,11 +134,12 @@ h1::after {
     font-size: 14px;
     background: white;
 }
+
 .partage-conseil input{
     text-align: center;
     position: relative;
     right: 15px;
-    width: 50%;
+    width: 100%;
     padding: 12px;
     border: 2px solid #ddd;
     border-radius: 6px;
@@ -158,6 +159,7 @@ h1::after {
     transition: border-color 0.3s ease-in-out;
     background: #f9f9f9;
     font-family: 'Georgia', serif;
+    text-align: center;
 }
 
 .partage-conseil input:focus,

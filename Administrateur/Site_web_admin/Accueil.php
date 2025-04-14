@@ -47,7 +47,12 @@
                         <td><?php echo $utilisateur['Email']; ?></td>
                         <td><?php echo $utilisateur['Role']; ?></td>
                         <td>
-                            <button class="btn edit-btn" onclick="ouvrirModal('modal1')">Modifier</button>
+                            <form action="../CRUD/Locataires/SelectPartielleLocataires.php" method="post">
+
+                                <input type="hidden" name="user_id" value="<?php echo $utilisateur['User_id']; ?>">
+                                <button class="btn edit-btn Sbtn" type="submit">Modifier</button>
+
+                            </form>
 
                             <form action="../CRUD/Locataires/SuppressionLocataires.php" method="post">
                                 
@@ -75,26 +80,30 @@
     <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
 
     
-    <form action="../CRUD/Modification.php" method="post">
-        <label for="role">Rôle</label>
+    <form action="../CRUD/Locataires/ModificationLocataires.php" method="post">
+        
         <label for="id">ID Utilisateur</label>
         <select id="id" name="id">
-            <?php foreach($listeUtilisateurs as $utilisateur) : ?>
-                <option><?php echo $utilisateur['User_id'];?></option>
-            <?php endforeach; ?>
+            <option><?php echo $_SESSION['my_user_id'];?></option>
         </select>
+        
+        <?php $UDatas=$_SESSION['UDatas'];?>
+        
+        <?php foreach($UDatas as $UData):?>
 
-        <label for="nom">Nom</label>
-        <input type="text" id="nom" name="nom" required>
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" value="<?php echo $UData['Nom'];?>" placeholder="....." required>
 
-        <label for="prenom">Prénom</label>
-        <input type="text" id="prenom" name="prenom" required>
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" value="<?php echo $UData['Prenom'];?>" placeholder="....." required>
 
-        <label for="date">Date de Naissance</label>
-        <input type="date" id="date" name="date" required>
+            <label for="date">Date de Naissance</label>
+            <input type="date" id="date" name="date" value="<?php echo $UData['Date_Naissance'];?>" placeholder="....." required>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<?php echo $UData['Email'];?>" placeholder="....." required>
+        
+        <?php endforeach;?>
 
         <button type="submit">Enregistrer</button>
     </form>

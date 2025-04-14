@@ -13,7 +13,10 @@ $id_res = $_POST["id_res"];
             );
 
             $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sqlRequest = "UPDATE reservation_parc SET Status_res = 'attente' WHERE Id_res = :id_res";
+            $sqlRequest = "UPDATE reservation_parc 
+                        INNER JOIN info_parc ON reservation_parc.Id_parc = info_parc.Id_parc
+                        SET Status_res = 'attente', Status_parc = 'disponible'
+                        WHERE Id_res = :id_res";
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
             $pdoStatement->execute([
                 ':id_res'=>$id_res,

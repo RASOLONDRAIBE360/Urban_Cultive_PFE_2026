@@ -1,10 +1,14 @@
 <?php
 
 session_start();
+
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$id_parc = $_POST['id_parc'];
+$id_parc = $_POST['id_parc'] ?? null;
 
+if(empty($id_parc)){
+    echo "La variable id_parc n'est pas défini";
+} else{
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -14,7 +18,9 @@ $id_parc = $_POST['id_parc'];
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT * FROM info_parc WHERE Id_parc = :id_parc";
+            $sqlQuery = "SELECT Nom_parc, Taille_parc, Prix_parc 
+            FROM info_parc 
+            WHERE Id_parc = :id_parc";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -22,20 +28,19 @@ $id_parc = $_POST['id_parc'];
                 'id_parc' => $id_parc,
             ]);
             
-            $Uparcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
-            
-            $_SESSION['Uparcelles'] = $Uparcelles;
-            $_SESSION['my_id_parc'] = $id_parc;
-            
-            if(!empty($Uparcelles)){
-                echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
+            $MyParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $_SESSION['MyParcelles'] = $MyParcelles;
+            $_SESSION['id_parc'] = $id_parc;
+        
+            if(!empty($MyParcelles)){
+                echo '<script>window.location.href="../../GestionReservation/FormulaireReservation.php";</script>';
                 exit();
             } else{
-                echo '<script>alert("Aucune parcelle trouve."); window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
+                echo '<script>alert("Erreur survenu lors de la récupération du parcelle."); window.location.href="../../Accueil.php?showModal=1";</script>';
             }
 
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
         }
-
+    }
 ?>

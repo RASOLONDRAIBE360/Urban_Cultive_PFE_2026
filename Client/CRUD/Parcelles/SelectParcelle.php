@@ -1,5 +1,4 @@
 <?php
-session_start();   
 
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
@@ -12,6 +11,17 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
+            $sqlRequest = "UPDATE info_parc 
+                        LEFT JOIN reservation_parc ON info_parc.Id_parc = reservation_parc.Id_parc
+                        SET Status_parc = 'dispo'
+                        WHERE Status_res = 'attente' 
+                        OR Status_res = 'refus' 
+                        OR info_parc.Id_res is null";
+
+            $pdoStatement = $mysqlClient->prepare($sqlRequest);
+
+            $pdoStatement->execute();
+
             $sqlQuery = "SELECT * FROM info_parc";
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -19,13 +29,6 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
                 
             $parcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             $_SESSION['parcelles'] = $parcelles;
-
-            if(!empty($parcelles)){
-                echo "<script>window.location.href = '../../Accueil.php';</script>";
-                exit();
-            } else {
-                echo "<script> alert('Parcelle vide.'); window.location.href = '../../Accueil.php';</script>"; 
-            }
 
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());

@@ -1,5 +1,5 @@
 <header>
-    <div class="logo">🌿 Jardins Urbains</div>
+    <div class="logo">🌿 UrbanCultive</div>
         <nav>
             <a href="Accueil.php">Accueil</a>
             <a href="Communaute.php">Communauté</a>

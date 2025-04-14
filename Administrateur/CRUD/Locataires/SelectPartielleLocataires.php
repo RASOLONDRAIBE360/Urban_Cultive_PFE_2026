@@ -3,7 +3,7 @@
 session_start();
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$id_parc = $_POST['id_parc'];
+$user_id = $_POST['user_id'];
 
         try {
             $mysqlClient = new PDO(
@@ -14,24 +14,24 @@ $id_parc = $_POST['id_parc'];
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT * FROM info_parc WHERE Id_parc = :id_parc";
+            $sqlQuery = "SELECT * FROM users WHERE User_id = :user_id";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
             $dbprepare->execute([
-                'id_parc' => $id_parc,
+                'user_id' => $user_id,
             ]);
             
-            $Uparcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $listeUtilisateur = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             
-            $_SESSION['Uparcelles'] = $Uparcelles;
-            $_SESSION['my_id_parc'] = $id_parc;
+            $_SESSION['UDatas'] = $listeUtilisateur;
+            $_SESSION['my_user_id'] = $user_id;
             
-            if(!empty($Uparcelles)){
-                echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
+            if(!empty($listeUtilisateur)){
+                echo '<script>window.location.href="../../Site_web_admin/Accueil.php?showModal=1";</script>';
                 exit();
             } else{
-                echo '<script>alert("Aucune parcelle trouve."); window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
+                echo '<script>alert("Aucun locataires trouve."); window.location.href="../../Site_web_admin/Accueil.php?showModal=1";</script>';
             }
 
         } catch (Exception $exception) {

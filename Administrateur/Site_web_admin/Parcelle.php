@@ -26,6 +26,8 @@
             <thead>
                 <tr>
                     <th>Id p.</th>
+                    <th>Id r.</th>
+                    <th>Id u.</th>
                     <th>Taille p.</th>
                     <th>Nom p.</th>
                     <th>Prix p.</th>
@@ -43,6 +45,8 @@
                 <?php foreach($parcelles as $parcelle) : ?>
                     <tr>
                         <td><?php echo $parcelle['Id_parc']; ?></td>
+                        <td><?php echo $parcelle['Id_res']; ?></td>
+                        <td><?php echo $parcelle['User_id']; ?></td>
                         <td><?php echo $parcelle['Taille_parc']; ?></td>
                         <td><?php echo $parcelle['Nom_parc']; ?></td>
                         <td><?php echo $parcelle['Prix_parc']; ?></td>
@@ -68,7 +72,7 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                <td colspan="10">
+                <td colspan="12">
                     <button class="add-btn" onclick="ouvrirModal('modal2')">
                         <i>+</i> Ajouter une parcelle
                     </button>
@@ -88,38 +92,37 @@
             
             <label for="id_parc">Id p.</label>
             <select id="id_parc" name="id_parc">
-                <?php foreach($parcelles as $parcelle) : ?>
-                    <option><?php echo $parcelle['Id_parc'];?></option>
-                <?php endforeach; ?>
+                <option><?php echo $_SESSION['my_id_parc'];?></option>
             </select>
         
         <?php $Uparcelles=$_SESSION['Uparcelles'];?>
 
         <?php foreach($Uparcelles as $Uparcelle):?>
+            
             <label for="taille_parc">Taille p.</label>
-            <input type="text" id="taille_parc" name="taille_parc" value="<?php echo $Uparcelle['Taille_parc'];?>" placeholder=".....">
+            <input type="text" id="taille_parc" name="taille_parc" value="<?php echo trim($Uparcelle['Taille_parc']);?>" placeholder=".....">
 
             <label for="nom_parc">Nom p.</label>
-            <input type="text" id="nom_parc" name="nom_parc" value="<?php echo $Uparcelle['Nom_parc'];?>" placeholder=".....">
+            <input type="text" id="nom_parc" name="nom_parc" value="<?php echo trim($Uparcelle['Nom_parc']);?>" placeholder=".....">
             
             <label for="prix_parc">Prix p.</label>
-            <input type="text" id="prix_parc" name="prix_parc" value="<?php echo $Uparcelle['Prix_parc'];?>" placeholder=".....">
+            <input type="text" id="prix_parc" name="prix_parc" value="<?php echo trim($Uparcelle['Prix_parc']);?>" placeholder=".....">
             
             <label for="status_parc">Status p.</label>
-            <input type="text" id="status_parc" name="status_parc" value="<?php echo $Uparcelle['Status_parc'];?>" placeholder=".....">
+            <input type="text" id="status_parc" name="status_parc" value="<?php echo trim($Uparcelle['Status_parc']);?>" placeholder=".....">
 
             <label for="equip">Equipements</label>
-            <input type="text" id="equip" name="equip" value="<?php echo $Uparcelle['Equipements'];?>" placeholder=".....">  
+            <input type="text" id="equip" name="equip" value="<?php echo trim($Uparcelle['Equipements']);?>" placeholder=".....">  
 
             <label for="expo">Exposition</label>
-            <input type="text" id="expo" name="expo" value="<?php echo $Uparcelle['Preferences'];?>" placeholder=".....">
+            <input type="text" id="expo" name="expo" value="<?php echo trim($Uparcelle['Preferences']);?>" placeholder=".....">
 
             <label for="pref">Preferences</label>
-            <input type="text" id="pref" name="pref" value="<?php echo $Uparcelle['Description'];?>" placeholder=".....">
+            <input type="text" id="pref" name="pref" value="<?php echo trim($Uparcelle['Description']);?>">
 
             <label for="descrip">Description</label>
             <textarea id="descrip" name="descrip" rows="5" cols="65">
-                <?php echo $Uparcelle['Description'];?>
+                <?php echo trim($Uparcelle['Description']); ?>
             </textarea>
 
         <?php endforeach; ?>
@@ -139,7 +142,7 @@
 
             <label for="id_parc">Id p.</label>
             <input type="text" id="id_parc" name="id_parc" placeholder="....." required>
-
+            
             <label for="taille_parc">Taille p.</label>
             <input type="text" id="taille_parc" name="taille_parc" placeholder="....." required>
 
