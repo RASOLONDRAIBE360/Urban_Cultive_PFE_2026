@@ -71,7 +71,7 @@ h2 {
 }
 
 .btn {
-    background-color: #4CAF50;
+    background-color: #6e9a5e;
     color: white;
     padding: 12px;
     border: none;
@@ -82,7 +82,7 @@ h2 {
 }
 
 .btn:hover {
-    background-color: #45a049;
+    background-color: #93cf7d;
 }
 
 .right h2 {
@@ -93,6 +93,22 @@ h2 {
     font-size: 16px;
     margin-top: 10px;
 }
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-link a {
+    text-decoration: none;
+    color: #305243;
+    font-weight: bold;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
 
 /* Responsivité : Ajustements pour différentes tailles d'écran */
 

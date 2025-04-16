@@ -6,11 +6,15 @@ function fermerModal(id) {
     document.getElementById(id).style.display = "none";
 }
 
-// Vérifier si "showModal=1" est dans l'URL
+// Vérifier si "showModal=1" est dans l'URL*
+//crée un objet permettant de lire les paramètres de l'URL.
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('showModal') === '1') {
-    const id = 'modal1'; // Remplacez par l'ID de votre modal
-    ouvrirModal(id);
+
+//.get("showModal") récupère la valeur associée au paramètre showModal.
+const showModal = urlParams.get("showModal");
+
+if (showModal) {
+    ouvrirModal("modal" + showModal); // Ouvre "modal2" si showModal=2
 }
 
  // Sélectionner tous les liens de navigation

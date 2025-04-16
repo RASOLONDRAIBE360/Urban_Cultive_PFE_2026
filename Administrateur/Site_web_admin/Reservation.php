@@ -27,7 +27,6 @@
                 <tr>
                     <th>Id r.</th>
                     <th>Email</th>
-                    <th>N° tel</th>
                     <th>Nom p.</th>
                     <th>Id p.</th>
                     <th>Prix p.</th>
@@ -43,7 +42,6 @@
                     <tr>
                         <td><?php echo $reservation['Id_res']; ?></td>
                         <td><?php echo $reservation['Email']; ?></td>
-                        <td><?php echo $reservation['Numero_tel']; ?></td>
                         <td><?php echo $reservation['Nom_parc']; ?></td>
                         <td><?php echo $reservation['Id_parc']; ?></td>
                         <td><?php echo $reservation['Prix_parc']; ?></td>

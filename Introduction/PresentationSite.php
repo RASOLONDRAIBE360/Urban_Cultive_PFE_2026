@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion Participative des Parcelles Urbaines</title>
-    <link rel="stylesheet" href="css/PresentationSite.css">
+    <link rel="stylesheet" href="../Client/css/PresentationSite.css">
 </head>
 <body>
 
@@ -21,8 +21,8 @@
                 une expérience fluide et facilitant les démarches de location.
             </p>
             <div class="buttons">
-                <button onclick='window.location.href="Login/Formulaire_inscription.php"'>S'inscrire</button>
-                <button onclick='window.location.href="Login/Formulaire_connexion.php"'>Se Connecter</button>
+                <button onclick='window.location.href="../Login/FormulaireInscription.php"'>S'inscrire</button>
+                <button onclick='window.location.href="../Login/FormulaireConnexion.php"'>Se Connecter</button>
             </div>
         </div>
     </section>
