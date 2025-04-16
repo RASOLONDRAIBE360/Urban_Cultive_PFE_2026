@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jardins Urbains</title>
-    <link rel="stylesheet" href="css/Accueil.css">
-    <link rel="stylesheet" href="css/AccueilModal.css">
+    <link rel="stylesheet" href="css/Parcelle.css">
+    <link rel="stylesheet" href="css/ParcelleModal.css">
     <link rel="stylesheet" href="css/Footer.css">
 </head>
 <body>
 
     <?php session_start();?>
     
-    <?php require_once(__DIR__.'/CRUD/Parcelles/SelectParcelle.php')?>
+    <?php require_once(__DIR__.'/CRUD/Parcelles/SelectParcelleEnAttente.php')?>
     <?php require_once(__DIR__.'/Header/Header.php')?>
 
     <section class="hero">

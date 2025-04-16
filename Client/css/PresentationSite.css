@@ -16,7 +16,7 @@ body {
 
 /* HEADER */
 header {
-    background-color: #0073e6;
+    background-color: #3c837bee;
     color: white;
     padding: 20px;
     font-size: 22px;
@@ -51,7 +51,7 @@ header {
 
 .hero h2 {
     font-size: 26px;
-    color: #0073e6;
+    color: #305243;
 }
 
 .hero p {
@@ -66,7 +66,7 @@ header {
 }
 
 button {
-    background: #0073e6;
+    background: #6e9a5e;
     color: white;
     border: none;
     padding: 14px 22px;
@@ -79,7 +79,7 @@ button {
 }
 
 button:hover {
-    background: #005bb5;
+    background: #93cf7d;
     transform: translateY(-3px);
 }
 
@@ -96,7 +96,7 @@ button:hover {
 
 .features h2 {
     font-size: 24px;
-    color: #0073e6;
+    color: #305243;
     margin-bottom: 15px;
 }
 

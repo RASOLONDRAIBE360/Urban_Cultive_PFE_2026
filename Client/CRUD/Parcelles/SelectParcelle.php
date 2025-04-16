@@ -12,11 +12,13 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
             $sqlRequest = "UPDATE info_parc 
-                        LEFT JOIN reservation_parc ON info_parc.Id_parc = reservation_parc.Id_parc
+                        LEFT JOIN reservation_parc 
+                        ON info_parc.Id_parc = reservation_parc.Id_parc
                         SET Status_parc = 'dispo'
                         WHERE Status_res = 'attente' 
                         OR Status_res = 'refus' 
-                        OR info_parc.Id_res is null";
+                        OR info_parc.Id_res is null
+                        OR Date_res >= NOW()";
 
             $pdoStatement = $mysqlClient->prepare($sqlRequest);
 

@@ -11,7 +11,7 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sqlRequest = "SELECT reservation_parc.Id_res, Email, Numero_tel, reservation_parc.Id_parc, Nom_parc, Taille_parc, Prix_parc, Date_res, Duree_res, Date_fin, Status_res 
+            $sqlRequest = "SELECT reservation_parc.Id_res, Email, reservation_parc.Id_parc, Nom_parc, Taille_parc, Prix_parc, Date_res, Duree_res, Date_fin, Status_res 
             FROM reservation_parc 
             INNER JOIN info_parc, users 
             WHERE reservation_parc.Id_parc = info_parc.Id_parc 

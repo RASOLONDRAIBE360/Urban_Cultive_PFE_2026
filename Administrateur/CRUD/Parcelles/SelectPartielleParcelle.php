@@ -31,7 +31,7 @@ $id_parc = $_POST['id_parc'];
                 echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
                 exit();
             } else{
-                echo '<script>alert("Aucune parcelle trouve."); window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
             }
 
         } catch (Exception $exception) {

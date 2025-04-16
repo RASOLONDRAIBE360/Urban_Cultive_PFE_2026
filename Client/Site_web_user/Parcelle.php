@@ -51,15 +51,16 @@
                 <p><strong>Prix : </strong><?php echo $Parcelle1['Prix_parc'];?>€/mois</p>
                 <p><?php echo $Parcelle1['Description'];?></p>
 
-                <form action="" method="post">
+                <form action="CRUD/Reservations/DeleteReservation.php" method="post">
 
-                    <button class="avis-btn" onclick='window.location.href="Avis.php"'>Annuler</button>
+                    <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $Parcelle1['Id_parc']; ?>">
+                    <button class="avis-btn" type="submit">Annuler</button>
 
                 </form>
                 <form action="CRUD/Reservations/SelectPartielleReservation.php" method="post">
 
-                    <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $parcelle['Id_parc']; ?>">
-                    <button type="submit" class="reservation-btn">Renouveller</button>
+                    <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $Parcelle1['Id_parc']; ?>">
+                    <button type="submit" class="reservation-btn"></button>
 
                 </form>
 

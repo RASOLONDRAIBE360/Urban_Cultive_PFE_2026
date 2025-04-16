@@ -1,4 +1,6 @@
 <?php
+
+session_start();
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_parc = $_POST['id_parc'] ?? null;
@@ -31,12 +33,34 @@ $descrip = $_POST['descrip'];
             $count = $dbprepare->fetchColumn();
 
             if ($count > 0) {
-
-                echo "<script>alert('Cette parcelle existe déjà.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                $_SESSION['erreurId'] = "Cette parcelle existe déjà.";
+                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                 exit();
+            }
 
-            } else {
-                $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description) VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :status_parc, :expo, :equip, :pref, :descrip)";
+            $fileName = basename($_FILES["file"]["name"]);
+            $targetDirSystem = __DIR__ . '/../../../Upload/'; 
+            $targetFilePathSystem = $targetDirSystem . $fileName;
+
+            // Chemin WEB (à stocker en base)
+            $cheminWeb = '../../Upload/' . $fileName;
+
+            $fileType = strtolower(pathinfo($targetFilePathSystem, PATHINFO_EXTENSION));
+
+            // Vérifier si le fichier est bien une image
+            $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
+            if (!in_array($fileType, $allowedTypes)) {
+                $_SESSION['erreurInsert'] = "Seuls les fichiers JPG, JPEG, PNG, GIF et WEBP, AVIF sont autorisés.";
+                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
+                exit();
+            }
+
+            // Déplacer le fichier uploadé
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePathSystem)) {
+                // Insérer le chemin dans la base de données
+
+                $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description, Chemin_image) 
+                        VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :status_parc, :expo, :equip, :pref, :descrip, :cheminWeb)";
 
                 $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -50,13 +74,20 @@ $descrip = $_POST['descrip'];
                     ':expo'=>$expo,
                     ':pref'=>$pref,
                     ':descrip'=>$descrip,
+                    ':cheminWeb' => $cheminWeb,
                 ]);
 
                 if ($dbprepare->rowCount() > 0) {
-                    echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                    $_SESSION['successCreate'] = "Parcelle ajouté avec succès !";
+                    echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                 } else {
-                    echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                    $_SESSION['erreurCreate'] = "Erreur survenu lors de l'ajout du nouvelle parcelle.";
+                    echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                 }
+            } else {
+                    $_SESSION['erreurInsert'] = "Erreur survenu lors de l'ajout d'image.";
+                    echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
+                    exit();
             }
 
         } catch (Exception $exception) {

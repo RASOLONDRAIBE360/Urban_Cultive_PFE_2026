@@ -19,7 +19,8 @@ $user_id = $_SESSION['user_id'] ?? null;
                     INNER JOIN info_parc ON reservation_parc.Id_res = info_parc.Id_res 
                     WHERE users.User_id = :user_id 
                     AND Status_res = 'valide' 
-                    AND Date_fin >= NOW()";
+                    AND Date_fin >= NOW()
+                    AND Date_res <= NOW()";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
