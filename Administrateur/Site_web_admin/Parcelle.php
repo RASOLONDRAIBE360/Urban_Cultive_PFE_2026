@@ -36,6 +36,7 @@
                     <th>Equipements</th>
                     <th>Preferences</th>
                     <th>Description</th>
+                    <th>Image</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -55,6 +56,7 @@
                         <td><?php echo $parcelle['Exposition']; ?></td>
                         <td><?php echo $parcelle['Preferences']; ?></td>
                         <td><?php echo $parcelle['Description']; ?></td>
+                        <td><?php echo $parcelle['Chemin_image']; ?></td>
                         <td>
 
                         <form action="../CRUD/Parcelles/SuppressionParcelles.php" method="post">
@@ -72,7 +74,7 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                <td colspan="12">
+                <td colspan="13">
                     <button class="add-btn" onclick="ouvrirModal('modal2')">
                         <i>+</i> Ajouter une parcelle
                     </button>
@@ -88,7 +90,33 @@
         <h1> MISE A JOUR PARCELLE </h1>
         <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
 
-        <form action="../CRUD/Parcelles/ModificationParcelles.php" method="post">
+        <?php if(isset($_SESSION['successUpdate'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['successUpdate']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurUpdate'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurUpdate']);?>
+        <?php endif;?>
+
+        <form action="../CRUD/Parcelles/ModificationParcelles.php" method="post" enctype="multipart/form-data">
             
             <label for="id_parc">Id p.</label>
             <select id="id_parc" name="id_parc">
@@ -118,12 +146,29 @@
             <input type="text" id="expo" name="expo" value="<?php echo trim($Uparcelle['Preferences']);?>" placeholder=".....">
 
             <label for="pref">Preferences</label>
-            <input type="text" id="pref" name="pref" value="<?php echo trim($Uparcelle['Description']);?>">
+            <input type="text" id="pref" name="pref" value="<?php echo trim($Uparcelle['Description']);?>" placeholder=".....">
 
             <label for="descrip">Description</label>
             <textarea id="descrip" name="descrip" rows="5" cols="65">
                 <?php echo trim($Uparcelle['Description']); ?>
             </textarea>
+
+            <!-- Champ pour uploader une nouvelle image -->
+            <label for="file">Insérer une nouvelle image :</label>
+            <input type="file" name="file" id="file" accept="image/*">
+            
+            <?php if(isset($_SESSION['erreurInsert'])) :?>
+                <p style="color: red; 
+                            font-weight: bold; 
+                            text-align: center;
+                            position: relative;
+                            top: 3px;">
+                            
+                            <?php echo $_SESSION['erreurInsert'];?>
+
+                </p>
+                <?php unset($_SESSION['erreurInsert']);?>
+            <?php endif;?>
 
         <?php endforeach; ?>
 
@@ -137,8 +182,47 @@
 
         <h1> AJOUT PARCELLE </h1>
         <span class="fermer" onclick="fermerModal('modal2')">&times;</span>
+        
+        <?php if(isset($_SESSION['erreurId'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurId'];?>
 
-        <form action="../CRUD/Parcelles/CreateParcelles.php" method="post">
+            </p>
+            <?php unset($_SESSION['erreurId']);?>
+        <?php endif;?>
+
+        <?php if(isset($_SESSION['successCreate'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successCreate'];?>
+
+            </p>
+            <?php unset($_SESSION['successCreate']);?>
+        <?php endif;?>
+
+        <?php if(isset($_SESSION['erreurCreate'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurCreate'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurCreate']);?>
+        <?php endif;?>
+
+        <form action="../CRUD/Parcelles/CreateParcelles.php" method="post" enctype="multipart/form-data">
 
             <label for="id_parc">Id p.</label>
             <input type="text" id="id_parc" name="id_parc" placeholder="....." required>
@@ -166,6 +250,22 @@
 
             <label for="descrip">Description</label>
             <textarea id="descrip" name="descrip" rows="5" cols="65" placeholder="....." required> </textarea>
+
+            <label for="file">Insérer une image</label>
+            <input type="file" name="file" id="file" accept="image/*" required>
+
+            <?php if(isset($_SESSION['erreurInsert'])) :?>
+                <p style="color: red; 
+                            font-weight: bold; 
+                            text-align: center;
+                            position: relative;
+                            top: 3px;">
+                            
+                            <?php echo $_SESSION['erreurInsert'];?>
+
+                </p>
+                <?php unset($_SESSION['erreurInsert']);?>
+            <?php endif;?>
 
             <button type="submit">Ajouter</button>
         </form>

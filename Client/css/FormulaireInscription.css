@@ -47,14 +47,14 @@ h2 {
 .input-container input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #b1c69c;
     border-radius: 5px;
     font-size: 16px;
     outline: none;
 }
 
 .input-container input:focus {
-    border-color: #007BFF;
+    border-color: #86a965;
 }
 
 .form-actions {
@@ -64,7 +64,7 @@ h2 {
 .form-actions button {
     width: 100%;
     padding: 12px;
-    background-color: #007BFF;
+    background-color: #6e9a5e;
     color: white;
     border: none;
     border-radius: 5px;
@@ -74,7 +74,7 @@ h2 {
 }
 
 .form-actions button:hover {
-    background-color: #0056b3;
+    background-color: #93cf7d;
 }
 
 .login-link {
@@ -84,7 +84,7 @@ h2 {
 
 .login-link a {
     text-decoration: none;
-    color: #007BFF;
+    color: #305243;
     font-weight: bold;
 }
 
