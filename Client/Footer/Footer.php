@@ -9,7 +9,8 @@
                 <ul>
                     <li><a href="Accueil.php">Accueil</a></li>
                     <li><a href="Communaute.php">Communauté</a></li>
-                    <li><a href="#MesParcelles">Mes Parcelles</a></li>
+                    <li><a href="Reservation.php">Mes Reservations</a></li>
+                    <li><a href="Parcelle.php">Mes Parcelles</a></li>
                 </ul>
             </div>
             <div class="footer-section">

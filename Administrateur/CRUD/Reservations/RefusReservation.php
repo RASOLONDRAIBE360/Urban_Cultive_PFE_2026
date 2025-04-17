@@ -1,6 +1,8 @@
 <?php
-require_once (__DIR__.'/../../../Config/MySQL.php');
 
+session_start();
+
+require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_res = $_POST["id_res"];
 
@@ -14,18 +16,23 @@ $id_res = $_POST["id_res"];
 
             $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $sqlRequest = "UPDATE reservation_parc 
-                        INNER JOIN info_parc ON reservation_parc.Id_parc = info_parc.Id_parc
-                        SET Status_res = 'refus', Status_parc = 'disponible' 
-                        WHERE Id_res = :id_res";
+                        INNER JOIN info_parc 
+                        ON reservation_parc.Id_parc = info_parc.Id_parc
+                        SET Status_res = 'refus', Status_parc = 'dispo' 
+                        WHERE reservation_parc.Id_res = :id_res";
+
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
             $pdoStatement->execute([
                 ':id_res'=>$id_res,
             ]);
+
              
             if ($pdoStatement->rowCount() > 0){
+                $_SESSION['successValidation'] = "Reservation refusé";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             } else {
-                echo '<script>alert("Erreur survenu lors du refus."); window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
+                $_SESSION['erreurValidation'] = "Erreur survenu lors du refus";
+                echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             }
 
         }catch(Exception $exception){

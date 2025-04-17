@@ -291,13 +291,3 @@ h1::after {
     background-color: #c9302c;
     transform: scale(1.05);
 }
-
-
-/* Footer Styles */
-footer {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    margin-top: 40px;
-}

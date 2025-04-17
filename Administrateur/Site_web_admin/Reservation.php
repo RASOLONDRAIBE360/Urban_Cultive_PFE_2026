@@ -38,6 +38,7 @@
                 </tr>
             </thead>
             <tbody>
+                <?php $reservations = $_SESSION['reservations'];?>
                 <?php foreach($reservations as $reservation) : ?>
                     <tr>
                         <td><?php echo $reservation['Id_res']; ?></td>
@@ -53,7 +54,7 @@
 
                         <form action="../CRUD/Reservations/ValidationReservation.php" method="post">
 
-                            <input type="hidden" name="id_res" value="<?php echo $reservation['Id_res'];?>">
+                            <input type="hidden" name="id_res" value="<?php echo $reservation['Id_res']; ?>">
                             <button class="btn valid-btn" type="submit">VALIDER</button>
 
                         </form>
@@ -68,6 +69,7 @@
                         <form action="../CRUD/Reservations/AttenteReservation.php" method="post">
 
                             <input type="hidden" name="id_res" value="<?php echo $reservation['Id_res']; ?>">
+                            <?php $_SESSION['id_res'] = $reservation['Id_res'];?>
                             <button class="btn edit-btn" type="submit">MISE EN ATTENTE</button>
 
                         </form>
@@ -84,19 +86,61 @@
 
         <h1> VALIDATION RESERVATION </h1>
         <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
+        
+        <?php if(isset($_SESSION['successValidation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                    <?php echo $_SESSION['successValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['successValidation']);?>
+        <?php endif;?>
+
+        <?php if(isset($_SESSION['erreurValidation'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                    <?php echo $_SESSION['erreurValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurValidation']);?>
+        <?php endif;?>
+
+        <?php if(isset($_SESSION['successEmail'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                    <?php echo $_SESSION['successEmail'];?>
+
+            </p>
+            <?php unset($_SESSION['successEmail']);?>
+        <?php endif;?>
 
         <form action="../CRUD/Mail.php" method="post">
-
-            <label for="dest">Destinataire</label>
-            <input type="email" id="dest" name="dest" required>
-
+            <?php require_once(__DIR__.'/../CRUD/Reservations/SelectPartielleReservation.php') ?>
+            <?php $Utilisateurs = $_SESSION['Utilisateurs'];?>
+            <?php foreach($Utilisateurs as $Utilisateur):?>
+                <input type="email" name="dest" value="<?php echo $Utilisateur['Email']; ?>" readonly style="color: #5e5e5e; background: #fafafa; cursor: default; border-color: #ccc; caret-color: transparent;">
+            <?php endforeach;?>
+            
             <label for="objet">Objet</label>
-            <input type="text" id="objet" name="objet" required>
+            <input type="text" id="objet" name="objet">
 
             <label for="message">Message</label>
             <textarea id="message" name="message" cols="65" rows="5" required></textarea>
 
             <button type="submit">Envoyer</button>
+
         </form>
         </div>
     </div>

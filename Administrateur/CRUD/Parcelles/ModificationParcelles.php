@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 
@@ -24,7 +27,7 @@ $id_parc = $_POST['id_parc'];
 
         $targetDir = "../../../Upload/"; // Dossier où stocker les images
 
-        $fileName = basename($_FILES["file"]["name"]);
+        $fileName = $_FILES["file"]["name"];
         $targetFilePath = $targetDir . $fileName;
         $cheminWeb = '../../Upload/' . $fileName; // Chemin WEB (à stocker en base)
         $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
@@ -32,7 +35,7 @@ $id_parc = $_POST['id_parc'];
         // Vérifier si le fichier est bien une image
         $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
         if (!in_array($fileType, $allowedTypes)) {
-            $_SESSION['erreurInsert'] = "Seuls les fichiers JPG, JPEG, PNG, GIF et WEBP, AVIF sont autorisés.";
+            $_SESSION['erreurInsertPicture'] = "Seuls les fichiers JPG, JPEG, PNG, GIF, WEBP et AVIF sont autorisés.";
             echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
             exit();
         }
@@ -70,7 +73,7 @@ $id_parc = $_POST['id_parc'];
                 exit();
             }
         } else {
-            $_SESSION['erreurInsert'] = "Erreur survenu lors de l'ajout de l'image.";
+            $_SESSION['erreurInsertPicture'] = "Erreur survenu lors de l'ajout de l'image.";
             echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
             exit();
         }

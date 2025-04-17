@@ -1,8 +1,10 @@
 <?php
 
+$id_res = $_SESSION['id_res'];
+
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$user_id = $_SESSION['user_id'] ?? null;
+
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -11,21 +13,20 @@ $user_id = $_SESSION['user_id'] ?? null;
                                 );
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            $sqlQuery = "SELECT Id_parc 
-                    FROM reservation_parc 
-                    WHERE User_id = :user_id 
-                    AND Status_res = 'valide' 
-                    AND Date_fin >= CURDATE() 
-                    AND Date_res = CURDATE()";
 
-            $dbprepare = $mysqlClient->prepare($sqlQuery);
+            $sqlRequest = "SELECT Email 
+            FROM users
+            INNER JOIN reservation_parc ON users.User_id = reservation_parc.User_id
+            WHERE reservation_parc.Id_res = :id_res";
 
-            $dbprepare->execute([
-                ':user_id' => $user_id,
+            $pdoStatement = $mysqlClient->prepare($sqlRequest);
+
+            $pdoStatement->execute([
+                'id_res' => $id_res,
             ]);
-                
-            $listeUtilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+
+            $Utilisateurs = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+            $_SESSION['Utilisateurs'] = $Utilisateurs;
             
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());

@@ -11,7 +11,7 @@
   
   <?php session_start();?>
 
-  <button class="avis-btn" onclick='window.location.href="../Accueil.php"'>Retour</button>
+  <button class="avis-btn" onclick='window.location.href="../Site_web_user/Accueil.php"'>Retour</button>
 
   <!-- En-tête -->
   <header>
@@ -25,31 +25,51 @@
   <section class="reservation-section">
     <div class="container">
       <h2>Réservez maintenant</h2>
+
+      <?php if(isset($_SESSION['successReservation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successReservation'];?>
+
+            </p>
+            <?php unset($_SESSION['successReservation']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurReservation'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurReservation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurReservation']);?>
+        <?php endif;?>
       <form action="../CRUD/Reservations/CreateReservation.php" method="post" class="reservation-form">
         
-        <label for="user_id">ID Utilisateur</label>
-        <select id="user_id" name="user_id">
-            <option><?php echo $_SESSION['user_id'];?></option>
-        </select>
+        <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id_user'];?>">
       
-        <label for="tel">Numero telephone</label>
-        <input type="text" id="tel" name="tel" placeholder="Entrer votre numero de telephone" required>
-
         <?php $Myparcelles = $_SESSION['MyParcelles'];?>
 
         <?php foreach($Myparcelles as $MyParcelle) :?>
 
           <label for="id_parc">Id parcelle</label>
-          <input type="text" id="id_parc" name="id_parc" value="<?php echo $_SESSION['id_parc'];?>" readonly style=" color: #5e5e5e; background: #fafafa;" >
+          <input type="text" id="id_parc" name="id_parc" value="<?php echo $_SESSION['id_parc'];?>" readonly style=" color: #5e5e5e; background: #fafafa; cursor: default; border-color: #ccc; caret-color: transparent;" >
 
           <label for="nom_parc">Nom parcelle</label>
-          <input type="text" id="nom_parc" name="nom_parc" value="<?php echo $MyParcelle['Nom_parc'];?>" disabled>
+          <input type="text" id="nom_parc" name="nom_parc" value="<?php echo $MyParcelle['Nom_parc'];?>" disabled style="caret-color: transparent;">
 
           <label for="prix">Prix parcelle</label>
-          <input type="text" id="prix" name="prix" value=<?php echo $MyParcelle['Prix_parc'];?> disabled>
+          <input type="text" id="prix" name="prix" value=<?php echo $MyParcelle['Prix_parc'];?> disabled style="caret-color: transparent;">
 
           <label for="taille">Taille parcelle</label>
-          <input type="text" id="taille" name="taille" value="<?php echo $MyParcelle['Taille_parc'];?>" disabled>
+          <input type="text" id="taille" name="taille" value="<?php echo $MyParcelle['Taille_parc'];?>" disabled style="caret-color: transparent;">
 
         <?php endforeach;?>
 

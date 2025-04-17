@@ -28,10 +28,6 @@
     overflow: auto; /* ✅ Active le scroll si le contenu est trop grand */
 }
 
-#modal1{
-    overflow: hidden; /* ✅ Désactive le scroll de l’arrière-plan quand le modal est affiché */
-}
-
 /* Animation d'apparition */
 @keyframes modalFadeIn {
     from {
