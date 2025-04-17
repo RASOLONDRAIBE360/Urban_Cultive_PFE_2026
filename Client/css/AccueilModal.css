@@ -31,6 +31,9 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     text-align: center;
     position: relative;
+
+    max-height: 80vh; /* ✅ Empêche que le modal dépasse l'écran */
+    overflow: auto; /* ✅ Active le scroll si le contenu est trop grand */
     animation: modalFadeIn 0.3s ease-in-out;
 }
 

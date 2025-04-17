@@ -79,6 +79,31 @@
     <h1> MISE A JOUR </h1>
     <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
 
+    <?php if(isset($_SESSION['successValidation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['successValidation']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurValidation'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurValidation']);?>
+        <?php endif;?>
     
     <form action="../CRUD/Locataires/ModificationLocataires.php" method="post">
         

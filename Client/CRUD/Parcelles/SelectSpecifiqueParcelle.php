@@ -2,7 +2,7 @@
 
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['user_id_user'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -14,13 +14,12 @@ $user_id = $_SESSION['user_id'] ?? null;
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
             $sqlQuery = "SELECT info_parc.Id_parc, Taille_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description, Chemin_image
-                    FROM reservation_parc 
-                    INNER JOIN users ON reservation_parc.User_id = users.User_id
-                    INNER JOIN info_parc ON reservation_parc.Id_res = info_parc.Id_res 
-                    WHERE users.User_id = :user_id 
+                    FROM info_parc 
+                    INNER JOIN reservation_parc ON info_parc.Id_parc = reservation_parc.Id_parc 
+                    WHERE User_id = :user_id 
                     AND Status_res = 'valide' 
-                    AND Date_fin >= NOW()
-                    AND Date_res = NOW()";
+                    AND Date_fin >= CURDATE()
+                    AND Date_res = CURDATE()";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -28,7 +27,7 @@ $user_id = $_SESSION['user_id'] ?? null;
                 ':user_id' => $user_id,
             ]);
                 
-            $Parcelles1 = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $MyParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
 
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());

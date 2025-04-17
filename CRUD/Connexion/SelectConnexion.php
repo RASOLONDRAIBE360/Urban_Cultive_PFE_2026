@@ -42,11 +42,11 @@ $password = $_POST['password'] ?? null;
                             $role = $utilisateur['Role'];
                             $user_id = $utilisateur['User_id'];
 
-                            $_SESSION['user_id'] = $user_id;
-                            $_SESSION['nom'] = $nom;
-                            $_SESSION['prenom'] = $prenom;
-                            $_SESSION['email'] = $email;
-                            $_SESSION['role'] = $role;
+                            $_SESSION['user_id_user'] = $user_id;
+                            $_SESSION['nom_user'] = $nom;
+                            $_SESSION['prenom_user'] = $prenom;
+                            $_SESSION['email_user'] = $email;
+                            $_SESSION['role_user'] = $role;
 
                             echo '<script>window.location.href = "../../Client/Site_web_user/Accueil.php";</script>';
                             exit();
@@ -65,18 +65,18 @@ $password = $_POST['password'] ?? null;
                                     $user_id = $utilisateur['User_id'];
 
                                     // Stocker les informations de l'utilisateur dans la session
-                                    $_SESSION['user_id'] = $user_id;
-                                    $_SESSION['nom'] = $nom;
-                                    $_SESSION['prenom'] = $prenom;
-                                    $_SESSION['email'] = $email;
-                                    $_SESSION['role'] = $role;
+                                    $_SESSION['user_id_admin'] = $user_id;
+                                    $_SESSION['nom_admin'] = $nom;
+                                    $_SESSION['prenom_admin'] = $prenom;
+                                    $_SESSION['email_admin'] = $email;
+                                    $_SESSION['role_admin'] = $role;
 
                                     echo '<script>window.location.href = "../../Administrateur/Site_web_admin/Accueil.php";</script>';
                                     exit();
                             }
                     }
                 }
-                
+
             } else {
                 $_SESSION['erreurEmail'] = "Email introuvable.";
                 echo '<script>window.location.href = "../../Login/FormulaireConnexion.php";</script>';
