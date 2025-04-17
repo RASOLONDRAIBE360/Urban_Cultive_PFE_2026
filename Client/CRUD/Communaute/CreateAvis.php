@@ -6,11 +6,8 @@ session_start();
 $email = $_POST['email'] ?? null;
 $id_parc = $_POST['id_parc'] ?? null;
 $avis = $_POST['avis'] ?? null;
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['user_id_user'] ?? null;
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo '<script>alert("Le format Email est invalide."); window.location.href = "../Communaute.php";</script>';
-} else {
 
         try {
             $mysqlClient = new PDO(
@@ -21,12 +18,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            if ($email != $_SESSION['email']) {
-                echo '<script>alert("Veuillez entrer l\'email exacte."); window.location.href = "../../Communaute.php";</script>';
-                exit();
-            } else{
-                
-                    $sqlQuery = "INSERT INTO avis (User_id, Id_parc, Avis) VALUES (:user_id, :id_parc, :avis)";
+                $sqlQuery = "INSERT INTO avis (User_id, Id_parc, Avis) 
+                        VALUES (:user_id, :id_parc, :avis)";
 
                 $dbprepare = $mysqlClient->prepare($sqlQuery);
                 $dbprepare->execute([
@@ -34,17 +27,17 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     ':id_parc' => $id_parc,
                     ':avis' => $avis,
                 ]);
-            }
 
             if($dbprepare->rowCount() > 0) {
-                echo '<script>window.location.href = "../../Communaute.php";</script>';
+                $_SESSION['successPublication'] = "Avis publié !";
+                echo '<script>window.location.href = "../../Site_web_user/Communaute.php";</script>';
             } else {
-                echo '<script>alert("Erreur survenu lors du partage d\'avis"); window.location.href = "../../Communaute.php";</script>';
+                $_SESSION['erreurPublication'] = "Erreur survenu lors de la publication !";
+                echo '<script>window.location.href = "../../Site_web_user/Communaute.php";</script>';
             }
 
             } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
             }
-}
 
 ?>

@@ -38,7 +38,7 @@ $descrip = $_POST['descrip'];
                 exit();
             }
 
-            $fileName = basename($_FILES["file"]["name"]);
+            $fileName = $_FILES["file"]["name"];
             $targetDirSystem = __DIR__ . '/../../../Upload/'; 
             $targetFilePathSystem = $targetDirSystem . $fileName;
 
@@ -50,7 +50,7 @@ $descrip = $_POST['descrip'];
             // Vérifier si le fichier est bien une image
             $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
             if (!in_array($fileType, $allowedTypes)) {
-                $_SESSION['erreurInsert'] = "Seuls les fichiers JPG, JPEG, PNG, GIF et WEBP, AVIF sont autorisés.";
+                $_SESSION['erreurInsertImage'] = "Seuls les fichiers JPG, JPEG, PNG, GIF, WEBP et AVIF sont autorisés.";
                 echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                 exit();
             }
@@ -85,7 +85,7 @@ $descrip = $_POST['descrip'];
                     echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                 }
             } else {
-                    $_SESSION['erreurInsert'] = "Erreur survenu lors de l'ajout d'image.";
+                    $_SESSION['erreurInsertImage'] = "Erreur survenu lors de l'ajout d'image.";
                     echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
                     exit();
             }

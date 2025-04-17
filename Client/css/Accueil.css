@@ -109,9 +109,6 @@ nav a.active {
     font-weight: bold;
 }
 
-.footer{
-    padding-bottom: 200px;
-}
 @media (max-width: 768px) {
     .parcelles {
         flex-direction: column; /* Met les cartes en colonne sur petits écrans */

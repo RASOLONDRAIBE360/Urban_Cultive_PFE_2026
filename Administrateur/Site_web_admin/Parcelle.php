@@ -157,17 +157,17 @@
             <label for="file">Insérer une nouvelle image :</label>
             <input type="file" name="file" id="file" accept="image/*">
             
-            <?php if(isset($_SESSION['erreurInsert'])) :?>
+            <?php if(isset($_SESSION['erreurInsertPicture'])) :?>
                 <p style="color: red; 
                             font-weight: bold; 
                             text-align: center;
                             position: relative;
                             top: 3px;">
                             
-                            <?php echo $_SESSION['erreurInsert'];?>
+                            <?php echo $_SESSION['erreurInsertPicture'];?>
 
                 </p>
-                <?php unset($_SESSION['erreurInsert']);?>
+                <?php unset($_SESSION['erreurInsertPicture']);?>
             <?php endif;?>
 
         <?php endforeach; ?>
@@ -254,17 +254,17 @@
             <label for="file">Insérer une image</label>
             <input type="file" name="file" id="file" accept="image/*" required>
 
-            <?php if(isset($_SESSION['erreurInsert'])) :?>
+            <?php if(isset($_SESSION['erreurInsertImage'])) :?>
                 <p style="color: red; 
                             font-weight: bold; 
                             text-align: center;
                             position: relative;
                             top: 3px;">
                             
-                            <?php echo $_SESSION['erreurInsert'];?>
+                            <?php echo $_SESSION['erreurInsertImage'];?>
 
                 </p>
-                <?php unset($_SESSION['erreurInsert']);?>
+                <?php unset($_SESSION['erreurInsertImage']);?>
             <?php endif;?>
 
             <button type="submit">Ajouter</button>

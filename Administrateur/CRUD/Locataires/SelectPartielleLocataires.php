@@ -31,7 +31,7 @@ $user_id = $_POST['user_id'];
                 echo '<script>window.location.href="../../Site_web_admin/Accueil.php?showModal=1";</script>';
                 exit();
             } else{
-                echo '<script>alert("Aucun locataires trouve."); window.location.href="../../Site_web_admin/Accueil.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../Site_web_admin/Accueil.php?showModal=1";</script>';
             }
 
         } catch (Exception $exception) {

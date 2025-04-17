@@ -17,8 +17,8 @@
 
     <section class="hero">
     
-    <?php if(isset($_SESSION['nom']) && isset($_SESSION['prenom'])): ?>
-        <h1> Bonjour, <span style="font-weight: bold; font-size: 24px; color:#2d6a4f; font-style: italic; text-transform: capitalize; padding-left: 10px;"><?php echo "{$_SESSION['nom']} {$_SESSION['prenom']}";?></span></h1>
+    <?php if(isset($_SESSION['nom_user']) && isset($_SESSION['prenom_user'])): ?>
+        <h1> Bonjour, <span style="font-weight: bold; font-size: 24px; color:#2d6a4f; font-style: italic; text-transform: capitalize; padding-left: 10px;"><?php echo "{$_SESSION['nom_user']} {$_SESSION['prenom_user']}";?></span></h1>
     <?php else : ?>
         <h1><?php echo "Bienvenue sur mon site";?></h1>
     <?php endif;?>
@@ -27,8 +27,6 @@
         <p>Explorez notre sélection de parcelles urbaines et donnez vie à votre projet de jardinage</p>
     </section>
     
-    <?php $parcelles = $_SESSION['parcelles'];?>
-
     <?php foreach($parcelles as $parcelle) :?>
         
     <section class="parcelles">
@@ -54,7 +52,7 @@
         <div class="modal-content">
             <span class="fermer" onclick="fermerModal('<?php echo $parcelle['Id_parc'];?>')">&times;</span>
             <h2><?php echo $parcelle['Id_parc']?></h2>
-            <img src="<?php echo $parcelle['Chemin_image'];?>" alt="Image de la parcelle" style="width: 100%; border-radius: 8px;">
+            <img src="<?php echo $parcelle['Chemin_image'];?>" alt="Image de la parcelle" style="border-radius: 8px; width: 300px; height: auto; ">
             <p><strong>Surface : </strong><?php echo $parcelle['Taille_parc'];?>m²</p>
             <p><strong>Exposition : </strong><?php echo $parcelle['Exposition'];?></p>
             <p><strong>Équipements : </strong><?php echo $parcelle['Equipements'];?></p>
@@ -76,9 +74,7 @@
     </div>
 <?php endforeach;?>
 
-    <div class="footer">
-        <?php require_once(__DIR__.'/../Footer/Footer.php');?>
-    </div>
+    <?php require_once(__DIR__.'/../Footer/Footer.php');?>
 
 <script src="../Javascript/Accueil.js"></script>
 </body>

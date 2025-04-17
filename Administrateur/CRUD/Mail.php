@@ -1,4 +1,6 @@
 <?php
+
+session_start();
 /*Importation des bibliothéques qui seront utilisés pour assurer l'envoie d'email de manière plus facile*/
 use PHPMailer\PHPMailer\PHPMailer;//Permet l'utilisation de la classe PHPMailer pour assurer la création et l'envoie d'email
 use PHPMailer\PHPMailer\SMTP;//Pour l'activation du protocole SMTP, qui est utilisé pour l'envoi des emails
@@ -49,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $mail->send(); 
-        echo '<script>alert("Email envoyé avec succès"); window.location.href = "../Site_web_admin/Reservation.php";</script>';
+        $_SESSION['successEmail'] = "Email envoyé avec succès !";
+        echo '<script>window.location.href = "../Site_web_admin/Reservation.php?showModal=1";</script>';
     } catch (Exception $e) {
         echo "Erreur : {$mail->ErrorInfo}";
     }

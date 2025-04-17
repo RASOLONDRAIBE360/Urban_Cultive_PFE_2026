@@ -1,4 +1,4 @@
-<h1> Bonjour à vous, <span style="font-weight: bold; font-size: 28px; color:rgb(72, 122, 51); font-style: italic; text-transform: capitalize;"><?php echo "{$_SESSION['nom']} {$_SESSION['prenom']}";?></span></h1>
+<h1> Bonjour à vous, <span style="font-weight: bold; font-size: 28px; color:rgb(72, 122, 51); font-style: italic; text-transform: capitalize;"><?php echo "{$_SESSION['nom_admin']} {$_SESSION['prenom_admin']}";?></span></h1>
     <div class="cards">
         <div class="card">
             <h2>Locataire(s)</h2>
