@@ -25,6 +25,33 @@
 
     <div class="recent-orders">
         <h2>Liste Utilisateur(s)</h2>
+        
+        <?php if(isset($_SESSION['successSuppression'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successSuppression'];?>
+
+            </p>
+            <?php unset($_SESSION['successSuppression']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurSuppression'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurSuppression'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurSuppression']);?>
+        <?php endif;?>
+
         <table>
             <thead>
                 <tr>
@@ -57,7 +84,6 @@
                             <form action="../CRUD/Locataires/SuppressionLocataires.php" method="post">
                                 
                                 <input type="hidden" name="email" value="<?php echo $utilisateur['Email']; ?>">
-                                <input type="hidden" name="password" value="<?php echo $utilisateur['Mot_de_Passe']; ?>">
 
                                 <button class="btn delete-btn" type="submit">Supprimer</button>
 
@@ -78,6 +104,33 @@
 
     <h1> MISE A JOUR </h1>
     <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
+
+    
+    <?php if(isset($_SESSION['successUpdate'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['successUpdate']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurUpdate'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurUpdate']);?>
+        <?php endif;?>
 
     <?php if(isset($_SESSION['successValidation'])) :?>
             <p style="color: green; 

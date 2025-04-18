@@ -30,7 +30,7 @@ $id_res = $_POST["id_res"];
                 $_SESSION['successValidation'] = "Reservation mise en attente";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             } else {
-                $_SESSION['erreurValidation'] = "Erreur survenu lors de la mise en attente";
+                $_SESSION['erreurValidation'] = "Reservation déjà mise en attente";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             }
 

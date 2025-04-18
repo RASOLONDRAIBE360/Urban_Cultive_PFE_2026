@@ -68,9 +68,9 @@ nav a.active {
 }
 
 .card {
-    flex: 1; /* Permet aux cartes de s’adapter dynamiquement */
+    flex: 1;
     max-width: 300px;
-    min-width: 260px; /* Assure une taille minimale */
+    min-width: 260px;
     max-height: 400px;
     min-height: 400px;
     background: white;
@@ -79,6 +79,8 @@ nav a.active {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    left: 30px;
 }
 
 .card img {
@@ -95,8 +97,33 @@ nav a.active {
 
 .card-content {
     position: relative;
-    bottom: 15px;
-    padding: 16px;
+    bottom: 20px;
+    line-height: 1.5;
+    width: 300px;
+}
+
+.date-fin {
+    position: relative;
+    bottom: 5px;
+    font-weight: bold;
+    color: rgb(66, 81, 60); /* Couleur par défaut */
+    font-size: 1.2em;
+    border-radius: 5px;
+    text-align: center;
+    display: inline-block;
+    transition: color 0.5s ease-in-out, background-color 0.5s ease-in-out;
+}
+
+
+.expire {
+    font-weight: bold;
+    color:rgb(83, 95, 71); /* Rouge doux */
+    background-color:rgb(246, 210, 208); /* Fond léger pour contraste */
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 1.1em;
 }
 
 .disponible {

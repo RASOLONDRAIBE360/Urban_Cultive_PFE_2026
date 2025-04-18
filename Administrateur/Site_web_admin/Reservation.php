@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="../css/Accueil.css">
     <link rel="stylesheet" href="../css/Modal_update.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <?php session_start(); ?>
@@ -22,6 +23,44 @@
 
     <div class="recent-orders">
         <h2>Liste Reservation(s)</h2>
+
+        <?php if(isset($_SESSION['successEmail'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successEmail'];?>
+
+            </p>
+            <?php unset($_SESSION['successEmail']);?>
+        <?php endif;?>
+        <?php if(isset($_SESSION['successUpdateValidation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successUpdateValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['successUpdateValidation']);?>
+        <?php endif;?>
+        <?php if(isset($_SESSION['erreurUpdateValidation'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurUpdateValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurUpdateValidation']);?>
+        <?php endif;?>
+
         <table>
             <thead>
                 <tr>
@@ -40,13 +79,26 @@
             <tbody>
                 <?php $reservations = $_SESSION['reservations'];?>
                 <?php foreach($reservations as $reservation) : ?>
+                    <?php
+                        $two_weeks_later = date("Y-m-d", strtotime("+14 days"));  // Seuil pour l'alerte jaune
+                        $one_week_later = date("Y-m-d", strtotime("+7 days"));    // Seuil pour l'alerte rouge
+
+                        $warning_icon = ""; // Par défaut, pas d'icône
+
+                        if (strtotime($reservation['Date_res']) <= strtotime($one_week_later) && $reservation['Status_res'] == 'attente') {
+                            $warning_icon = "<i class='fas fa-exclamation-circle' style='color:red;' title='Urgent : Moins de 7 jours'></i>";
+                        } elseif (strtotime($reservation['Date_res']) <= strtotime($two_weeks_later) && $reservation['Status_res'] == 'attente') {
+                            $warning_icon = "<i class='fas fa-exclamation-triangle' style='color:orange;' title='Attention : Moins de 14 jours'></i>";
+                        }
+                    ?>
+
                     <tr>
                         <td><?php echo $reservation['Id_res']; ?></td>
                         <td><?php echo $reservation['Email']; ?></td>
                         <td><?php echo $reservation['Nom_parc']; ?></td>
                         <td><?php echo $reservation['Id_parc']; ?></td>
                         <td><?php echo $reservation['Prix_parc']; ?></td>
-                        <td><?php echo $reservation['Date_res']; ?></td>
+                        <td><?php echo $reservation['Date_res']. " " . $warning_icon;?></td>
                         <td><?php echo $reservation['Duree_res']; ?></td>
                         <td><?php echo $reservation['Date_fin']; ?></td>
                         <td><?php echo $reservation['Status_res']; ?></td>

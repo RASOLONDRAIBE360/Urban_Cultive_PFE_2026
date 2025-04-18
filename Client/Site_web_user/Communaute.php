@@ -61,6 +61,7 @@
                             
                             <?php foreach($listeUtilisateurs as $utilisateur) : ?>
                                 <option value="<?php echo $utilisateur['Id_parc']?>"><?php echo $utilisateur['Id_parc']?></option>
+                                <?php echo $utilisateur['']?>
                             <?php endforeach;?>
 
                         </select>

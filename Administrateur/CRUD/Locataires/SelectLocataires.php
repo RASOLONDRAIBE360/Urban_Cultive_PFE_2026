@@ -10,7 +10,10 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT * FROM users";
+            $sqlQuery = "SELECT * 
+                    FROM users
+                    WHERE Role = 'utilisateur'
+                    ORDER BY User_id DESC";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
