@@ -1,8 +1,10 @@
 <?php
+
+session_start();
+
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $email = $_POST['email'] ?? null;
-$password = $_POST['password'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -12,20 +14,31 @@ $password = $_POST['password'] ?? null;
                                 );
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sqlSelectId = "SELECT User_id FROM users WHERE Email = :email";
+
+            $dbprepare = $mysqlClient->prepare($sqlSelectId);
+
+            $dbprepare->execute([
+                ':email' => $email,
+            ]);
+
+            $userId = $dbprepare->fetchColumn();
             
-            $sqlQuery = "DELETE FROM users WHERE Email = :email AND Mot_de_Passe = :password";
+            $sqlQuery = "DELETE FROM users WHERE User_id = :userId";
             
             $dbprepare = $mysqlClient->prepare($sqlQuery);
             
             $dbprepare->execute([
-                ':email' => $email,
-                ':password' => $password,
+                ':userId' => $userId,
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script> alert('Utilisateur supprimer avec succès'); window.location.href = '../../Site_web_admin/Accueil.php';</script>";
+                $_SESSION['successSuppression'] = 'Utilisateur supprimé avec succès.';
+                echo "<script>window.location.href = '../../Site_web_admin/Accueil.php';</script>";
             } else {
-                echo "<script> alert('Erreur lors de la tentative de suppression utilisateur.'); window.location.href = '../../Site_web_admin/Accueil.php';</script>";
+                $_SESSION['erreurSuppression'] = 'Aucun utilisateur trouvé.';
+                echo "<script>window.location.href = '../../Site_web_admin/Accueil.php';</script>";
                    }
             
         } catch (Exception $exception) {

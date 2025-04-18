@@ -13,7 +13,8 @@ try {
             $sqlQuery = "SELECT info_parc.Id_parc, reservation_parc.Id_res, users.User_id, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description, Chemin_image
                 FROM info_parc 
                 LEFT JOIN reservation_parc ON info_parc.Id_parc = reservation_parc.Id_parc
-                LEFT JOIN users ON reservation_parc.User_id = users.User_id";
+                LEFT JOIN users ON reservation_parc.User_id = users.User_id
+                ORDER BY info_parc.Id_parc ASC";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
                                 

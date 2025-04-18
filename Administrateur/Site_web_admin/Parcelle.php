@@ -22,6 +22,33 @@
 
     <div class="recent-orders">
         <h2>Liste Parcelle(s)</h2>
+
+        <?php if(isset($_SESSION['successSuppression'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successSuppression'];?>
+
+            </p>
+            <?php unset($_SESSION['successSuppression']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurSuppression'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurSuppression'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurSuppression']);?>
+        <?php endif;?>
+
         <table>
             <thead>
                 <tr>

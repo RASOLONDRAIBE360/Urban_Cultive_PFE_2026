@@ -2,7 +2,7 @@
 
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['user_id_user'] ?? null;
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
