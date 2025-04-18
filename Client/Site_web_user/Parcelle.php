@@ -28,6 +28,11 @@
                 <p><?php echo $MyParcelle['Exposition'];?></p>
                 <p><?php echo $MyParcelle['Prix_parc'];?>€/mois</p>
 
+                <p class="date-fin" data-date="<?php echo date('Y-m-d', strtotime($MyParcelle['Date_fin'])); ?>">
+                    <?php echo $MyParcelle['Date_fin']; ?>
+                </p>
+
+
             </div>
         </div>
     </section>
@@ -42,6 +47,20 @@
 
                 <span class="fermer" onclick="fermerModal('<?php echo $MyParcelle['Id_parc'];?>')">&times;</span>
                 <h2><?php echo $MyParcelle['Id_parc']?></h2>
+
+                <?php if(isset($_SESSION['erreurAnnulation'])) :?>
+                    <p style="color: red; 
+                                font-weight: bold; 
+                                text-align: center;
+                                position: relative;
+                                bottom: 10px;">
+                                
+                                <?php echo $_SESSION['erreurAnnulation'];?>
+
+                    </p>
+                    <?php unset($_SESSION['erreurAnnulation']);?>
+                <?php endif;?>
+
                 <img src="<?php echo $MyParcelle['Chemin_image'];?>" alt="Imaged de la parcelle" style="border-radius: 8px; width: 300px; height: auto; ">
                 <p><strong>Surface : </strong><?php echo $MyParcelle['Taille_parc'];?>m²</p>
                 <p><strong>Exposition : </strong><?php echo $MyParcelle['Exposition'];?></p>
@@ -50,18 +69,22 @@
                 <p><strong>Prix : </strong><?php echo $MyParcelle['Prix_parc'];?>€/mois</p>
                 <p><?php echo $MyParcelle['Description'];?></p>
 
-                <form action="../CRUD/Reservations/DeleteReservation.php" method="post">
+                <?php if(strtotime($MyParcelle['Date_fin']) == strtotime(date("Y-m-d"))) :?>
 
-                    <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $MyParcelle['Id_parc']; ?>">
-                    <button class="avis-btn" type="submit">Annuler</button>
+                    <form action="../CRUD/Reservations/DeleteReservation.php" method="post">
 
-                </form>
-                <form action="../CRUD/Reservations/SelectPartielleReservation.php" method="post">
+                        <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $MyParcelle['Id_parc']; ?>">
+                        <button class="avis-btn" type="submit">Annuler</button>
 
-                    <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $MyParcelle['Id_parc']; ?>">
-                    <button type="submit" class="reservation-btn"></button>
+                    </form>
+                    <form action="../CRUD/Reservations/SelectPartielleReservation.php" method="post">
 
-                </form>
+                        <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $MyParcelle['Id_parc']; ?>">
+                        <button type="submit" class="reservation-btn" style="padding: 15px 58px;">Renouveller</button>
+
+                    </form>
+                
+                <?php endif;?>
 
             </div>
         </div>

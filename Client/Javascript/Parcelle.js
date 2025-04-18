@@ -25,3 +25,18 @@ if (urlParams.get('showModal') === '1') {
     const id = 'modal1'; // Remplacez par l'ID de votre modal
     ouvrirModal(id);
 }
+
+let elements = document.querySelectorAll("p.date-fin");
+
+    elements.forEach(element => {
+        let dateFin = new Date(element.getAttribute("data-date"));
+        let dateActuelle = new Date();
+        
+        // On compare uniquement les jours
+        dateFin.setHours(0, 0, 0, 0);
+        dateActuelle.setHours(0, 0, 0, 0);
+
+        if (dateFin.getTime() <= dateActuelle.getTime()) {
+            element.classList.add("expire");
+        }
+    });

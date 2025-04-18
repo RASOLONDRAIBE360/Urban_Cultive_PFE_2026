@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_parc = $_POST['id_parc'] ?? null;
@@ -21,9 +24,13 @@ $id_parc = $_POST['id_parc'] ?? null;
             ]);
 
             if ($dbprepare->rowCount() > 0) {
+                $_SESSION['successSuppression'] = "Parcelle supprimée avec succès.";
                 echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                exit;
             } else {
+                $_SESSION['erreurSuppression'] = "Aucune parcelle supprimé.";
                 echo "<script> alert('Erreur lors de la tentative de suppression de parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php';</script>";
+                exit;
                    }
             
         } catch (Exception $exception) {

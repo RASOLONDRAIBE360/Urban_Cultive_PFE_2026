@@ -4,7 +4,7 @@ session_start();
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_parc = $_POST['id_parc'] ?? null;
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['user_id_user'] ?? null;
 
         try {
             $mysqlClient = new PDO(
@@ -25,9 +25,10 @@ $user_id = $_SESSION['user_id'] ?? null;
             ]);
 
             if ($dbprepare->rowCount() > 0) {
-                echo "<script>window.location.href = '../../Parcelle.php';</script>";
+                echo "<script>window.location.href = '../../Site_web_user/Parcelle.php';</script>";
             } else {
-                echo "<script> alert('Erreur survenu lors de l'annulation de la réservation.'); window.location.href = '../../Parcelle.php';</script>";
+                $_SESSION['erreurAnnulation'] = "Erreur survenu lors de l'annulation de la réservation.";
+                echo "<script>window.location.href = '../../Site_web_user/Parcelle.php';</script>";
                    }
             
         } catch (Exception $exception) {

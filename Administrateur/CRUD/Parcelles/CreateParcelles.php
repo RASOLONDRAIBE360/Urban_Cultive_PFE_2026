@@ -35,7 +35,7 @@ $descrip = $_POST['descrip'];
             if ($count > 0) {
                 $_SESSION['erreurId'] = "Cette parcelle existe déjà.";
                 echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
-                exit();
+                exit;
             }
 
             $fileName = $_FILES["file"]["name"];
@@ -52,7 +52,7 @@ $descrip = $_POST['descrip'];
             if (!in_array($fileType, $allowedTypes)) {
                 $_SESSION['erreurInsertImage'] = "Seuls les fichiers JPG, JPEG, PNG, GIF, WEBP et AVIF sont autorisés.";
                 echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
-                exit();
+                exit;
             }
 
             // Déplacer le fichier uploadé
@@ -80,14 +80,16 @@ $descrip = $_POST['descrip'];
                 if ($dbprepare->rowCount() > 0) {
                     $_SESSION['successCreate'] = "Parcelle ajouté avec succès !";
                     echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
+                    exit;
                 } else {
                     $_SESSION['erreurCreate'] = "Erreur survenu lors de l'ajout du nouvelle parcelle.";
-                    echo "<script> alert('Erreur survenu lors de l'ajout du nouvelle parcelle.'); window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
+                    echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
+                    exit;
                 }
             } else {
                     $_SESSION['erreurInsertImage'] = "Erreur survenu lors de l'ajout d'image.";
                     echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=2';</script>";
-                    exit();
+                    exit;
             }
 
         } catch (Exception $exception) {

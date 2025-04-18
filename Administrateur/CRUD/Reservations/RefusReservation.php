@@ -31,7 +31,7 @@ $id_res = $_POST["id_res"];
                 $_SESSION['successValidation'] = "Reservation refusé";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             } else {
-                $_SESSION['erreurValidation'] = "Erreur survenu lors du refus";
+                $_SESSION['erreurValidation'] = "Reservation déjà refusé";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             }
 
