@@ -7,12 +7,16 @@ body {
 }
 
 header {
+    position: fixed;
+    top: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* S'assure que le header reste au-dessus du contenu */
 }
 
 .logo {
@@ -22,12 +26,15 @@ header {
 }
 
 nav a {
+    position: relative;
+    right: 45px;
     display: inline-block;
     margin: 0 15px;
     text-decoration: none;
     color: #2d6a4f;
     font-weight: bold;
 }
+
 
 nav a.active {
     text-decoration: underline; /* Surligner le texte */
@@ -47,6 +54,7 @@ nav a.active {
 /* Conteneur principal */
 .container {
     position: relative;
+    top: 100px;
     max-width: 900px;
     margin: 50px auto;
     padding: 40px 0 40px 0;
@@ -110,7 +118,7 @@ h1::after {
 .parcelle-select {
     position: relative;
     right: 15px;
-    width: 107vh;
+    width: 113vh;
     text-align: center;
     padding: 12px;
     font-size: 14px;
@@ -192,6 +200,8 @@ h1::after {
 
 /* Section des conseils */
 .conseils {
+    position: relative;
+    top: 100px;
     max-width: 900px;
     margin: 50px auto;
     padding: 20px;

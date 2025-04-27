@@ -20,4 +20,13 @@
         }
     });
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const idParc = urlParams.get('showModal'); // Récupèrer la valeur de la variable showModal passé en URL et 
+    //le stocké dans la variable idParc qui sera ensuite utiliser pour représenter l'id du Modal qu'il faut ouvrir
+
+    if (idParc) { // Vérifie si une valeur est présente
+        ouvrirModal(idParc); // Appelle la fonction avec l'ID exact du parc
+    }
+
+
     

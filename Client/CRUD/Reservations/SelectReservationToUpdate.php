@@ -8,7 +8,7 @@ $id_parc = $_POST['id_parc'] ?? null;
 
 if(empty($id_parc)){
     echo "La variable id_parc n'est pas défini";
-} else{
+} else {
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -18,9 +18,11 @@ if(empty($id_parc)){
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT Nom_parc, Taille_parc, Prix_parc
+            $sqlQuery = "SELECT Nom_parc, Taille_parc, Prix_parc, Date_res, Duree_res
             FROM info_parc 
-            WHERE Id_parc = :id_parc";
+            INNER JOIN reservation_parc
+            ON info_parc.id_parc = reservation_parc.id_parc
+            WHERE reservation_parc.Id_parc = :id_parc";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -28,15 +30,19 @@ if(empty($id_parc)){
                 'id_parc' => $id_parc,
             ]);
             
-            $MyParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
-            $_SESSION['MyParcelles'] = $MyParcelles;
+            $TheParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $_SESSION['TheParcelles'] = $TheParcelles;
             $_SESSION['id_parc'] = $id_parc;
+
+            foreach($TheParcelles as $TheParcelle){
+                $valueId = $TheParcelle['Id_parc'];
+            }
         
-            if(!empty($MyParcelles)){
-                header('Location: ../../GestionReservation/FormulaireReservation.php');
+            if(!empty($TheParcelles)){
+                header('Location: ../../GestionReservation/ModifierReservation.php');
                 exit;
             } else{
-                header('Location: ../../Accueil.php?showModal=1');
+                header("Location: ../../Site_web_user/Reservation.php?showModal={$valueId}");
                 exit;
             }
 

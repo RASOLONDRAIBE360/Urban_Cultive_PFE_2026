@@ -50,9 +50,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     permettra de déclarer la structure du message a envoyé */
 
     try {
-        $mail->send(); 
-        $_SESSION['successEmail'] = "Email envoyé avec succès !";
-        echo '<script>window.location.href = "../Site_web_admin/Reservation.php?showModal=1";</script>';
+
+        if($mail->send()){ 
+            $_SESSION['successEmail'] = "Email envoyé avec succès !";
+            echo '<script>window.location.href = "../Site_web_admin/Reservation.php?showModal=1";</script>';
+            exit;
+        } else {
+            $_SESSION['erreurEmail'] = "Echec de l'envoie d'email";
+            echo '<script>window.location.href = "../Site_web_admin/Reservation.php?showModal=1";</script>';
+            exit;
+        }
+        
     } catch (Exception $e) {
         echo "Erreur : {$mail->ErrorInfo}";
     }

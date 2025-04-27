@@ -1,0 +1,114 @@
+/* Styles généraux */
+body {
+    font-family: 'Lora', serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Fond doux et apaisant */
+    color: #2d6a4f; /* Couleur naturelle et élégante */
+}
+
+/* Bouton retour */
+.avis-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 20px; /* Ajuste la position */
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4ae277, #4e8f62); /* Dégradé élégant */
+    border: none;
+    border-radius: 8px; /* Coins arrondis */
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Ombre subtile */
+}
+
+.avis-btn:hover {
+    background-color: #1b4332;
+}
+
+/* Messages informatifs */
+p[style] {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* Section des commentaires */
+.conseil {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* En-tête des avis */
+.conseil-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1b4332;
+    border-bottom: 2px solid #d8f3dc;
+    padding-bottom: 10px;
+}
+
+/* Texte des avis */
+.texte-conseil {
+    font-size: 16px;
+    color: #333;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px; /* Espace entre les boutons */
+    justify-content: right; /* Centrage horizontal */
+    align-items: center; /* Alignement vertical */
+}
+
+.like-btn, .dislike-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 18px;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.like-btn:hover, .dislike-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.like-btn:active, .dislike-btn:active {
+    transform: scale(0.97);
+}
+/* Adaptation mobile */
+@media (max-width: 768px) {
+    .conseil {
+        width: 90%;
+    }
+
+    .conseil-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avis-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

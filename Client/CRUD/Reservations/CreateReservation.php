@@ -42,8 +42,8 @@ $date_debut = $_POST['date_debut'] ?? null;
 
                 if ($date_debut < $currentDate) {
                     $_SESSION['erreurReservation'] = "La date de début ne peut pas être dans le passé.";
-                    echo "<script>window.location.href = '../../GestionReservation/FormulaireReservation.php';</script>";
-                    exit();
+                    header('Location: ../../GestionReservation/FormulaireReservation.php');
+                    exit;
                 } else {
 
                     $sqlQuery = "INSERT INTO reservation_parc (User_id, Id_parc, Duree_res, Date_res) 
@@ -64,6 +64,18 @@ $date_debut = $_POST['date_debut'] ?? null;
                     $pdoStatement = $mysqlClient->prepare($sqlRequest);
 
                     $pdoStatement->execute();
+
+                    $sqlRequestUpdateDateLimite = "UPDATE reservation_parc
+                                    SET Date_limite = DATE_SUB(Date_fin, INTERVAL 3 DAY)
+                                    WHERE User_id = :user_id
+                                    AND Id_parc = :id_parc";
+
+                    $UpdatePrepare = $mysqlClient->prepare($sqlRequestUpdateDateLimite);
+
+                    $UpdatePrepare->execute([
+                        ':user_id'=> $user_id,
+                        ':id_parc'=> $id_parc,
+                    ]);
 
                     // Récupérer `Id_res` avec une requête SELECT
                     $sqlSelect = "SELECT Id_res 
