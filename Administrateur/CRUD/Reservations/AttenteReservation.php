@@ -15,6 +15,7 @@ $id_res = $_POST["id_res"];
             );
 
             $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
             $sqlRequest = "UPDATE reservation_parc 
                         INNER JOIN info_parc 
                         ON reservation_parc.Id_parc = info_parc.Id_parc
@@ -22,6 +23,7 @@ $id_res = $_POST["id_res"];
                         WHERE reservation_parc.Id_res = :id_res";
 
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
+
             $pdoStatement->execute([
                 ':id_res'=>$id_res,
             ]);

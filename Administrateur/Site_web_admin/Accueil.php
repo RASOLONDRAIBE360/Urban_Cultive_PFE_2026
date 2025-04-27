@@ -183,6 +183,58 @@
             <?php unset($_SESSION['erreurValidation']);?>
         <?php endif;?>
     
+    <?php if(isset($_SESSION['successUpdate'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['successUpdate']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurUpdate'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurUpdate'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurUpdate']);?>
+        <?php endif;?>
+
+    <?php if(isset($_SESSION['successValidation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['successValidation']);?>
+        <?php endif;?>
+        
+        <?php if(isset($_SESSION['erreurValidation'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurValidation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurValidation']);?>
+        <?php endif;?>
+    
     <form action="../CRUD/Locataires/ModificationLocataires.php" method="post">
         
         <label for="id">ID Utilisateur</label>

@@ -32,7 +32,7 @@
         <ul>
             <li>📌 Reservation en ligne des parcelles disponibles.</li>
             <li>🗑️ Partage d'avis et de conseils sur la culture d'une parcelle.</li>
-            <li>✏️ Reception de notification.</li>
+            <li>✏️ Reception de notification par email.</li>
             <li>🏡 Acces aux parcelles deja louees.</li>
         </ul>
     </section>

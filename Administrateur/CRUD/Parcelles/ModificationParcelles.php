@@ -25,59 +25,74 @@ $id_parc = $_POST['id_parc'];
 
         $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $targetDir = "../../../Upload/"; // Dossier où stocker les images
+        $imageUploaded = isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK;
 
-        $fileName = $_FILES["file"]["name"];
-        $targetFilePath = $targetDir . $fileName;
-        $cheminWeb = '../../Upload/' . $fileName; // Chemin WEB (à stocker en base)
-        $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+        if($imageUploaded){
 
-        // Vérifier si le fichier est bien une image
-        $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
-        if (!in_array($fileType, $allowedTypes)) {
-            $_SESSION['erreurInsertPicture'] = "Seuls les fichiers JPG, JPEG, PNG, GIF, WEBP et AVIF sont autorisés.";
-            echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
-            exit();
+            $targetDir = "../../../Upload/"; // Dossier où stocker les images
+
+            $fileName = $_FILES["file"]["name"];
+            $targetFilePath = $targetDir . $fileName;
+            $cheminWeb = '../../Upload/' . $fileName; // Chemin WEB (à stocker en base)
+            $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+            // Vérifier si le fichier est bien une image
+            $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
+            if (!in_array($fileType, $allowedTypes)) {
+                $_SESSION['erreurInsertPicture'] = "Seuls les fichiers JPG, JPEG, PNG, GIF, WEBP et AVIF sont autorisés.";
+                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
+                exit();
+            }
+
+            // Déplacer le fichier uploadé
+            if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+                // Insérer le chemin dans la base de données
+                $_SESSION['erreurInsertPicture'] = "Erreur survenu lors de l'ajout de l'image.";
+                echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
+                exit();
+            }
         }
 
-        // Déplacer le fichier uploadé
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
-                // Insérer le chemin dans la base de données
-
+        if($imageUploaded){
             $sqlRequest = "UPDATE info_parc 
-                        SET Taille_parc = :taille_parc, Nom_parc = :nom_parc, Prix_parc = :prix_parc, Status_parc = :status_parc, Exposition = :expo, Equipements = :equip, Preferences = :pref, Description = :descrip, Chemin_image = :cheminWeb 
-                        WHERE Id_parc = :id_parc";
-
+                            SET Taille_parc = :taille_parc, Nom_parc = :nom_parc, Prix_parc = :prix_parc, Status_parc = :status_parc, Exposition = :expo, Equipements = :equip, Preferences = :pref, Description = :descrip, Chemin_image = :cheminWeb 
+                            WHERE Id_parc = :id_parc";
+        } else {
+            $sqlRequest = "UPDATE info_parc 
+                            SET Taille_parc = :taille_parc, Nom_parc = :nom_parc, Prix_parc = :prix_parc, Status_parc = :status_parc, Exposition = :expo, Equipements = :equip, Preferences = :pref, Description = :descrip
+                            WHERE Id_parc = :id_parc";
+        }  
+                
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
 
-            $pdoStatement->execute([
-                ':taille_parc'=>$taille_parc,
-                ':nom_parc'=>$nom_parc,
-                ':prix_parc'=>$prix_parc,
-                ':status_parc'=>$status_parc,
-                ':equip'=>$equip,
-                ':expo'=>$expo,
-                ':pref'=>$pref,
-                ':descrip'=>$descrip,
-                ':cheminWeb'=>$cheminWeb,
+            $params = [
+                ':taille_parc' => $taille_parc,
+                ':nom_parc' => $nom_parc,
+                ':prix_parc' => $prix_parc,
+                ':status_parc' => $status_parc,
+                ':equip' => $equip,
+                ':expo' => $expo,
+                ':pref' => $pref,
+                ':descrip' => $descrip,
                 ':id_parc' => $id_parc,
-            ]);
+            ];
+        
+            if ($imageUploaded) {
+                $params[':cheminWeb'] = $cheminWeb;
+            }
+
+            $pdoStatement->execute($params);
                 
             if ($pdoStatement->rowCount() > 0){
                 $_SESSION['successUpdate'] = "Modification du champ réussie.";
                 echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
                 exit();
             } else {
-                $_SESSION['erreurUpdate'] = "Modification du champ échouée.";
+                $_SESSION['erreurUpdate'] = "Aucune modification apporté aux champs.";
                 echo '<script>window.location.href="../../Site_web_admin/Parcelle.php?showModal=1";</script>';
                 exit();
             }
-        } else {
-            $_SESSION['erreurInsertPicture'] = "Erreur survenu lors de l'ajout de l'image.";
-            echo "<script>window.location.href = '../../Site_web_admin/Parcelle.php?showModal=1';</script>";
-            exit();
-        }
-
+            
     }catch(Exception $exception){
         die('Erreur :'. $exception->getMessage());
     }
