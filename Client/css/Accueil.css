@@ -6,12 +6,16 @@ body {
 }
 
 header {
+    position: fixed;
+    top: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* S'assure que le header reste au-dessus du contenu */
 }
 
 .logo {
@@ -21,6 +25,8 @@ header {
 }
 
 nav a {
+    position: relative;
+    right: 45px;
     display: inline-block;
     margin: 0 15px;
     text-decoration: none;
@@ -44,7 +50,7 @@ nav a.active {
 }
 .hero {
     text-align: center;
-    padding: 50px 20px;
+    padding: 90px 20px;
 }
 .hero h1 {
     font-size: 36px;
@@ -81,6 +87,7 @@ nav a.active {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     left: 30px;
+    top: 100px;
 }
 
 .card img {
@@ -100,13 +107,14 @@ nav a.active {
     bottom: 20px;
     line-height: 1.5;
     width: 300px;
+    text-align: center;
 }
 
 .date-fin {
     position: relative;
-    bottom: 5px;
+    bottom: 25px;
     font-weight: bold;
-    color: rgb(66, 81, 60); /* Couleur par défaut */
+    color: rgb(66, 81, 60);
     font-size: 1.2em;
     border-radius: 5px;
     text-align: center;
@@ -115,15 +123,17 @@ nav a.active {
 }
 
 
-.expire {
+.warning {
     font-weight: bold;
     color:rgb(83, 95, 71); /* Rouge doux */
-    background-color:rgb(246, 210, 208); /* Fond léger pour contraste */
+    background-color:rgb(255, 251, 0); /* Fond léger pour contraste */
     padding: 6px 10px;
     border-radius: 6px;
     display: inline-block;
     margin-top: 8px;
     font-size: 1.1em;
+    position: relative;
+    bottom: 10px;
 }
 
 .disponible {

@@ -20,8 +20,11 @@ try{
     );
 
     $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sqlRequest = "INSERT INTO users (Name, Prenom, Age, Email, Password) VALUES (:name, :prenom, :age, :email)";
+    $sqlRequest = "INSERT INTO users (Name, Prenom, Age, Email, Password) 
+            VALUES (:name, :prenom, :age, :email)";
+
     $pdoStatement = $MysqlClient->prepare($sqlRequest);
+    
     $pdoStatement->execute([
         ':name'=>$name,
         ':prenom'=>$prenom,

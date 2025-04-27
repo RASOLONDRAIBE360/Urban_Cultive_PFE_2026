@@ -37,7 +37,6 @@
 
                 <p class="<?php echo ($parcelle['Status_parc'] == 'occupe') ? 'occupe' : 'disponible';?>"><?php echo $parcelle['Status_parc'];?></p>
                 <p><?php echo $parcelle['Taille_parc'];?>m²</p>
-                <p><?php echo $parcelle['Exposition'];?></p>
                 <p><?php echo $parcelle['Prix_parc'];?>€/mois</p>
 
             </div>
@@ -60,7 +59,12 @@
             <p><strong>Prix : </strong><?php echo $parcelle['Prix_parc'];?>€/mois</p>
             <p><?php echo $parcelle['Description'];?></p>
 
-            <button class="avis-btn" onclick='window.location.href="Avis.php"'>Voir les avis</button>
+            <form action="../CRUD/Communaute/SelectSpecificAvis.php" method="post">
+
+                <input type="hidden" id="id_parc" name="id_parc" value="<?php echo $parcelle['Id_parc']; ?>">
+                <button type="submit" class="avis-btn">Voir les avis</button>
+
+            </form>
 
             <form action="../CRUD/Reservations/SelectPartielleReservation.php" method="post">
 

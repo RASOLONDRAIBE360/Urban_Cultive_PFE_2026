@@ -11,7 +11,9 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT COUNT(*) FROM users";
+            $sqlQuery = "SELECT COUNT(*) 
+                FROM users
+                WHERE Role = 'utilisateur'";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 

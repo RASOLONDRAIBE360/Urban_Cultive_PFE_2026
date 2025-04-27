@@ -24,18 +24,6 @@
     <div class="recent-orders">
         <h2>Liste Reservation(s)</h2>
 
-        <?php if(isset($_SESSION['successEmail'])) :?>
-            <p style="color: green; 
-                          font-weight: bold; 
-                          text-align: center;
-                          position: relative;
-                          bottom: 10px;">
-                          
-                          <?php echo $_SESSION['successEmail'];?>
-
-            </p>
-            <?php unset($_SESSION['successEmail']);?>
-        <?php endif;?>
         <?php if(isset($_SESSION['successUpdateValidation'])) :?>
             <p style="color: green; 
                           font-weight: bold; 
@@ -60,6 +48,30 @@
             </p>
             <?php unset($_SESSION['erreurUpdateValidation']);?>
         <?php endif;?>
+        <?php if(isset($_SESSION['successEmail'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['successEmail'];?>
+
+            </p>
+            <?php unset($_SESSION['successEmail']);?>
+        <?php endif;?>
+        <?php if(isset($_SESSION['erreurEmail'])) :?>
+            <p style="color: red; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurEmail'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurEmail']);?>
+        <?php endif;?>
 
         <table>
             <thead>
@@ -72,13 +84,22 @@
                     <th>Date r.</th>
                     <th>Duree r.</th>
                     <th>Date Fin</th>
+                    <th>Date Limite</th>
                     <th>Status r.</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $reservations = $_SESSION['reservations'];?>
+
                 <?php foreach($reservations as $reservation) : ?>
+                    <?php 
+                        $today = new DateTime();
+                        $todayFormatted = $today->format('Y-m-d');
+
+                        if (($reservation['Date_limite'] <= $todayFormatted OR $reservation['Date_fin'] == $todayFormatted) AND $reservation['Status_envoie'] == 0){
+                               require_once(__DIR__.'/../CRUD/MailAutomatise.php');
+                        }?>
                     <?php
                         $two_weeks_later = date("Y-m-d", strtotime("+14 days"));  // Seuil pour l'alerte jaune
                         $one_week_later = date("Y-m-d", strtotime("+7 days"));    // Seuil pour l'alerte rouge
@@ -86,9 +107,9 @@
                         $warning_icon = ""; // Par défaut, pas d'icône
 
                         if (strtotime($reservation['Date_res']) <= strtotime($one_week_later) && $reservation['Status_res'] == 'attente') {
-                            $warning_icon = "<i class='fas fa-exclamation-circle' style='color:red;' title='Urgent : Moins de 7 jours'></i>";
+                            $warning_icon = "<i class='fas fa-exclamation-circle' style='color:red;' title='Urgent : Prise à effet de la date dans moins de 7 jours'></i>";
                         } elseif (strtotime($reservation['Date_res']) <= strtotime($two_weeks_later) && $reservation['Status_res'] == 'attente') {
-                            $warning_icon = "<i class='fas fa-exclamation-triangle' style='color:orange;' title='Attention : Moins de 14 jours'></i>";
+                            $warning_icon = "<i class='fas fa-exclamation-triangle' style='color:orange;' title='Attention : Prise à effet de la date dans moins de 14 jours'></i>";
                         }
                     ?>
 
@@ -101,6 +122,7 @@
                         <td><?php echo $reservation['Date_res']. " " . $warning_icon;?></td>
                         <td><?php echo $reservation['Duree_res']; ?></td>
                         <td><?php echo $reservation['Date_fin']; ?></td>
+                        <td><?php echo $reservation['Date_limite']; ?></td>
                         <td><?php echo $reservation['Status_res']; ?></td>
                         <td>
 
@@ -179,8 +201,36 @@
         <?php endif;?>
 
         <form action="../CRUD/Mail.php" method="post">
+
+            <?php if(isset($_SESSION['successEmail'])) :?>
+                <p style="color: green; 
+                            font-weight: bold; 
+                            text-align: center;
+                            position: relative;
+                            bottom: 10px;">
+                            
+                            <?php echo $_SESSION['successEmail'];?>
+
+                </p>
+                <?php unset($_SESSION['successEmail']);?>
+            <?php endif;?>
+            <?php if(isset($_SESSION['erreurEmail'])) :?>
+                <p style="color: red; 
+                            font-weight: bold; 
+                            text-align: center;
+                            position: relative;
+                            bottom: 10px;">
+                            
+                            <?php echo $_SESSION['erreurEmail'];?>
+
+                </p>
+                <?php unset($_SESSION['erreurEmail']);?>
+            <?php endif;?>
+
             <?php require_once(__DIR__.'/../CRUD/Reservations/SelectPartielleReservation.php') ?>
+
             <?php $Utilisateurs = $_SESSION['Utilisateurs'];?>
+
             <?php foreach($Utilisateurs as $Utilisateur):?>
                 <input type="email" name="dest" value="<?php echo $Utilisateur['Email']; ?>" readonly style="color: #5e5e5e; background: #fafafa; cursor: default; border-color: #ccc; caret-color: transparent;">
             <?php endforeach;?>

@@ -1,56 +1,116 @@
 <?php
 
-session_start();
+require_once (__DIR__.'/../../Config/MySQL.php');
 
+        try{
+            $mysqlClient = new PDO(
+                sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
+                        MYSQL_USER,
+                        MYSQL_PASSWORD
+                            );
 
-
-/*Récupération de l'adresse email du destinataire qui est stocké dans la variable de session 'mail'*/
-/*Importation des bibliothéques qui seront utilisés pour assurer l'envoie d'email de manière plus facile*/
-use PHPMailer\PHPMailer\PHPMailer;//Permet l'utilisation de la classe PHPMailer pour assurer la création et l'envoie d'email
-use PHPMailer\PHPMailer\SMTP;//Pour l'activation du protocole SMTP, qui est utilisé pour l'envoi des emails
-use PHPMailer\PHPMailer\Exception;//Pour la gestion des erreurs qui peuvent survenir lors de l'envoie
-
-require_once(__DIR__.'/../../PHPMailer/src/PHPMailer.php');
-require_once(__DIR__.'/../../PHPMailer/src/Exception.php');
-require_once(__DIR__.'/../../PHPMailer/src/SMTP.php');
-
-
-// Vérification de la soumission
+            $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $destinataires = $_SESSION['mail']; // Récupération de l'email du destinataire depuis la session
+            $sqlQuery = "SELECT info_parc.Id_parc, Status_parc, Status_res, Date_fin, Date_res, Date_limite
+                    FROM info_parc 
+                    INNER JOIN reservation_parc 
+                    ON info_parc.Id_parc = reservation_parc.Id_parc 
+                    WHERE Status_res = 'valide' 
+                    AND (Date_limite <= CURDATE() OR Date_fin = CURDATE())";
 
-    foreach ($destinataires as $destinataire) {
-        $mail = new PHPMailer(true); // 1. Nouveau mail à chaque tour
+            $dbprepare = $mysqlClient->prepare($sqlQuery);
+            
+            $dbprepare->execute();
+
+            $MyParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
         
-        // 2. Config SMTP
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'rstevybryan@gmail.com';
-        $mail->Password = 'wjwc klmy yznj nxus';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-    
-        // 3. Config Email
-        $mail->CharSet = 'UTF-8';
-        $mail->setFrom('rstevybryan@gmail.com', 'Admin');
-        $mail->addAddress($destinataire['Email']); // ➜ 1 seul destinataire
-        $mail->isHTML(true);
-        $mail->Subject = 'Confirmation de la réservation validée';
-        $mail->Body = "<p><strong>Bonjour,</strong></p>
-                       <p>Votre réservation a été <b>validée</b> avec succès. Merci pour votre confiance !</p>
-                       <p>Cordialement,</p><p>L'équipe d'administration</p>";
-        $mail->AltBody = "Bonjour,\nVotre réservation a été validée avec succès.";
-    
-        // 4. Envoi
-        try {
+            if($dbprepare->rowCount() > 0){
 
-            $mail->send();
-            $_SESSION['successEmail'] = "Email envoyé avec succès !";
-            echo '<script>window.location.href = "../Site_web_admin/Reservation.php";</script>';
-    
-        } catch (Exception $e) {
-            echo "Erreur lors de l'envoi à {$destinataire['Email']} : {$mail->ErrorInfo}";
+                foreach($MyParcelles as $MyParcelle){
+
+                    $today = new DateTime();//Instanciation de la classe DateTime nommé today 
+                    //permettant de manipuler non seulement mais aussi l'heure
+                    $today->format('Y-m-d');
+
+                    if($today >= $MyParcelle['Date_limite']){
+
+                        $sqlRequestEmailWarn = "SELECT Email, Status_envoie, Id_res
+                                        FROM users 
+                                        INNER JOIN reservation_parc
+                                        ON users.User_id = reservation_parc.User_id
+                                        WHERE Date_limite <= CURDATE()";
+                            
+                        $emailwarnprepare = $mysqlClient->prepare($sqlRequestEmailWarn);
+
+                        $emailwarnprepare->execute();
+
+                        $EmailWarn = $emailwarnprepare->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach($EmailWarn as $emailWarn){
+                            $_SESSION['Status_envoie_warning'] = $emailWarn['Status_envoie'];
+                            $_SESSION['Id_res_warn'] = $emailWarn['Id_res'];
+                        }
+                        
+                    } else if ($MyParcelle['Date_fin'] == $today){
+
+                        $sqlRequestDelete = "DELETE FROM reservation_parc
+                                    WHERE Date_fin = CURDATE()";
+
+                        $deleteprepare = $mysqlClient->prepare($sqlQuery);
+
+                        $deleteprepare->execute();
+
+                        if($deleteprepare->rowCount() > 0){
+
+                            $_SESSION['successRenewal'] = "Votre réservation a été expiré !"; 
+
+                            $sqlRequestEmail = "SELECT Email, Status_envoie, Id_res
+                                        FROM users 
+                                        INNER JOIN reservation_parc
+                                        ON users.User_id = reservation_parc.User_id
+                                        WHERE Date_fin = CURDATE()";
+                            
+                            $emailprepare = $mysqlClient->prepare($sqlRequestEmail);
+
+                            $emailprepare->execute();
+
+                            $Email = $emailprepare->fetchAll(PDO::FETCH_ASSOC);
+
+                            foreach($Email as $email){
+                                $_SESSION['Status_envoie'] = $email['Status_envoie'];
+                                $_SESSION['Id_res'] = $email['Id_res'];
+                            }
+
+                        } else {
+
+                            $_SESSION['erreurRenewal'] = "Echec de l'annulation de parcelle !";
+                            header('Location: ../Site_web_admin/Reservation.php');
+                            exit;
+
+                        }
+                    }
+                }
+
+                if (!empty($EmailWarn)) {
+
+                    $_SESSION['EmailWarn'] = $EmailWarn;
+                    header('Location: ../CRUD/MailWarnAutomatise.php');
+                    /*Le chemin est comme telle du fait que le fichier SelectReservation.php
+                    a été intégré à partir de la fonction require_once dans le fichier Reservation.php
+                    qui se trouve dans le dossier Site_web_admin et fait donc maintenant parti du fichier 
+                    Reservation.php d'où le chemin pour y accéder à MailWarnAutomatise n'est plus la suivante : 
+                    ../MailWarnAutomatise mais plutôt comme ce qui est indiqué ci-dessus*/
+                    exit;
+
+                } else if(!empty($Email)){
+
+                    $_SESSION['Email'] = $Email;
+                    header('Location: ../CRUD/MailAnnulationAutomatise.php');
+                    exit;
+                    
+                }
+            }
+
+        } catch (Exception $exception) {
+            die('Erreur : ' . $exception->getMessage());
         }
-    }
-?>
