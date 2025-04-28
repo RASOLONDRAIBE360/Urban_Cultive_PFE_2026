@@ -73,7 +73,7 @@
             <?php unset($_SESSION['erreurEmail']);?>
         <?php endif;?>
         <?php if(isset($_SESSION['erreurAnnulationReservation'])) :?>
-            <p style="color: green; 
+            <p style="color: red; 
                           font-weight: bold; 
                           text-align: center;
                           position: relative;
