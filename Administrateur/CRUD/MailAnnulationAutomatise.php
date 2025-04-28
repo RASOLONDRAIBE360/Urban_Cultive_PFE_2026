@@ -16,7 +16,7 @@ require_once(__DIR__.'/../../PHPMailer/src/SMTP.php');
 
 // Vérification de la soumission
     
-    $destinataires = $_SESSION['email']; // Récupération de l'email du destinataire depuis la session
+    $destinataires = $_SESSION['Email']; // Récupération de l'email du destinataire depuis la session
     
     if (empty($destinataires)) {
         die("Erreur : Aucun email trouvé pour l'envoi.");
@@ -61,33 +61,35 @@ require_once(__DIR__.'/../../PHPMailer/src/SMTP.php');
 
         foreach($emailDestinataires as $destinataire){
 
-            if (!empty($destinataire['Email'])){
-                $mail->addAddress($destinataire['Email']);
+            if (!empty($destinataire)){
+                $mail->addAddress($destinataire);
             }
         }
 
-            // 4. Envoi
-
-        if (count($mail->getAllRecipientAddresses()) > 0 && $_SESSION['Status_envoie'] == 0) {
+        // 4. Envoi
+        if (count($mail->getAllRecipientAddresses()) > 0 && $_SESSION['Status_envoie'] == 1) {
             $mail->send();
-            $sqlRequestUpdateStatusEnvoie = "UPDATE FROM reservation_parc
-                                    SET Status_envoie = 1
-                                    WHERE Id_res = :id_res";
-            
-            $updatestatusenvoieprepare = $mysqlClient->prepare($sqlRequestUpdateStatusEnvoie);
+            $sqlRequestDelete = "DELETE FROM reservation_parc
+                                    WHERE Date_fin = CURDATE()";
 
-            $updatestatusenvoieprepare->execute([
-                ':id_res' => $_SESSION['Id_res'],
-            ]);
+            $deleteprepare = $mysqlClient->prepare($sqlRequestDelete);
+
+            $deleteprepare->execute();
 
             $_SESSION['successEmail'] = "Email envoyé avec succès !";
         } else {
             $_SESSION['erreurEmail'] = "Aucun destinataire valide trouvé.";
         }
-
-        header('Location: ../Site_web_admin/Reservation.php');
-        exit;
-
+        
+        if($deleteprepare->rowCount() > 0){
+            header('Location: ../Site_web_admin/Reservation.php');
+            exit;
+        } else {
+            $_SESSION['erreurAnnulationReservation'] = "Erreur survenu lors de l'annulation de la réservation";
+            header('Location: ../Site_web_admin/Reservation.php');
+            exit;
+        }
+        
     } catch (Exception $e) {
         echo "Erreur lors de l'envoi à {$destinataire['Email']} : {$mail->ErrorInfo}";
     }

@@ -11,7 +11,7 @@
   
   <?php session_start();?>
 
-  <button class="avis-btn" onclick='window.location.href="../Site_web_user/Accueil.php"'>Retour</button>
+  <button class="avis-btn" onclick='window.location.href="../Site_web_user/Reservation.php"'>Retour</button>
 
   <!-- En-tête -->
   <header>

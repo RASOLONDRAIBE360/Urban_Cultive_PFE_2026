@@ -5,6 +5,7 @@ session_start();
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_parc = $_POST['id_parc'] ?? null;
+$user_id = $_SESSION['user_id_user'];
 
 if(empty($id_parc)){
     echo "La variable id_parc n'est pas défini";
@@ -33,6 +34,18 @@ if(empty($id_parc)){
             $ThisParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             $_SESSION['ThisParcelles'] = $ThisParcelles;
             $_SESSION['id_parc'] = $id_parc;
+
+            $sqlRequestUpdateDateLimite = "UPDATE reservation_parc
+                                    SET Date_limite = DATE_SUB(Date_fin, INTERVAL 3 DAY)
+                                    WHERE User_id = :user_id
+                                    AND Id_parc = :id_parc";
+
+            $UpdatePrepare = $mysqlClient->prepare($sqlRequestUpdateDateLimite);
+
+            $UpdatePrepare->execute([
+                ':user_id'=> $user_id,
+                ':id_parc'=> $id_parc,
+            ]);
         
             if(!empty($ThisParcelles)){
                 header('Location: ../../GestionReservation/RenouvellementReservation.php');

@@ -72,6 +72,18 @@
             </p>
             <?php unset($_SESSION['erreurEmail']);?>
         <?php endif;?>
+        <?php if(isset($_SESSION['erreurAnnulationReservation'])) :?>
+            <p style="color: green; 
+                          font-weight: bold; 
+                          text-align: center;
+                          position: relative;
+                          bottom: 10px;">
+                          
+                          <?php echo $_SESSION['erreurAnnulationReservation'];?>
+
+            </p>
+            <?php unset($_SESSION['erreurAnnulationReservation']);?>
+        <?php endif;?>
 
         <table>
             <thead>
@@ -97,9 +109,14 @@
                         $today = new DateTime();
                         $todayFormatted = $today->format('Y-m-d');
 
-                        if (($reservation['Date_limite'] <= $todayFormatted OR $reservation['Date_fin'] == $todayFormatted) AND $reservation['Status_envoie'] == 0){
-                               require_once(__DIR__.'/../CRUD/MailAutomatise.php');
-                        }?>
+                        if ($reservation['Date_limite'] <= $todayFormatted AND $reservation['Status_envoie'] == 0){
+                            header('Location: ../CRUD/MailAutomatise.php');
+                        } else if ($reservation['Date_fin'] == $todayFormatted AND $reservation['Status_envoie'] == 1){
+                            header('Location: ../CRUD/MailAutomatise.php');
+                            //Pour vérifier que le fichier dont j'essaie d'accéder se trouve réellement au bon endroit j'utilise
+                            /*var_dump(file_exists(__DIR__.'/../CRUD/MailAutomatise.php'));*/
+                        }
+                    ?>
                     <?php
                         $two_weeks_later = date("Y-m-d", strtotime("+14 days"));  // Seuil pour l'alerte jaune
                         $one_week_later = date("Y-m-d", strtotime("+7 days"));    // Seuil pour l'alerte rouge

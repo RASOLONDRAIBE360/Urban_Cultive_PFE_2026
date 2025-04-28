@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once (__DIR__.'/../../Config/MySQL.php');
 
@@ -11,7 +12,7 @@ require_once (__DIR__.'/../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-            $sqlQuery = "SELECT info_parc.Id_parc, Status_parc, Status_res, Date_fin, Date_res, Date_limite
+            $sqlQuery = "SELECT info_parc.Id_parc, Status_parc, Status_res, Date_fin, Date_res, Date_limite, Status_envoie
                     FROM info_parc 
                     INNER JOIN reservation_parc 
                     ON info_parc.Id_parc = reservation_parc.Id_parc 
@@ -23,16 +24,16 @@ require_once (__DIR__.'/../../Config/MySQL.php');
             $dbprepare->execute();
 
             $MyParcelles = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
-        
+            
             if($dbprepare->rowCount() > 0){
 
                 foreach($MyParcelles as $MyParcelle){
 
                     $today = new DateTime();//Instanciation de la classe DateTime nommé today 
                     //permettant de manipuler non seulement mais aussi l'heure
-                    $today->format('Y-m-d');
+                    $todayFormatted = $today->format('Y-m-d');
 
-                    if($today >= $MyParcelle['Date_limite']){
+                    if($todayFormatted >= $MyParcelle['Date_limite'] AND $MyParcelle['Status_envoie'] == 0){
 
                         $sqlRequestEmailWarn = "SELECT Email, Status_envoie, Id_res
                                         FROM users 
@@ -51,18 +52,7 @@ require_once (__DIR__.'/../../Config/MySQL.php');
                             $_SESSION['Id_res_warn'] = $emailWarn['Id_res'];
                         }
                         
-                    } else if ($MyParcelle['Date_fin'] == $today){
-
-                        $sqlRequestDelete = "DELETE FROM reservation_parc
-                                    WHERE Date_fin = CURDATE()";
-
-                        $deleteprepare = $mysqlClient->prepare($sqlQuery);
-
-                        $deleteprepare->execute();
-
-                        if($deleteprepare->rowCount() > 0){
-
-                            $_SESSION['successRenewal'] = "Votre réservation a été expiré !"; 
+                    } else if ($MyParcelle['Date_fin'] == $todayFormatted AND $MyParcelle['Status_envoie'] == 1){
 
                             $sqlRequestEmail = "SELECT Email, Status_envoie, Id_res
                                         FROM users 
@@ -81,34 +71,33 @@ require_once (__DIR__.'/../../Config/MySQL.php');
                                 $_SESSION['Id_res'] = $email['Id_res'];
                             }
 
-                        } else {
+                    } else {
 
-                            $_SESSION['erreurRenewal'] = "Echec de l'annulation de parcelle !";
-                            header('Location: ../Site_web_admin/Reservation.php');
-                            exit;
+                        $_SESSION['erreurRenewal'] = "Echec de l'annulation de parcelle !";
+                        header('Location: ../Site_web_admin/Reservation.php');
+                        exit;
 
-                        }
                     }
                 }
+            }
 
-                if (!empty($EmailWarn)) {
+            if (!empty($EmailWarn)) {
 
-                    $_SESSION['EmailWarn'] = $EmailWarn;
-                    header('Location: ../CRUD/MailWarnAutomatise.php');
-                    /*Le chemin est comme telle du fait que le fichier SelectReservation.php
-                    a été intégré à partir de la fonction require_once dans le fichier Reservation.php
-                    qui se trouve dans le dossier Site_web_admin et fait donc maintenant parti du fichier 
-                    Reservation.php d'où le chemin pour y accéder à MailWarnAutomatise n'est plus la suivante : 
-                    ../MailWarnAutomatise mais plutôt comme ce qui est indiqué ci-dessus*/
-                    exit;
+                $_SESSION['EmailWarn'] = $EmailWarn;
+                header('Location: MailWarnAutomatise.php');
+                /*Le chemin est comme telle du fait que le fichier SelectReservation.php
+                a été intégré à partir de la fonction require_once dans le fichier Reservation.php
+                qui se trouve dans le dossier Site_web_admin et fait donc maintenant parti du fichier 
+                Reservation.php d'où le chemin pour y accéder à MailWarnAutomatise n'est plus la suivante : 
+                ../MailWarnAutomatise mais plutôt comme ce qui est indiqué ci-dessus*/
+                exit;
 
-                } else if(!empty($Email)){
+            } else if(!empty($Email)){
 
-                    $_SESSION['Email'] = $Email;
-                    header('Location: ../CRUD/MailAnnulationAutomatise.php');
-                    exit;
-                    
-                }
+                $_SESSION['Email'] = $Email;
+                header('Location: MailAnnulationAutomatise.php');
+                exit;
+                
             }
 
         } catch (Exception $exception) {

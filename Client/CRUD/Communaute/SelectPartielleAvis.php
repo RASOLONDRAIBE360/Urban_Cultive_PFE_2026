@@ -3,6 +3,7 @@
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $user_id = $_SESSION['user_id_user'] ?? null;
+
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -16,8 +17,7 @@ $user_id = $_SESSION['user_id_user'] ?? null;
                     FROM reservation_parc 
                     WHERE User_id = :user_id 
                     AND Status_res = 'valide' 
-                    AND Date_fin >= CURDATE() 
-                    AND Date_res = CURDATE()";
+                    AND Date_fin > CURDATE()";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
