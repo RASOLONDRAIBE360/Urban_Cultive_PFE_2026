@@ -39,6 +39,21 @@
                 <input type="text" id="prenom" name="prenom" placeholder="Entrez votre Prenom" required>
             </div>
 
+            <!-- Champ pour le numéro de téléphone -->
+            <div class="input-container">
+                <label for="num_tel">N°tel</label>
+                <input type="tel" name="num_tel" placeholder="+XXX XX XX XX XX" required
+                pattern="^\+?[0-9\s\-]{10,15}$">
+            <!--^\+?[0-9\s\-]{10,15}$ => Le symbole ^ signifie que le numéro débute à cette position
+            \+? pour dire que le signe + qui permet de spécifier l'indicatif du pays est facultatif
+            [0-9] pour dire que ce qui suit devrais s'agir des chiffres et non des chaînes de caractères
+            \s\- pour dire que le numéro de téléphone peut prendre des espaces ou bien des tirets ce qui est le cas
+            pour certain format de numéro de téléphone pour certains pays
+            {10, 15} pour dire que le numéro de téléphone va devoir être constitué de 10 à 15 chiffres
+            et le symbole $ pour spécifier la position de fin du numéro de téléphone et l'attribut pattern 
+            sert à vérifier le format du numéro de téléphone avant son envoie via la méthode POST-->
+            </div>
+
             <!-- Champ pour la date de naissance -->
             <div class="input-container">
                 <label for="date">Date de naissance</label>

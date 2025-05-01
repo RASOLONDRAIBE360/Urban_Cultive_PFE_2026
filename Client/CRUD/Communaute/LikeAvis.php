@@ -1,120 +1,86 @@
 <?php
-
 session_start();
 require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $id_parc = $_POST['id_parc'];
+$id_avis = $_POST['id_avis'];
 $user_id = $_SESSION['user_id_user'];
-$type_action = $_POST['type_action'];
+$type_action = $_POST['type_action']; // 'like' ou 'dislike'
 
-        try {
-            $mysqlClient = new PDO(
-                    sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
-                            MYSQL_USER,
-                            MYSQL_PASSWORD
-                                );
+try {
+    $mysqlClient = new PDO(
+        sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
+        MYSQL_USER,
+        MYSQL_PASSWORD
+    );
+    $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            $sqlRequestVerifAvis = "SELECT COUNT(*) 
-                            FROM like_avis
-                            WHERE Type_action IN ('like', 'dislike')
-                            AND User_id = :user_id
-                            AND Id_parc = :id_parc";
+    // 1. Vérifier l'action actuelle de l'utilisateur sur cet avis
+    $sql = "SELECT Type_action 
+            FROM like_avis 
+            WHERE Id_avis = :id_avis 
+            AND Id_parc = :id_parc 
+            AND User_id = :user_id";
 
-            $dbprepare = $mysqlClient->prepare($sqlRequestVerifAvis);
+    $stmt = $mysqlClient->prepare($sql);
 
-            $dbprepare->execute([
-                ':user_id' => $user_id,
-                ':id_parc' => $id_parc,
-            ]);
-            
-            $countAvis = $dbprepare->fetchColumn();
+    $stmt->execute([
+        ':id_avis' => $id_avis,
+        ':id_parc' => $id_parc,
+        ':user_id' => $user_id,
+    ]);
 
-            if($countAvis == 0){
+    $currentAction = $stmt->fetchColumn();
 
-                if($type_action == 'like'){
+    // 2. Si une action existe, la supprimer
+    if ($currentAction !== false) {
+        $sqlDelete = "DELETE FROM like_avis 
+                      WHERE Id_avis = :id_avis 
+                      AND Id_parc = :id_parc 
+                      AND User_id = :user_id";
 
-                    $sqlRequestAjoutAvis = "INSERT INTO like_avis (User_id, Id_parc, Type_action)
-                                VALUES(:user_id, :id_parc, 'like')";
-                
-                    $pdoStatement = $mysqlClient->prepare($sqlRequestAjoutAvis);
+        $stmt = $mysqlClient->prepare($sqlDelete);
 
-                    $pdoStatement->execute([
-                        ':user_id' => $user_id,
-                        ':id_parc' => $id_parc,
-                    ]);
+        $stmt->execute([
+            ':id_avis' => $id_avis,
+            ':id_parc' => $id_parc,
+            ':user_id' => $user_id,
+        ]);
+    }
 
-                } else{
+    // 3. Si l'action actuelle est différente de la nouvelle, insérer la nouvelle
+    if ($currentAction !== $type_action) {
+        $sqlInsert = "INSERT INTO like_avis (User_id, Id_parc, Id_avis, Type_action) 
+                      VALUES (:user_id, :id_parc, :id_avis, :type_action)";
 
-                    $sqlRequestAjoutAvis = "INSERT INTO like_avis (User_id, Id_parc, Type_action)
-                                VALUES(:user_id, :id_parc, 'dislike')";
-                
-                    $pdoStatement = $mysqlClient->prepare($sqlRequestAjoutAvis);
+        $stmt = $mysqlClient->prepare($sqlInsert);
+        
+        $stmt->execute([
+            ':user_id' => $user_id,
+            ':id_parc' => $id_parc,
+            ':id_avis' => $id_avis,
+            ':type_action' => $type_action,
+        ]);
+    }
 
-                    $pdoStatement->execute([
-                        ':user_id' => $user_id,
-                        ':id_parc' => $id_parc,
-                    ]);
+    // 4. Rafraîchir les avis
+    $sqlAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date,
+                       SUM(CASE WHEN Type_action = 'like' THEN 1 ELSE 0 END) AS NumberLike,
+                       SUM(CASE WHEN Type_action = 'dislike' THEN 1 ELSE 0 END) AS NumberDislike
+                FROM avis
+                LEFT JOIN like_avis ON avis.Id_avis = like_avis.Id_avis
+                WHERE avis.Id_parc = :id_parc
+                GROUP BY avis.Id_avis";
 
-                }
+    $stmt = $mysqlClient->prepare($sqlAvis);
+    $stmt->execute([':id_parc' => $id_parc]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $_SESSION['Avis'] = $results;
 
-            } else {
+    header('Location: ../../Site_web_user/Avis.php');
+    exit;
 
-                if($type_action == 'like'){
-
-                    $sqlRequestDeleteAvis = "DELETE FROM like_avis
-                                WHERE Type_action = 'like'
-                                AND User_id = :user_id
-                                AND Id_parc = :id_parc";
-                            
-                    $deleteprepare = $mysqlClient->prepare($sqlRequestDeleteAvis);
-
-                    $deleteprepare->execute([
-                        ':user_id' => $user_id,
-                        ':id_parc' => $id_parc,
-                    ]);
-
-                } else {
-
-                    $sqlRequestDeleteAvis = "DELETE FROM like_avis
-                                WHERE Type_action = 'dislike'
-                                AND User_id = :user_id
-                                AND Id_parc = :id_parc";
-                            
-                    $deleteprepare = $mysqlClient->prepare($sqlRequestDeleteAvis);
-
-                    $deleteprepare->execute([
-                        ':user_id' => $user_id,
-                        ':id_parc' => $id_parc,
-                    ]);
-
-                }
-            } 
-
-            if (isset($pdoStatement) && $pdoStatement->rowCount() > 0 && $type_action == 'like') {
-                $_SESSION['NumberLike'] += 1;
-                header('Location: ../../Site_web_user/Avis.php');
-                exit;
-            } else if (isset($deleteprepare) && $deleteprepare->rowCount() > 0 && $type_action == 'like') {
-                $_SESSION['NumberLike'] -= 1;
-                header('Location: ../../Site_web_user/Avis.php');
-                exit;
-            } else if(isset($pdoStatement) && $pdoStatement->rowCount() > 0 && $type_action == 'dislike'){
-                $_SESSION['NumberDislike'] += 1;
-                header('Location: ../../Site_web_user/Avis.php');
-                exit;
-            } else if (isset($deleteprepare) && $deleteprepare->rowCount() > 0 && $type_action == 'dislike') {
-                $_SESSION['NumberDislike'] -= 1;
-                header('Location: ../../Site_web_user/Avis.php');
-                exit;
-            } else {
-                header('Location: ../../Site_web_user/Avis.php');
-                exit;
-            }
-
-            } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
-            }
-
+} catch (Exception $e) {
+    die('Erreur : ' . $e->getMessage());
+}
 ?>

@@ -39,19 +39,22 @@ try {
         $_SESSION['infoAvis'] = "Aucun avis pour l'instant";
     } else {
         // Récupération des likes et dislikes en une seule requête
-        $sqlRequestVerifAvis = "SELECT 
+        $sqlRequestVerifAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date,
             SUM(CASE WHEN Type_action = 'like' THEN 1 ELSE 0 END) AS NumberLike,
             SUM(CASE WHEN Type_action = 'dislike' THEN 1 ELSE 0 END) AS NumberDislike
-        FROM like_avis WHERE Id_parc = :id_parc";
+        FROM avis
+        LEFT JOIN like_avis
+        ON avis.Id_avis = like_avis.Id_avis
+        WHERE avis.Id_parc = :id_parc
+        GROUP BY avis.Id_avis";
 
         $pdoStatement = $mysqlClient->prepare($sqlRequestVerifAvis);
-        $pdoStatement->execute([':id_parc' => $id_parc]);
+        $pdoStatement->execute([
+            ':id_parc' => $id_parc,
+        ]);
 
-        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-
-        // Mise à jour des valeurs de session avec des valeurs par défaut pour éviter NULL
-        $_SESSION['NumberLike'] = $result['NumberLike'] ?? 0;
-        $_SESSION['NumberDislike'] = $result['NumberDislike'] ?? 0;
+        $results = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $_SESSION['Avis'] = $results;
     }
 
     // Redirection après l'exécution
