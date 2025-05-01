@@ -37,7 +37,7 @@
 
                 <p class="<?php echo ($parcelle['Status_parc'] == 'occupe') ? 'occupe' : 'disponible';?>"><?php echo $parcelle['Status_parc'];?></p>
                 <p><?php echo $parcelle['Taille_parc'];?>m²</p>
-                <p><?php echo $parcelle['Prix_parc'];?>€/mois</p>
+                <p><?php echo $parcelle['Prix_parc'];?> Rs/mois</p>
 
             </div>
         </div>
@@ -56,7 +56,7 @@
             <p><strong>Exposition : </strong><?php echo $parcelle['Exposition'];?></p>
             <p><strong>Équipements : </strong><?php echo $parcelle['Equipements'];?></p>
             <p><strong>Idéal pour : </strong><?php echo $parcelle['Preferences'];?></p>
-            <p><strong>Prix : </strong><?php echo $parcelle['Prix_parc'];?>€/mois</p>
+            <p><strong>Prix : </strong><?php echo $parcelle['Prix_parc'];?> Rs/mois</p>
             <p><?php echo $parcelle['Description'];?></p>
 
             <form action="../CRUD/Communaute/SelectSpecificAvis.php" method="post">

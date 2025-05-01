@@ -6,9 +6,6 @@
     <title>Tableau de Bord Administrateur</title>
     <link rel="stylesheet" href="../css/Accueil.css">
     <link rel="stylesheet" href="../css/Modal_update.css">
-    <style>
-        
-    </style>
 </head>
 <body>
     <?php session_start(); ?>
@@ -58,6 +55,7 @@
                     <th>User_ID</th>
                     <th>Nom</th>
                     <th>Prénom</th>
+                    <th>N° tel</th>
                     <th>Date de Naissance</th>
                     <th>Email</th>
                     <th>Rôle</th>
@@ -70,6 +68,7 @@
                         <td><?php echo $utilisateur['User_id']; ?></td>
                         <td><?php echo $utilisateur['Nom']; ?></td>
                         <td><?php echo $utilisateur['Prenom']; ?></td>
+                        <td><?php echo $utilisateur['Num_tel']; ?></td>
                         <td><?php echo $utilisateur['Date_Naissance']; ?></td>
                         <td><?php echo $utilisateur['Email']; ?></td>
                         <td><?php echo $utilisateur['Role']; ?></td>
@@ -251,6 +250,10 @@
 
             <label for="prenom">Prénom</label>
             <input type="text" id="prenom" name="prenom" value="<?php echo $UData['Prenom'];?>" placeholder="....." required>
+
+            <label for="num_tel">N°tel</label>
+            <input type="tel" id="num_tel" name="num_tel" placeholder="+XXX XX XX XX XX" value="<?php echo $UData['Num_tel'];?>" required
+            pattern="^\+?[0-9\s\-]{10,15}$">
 
             <label for="date">Date de Naissance</label>
             <input type="date" id="date" name="date" value="<?php echo $UData['Date_Naissance'];?>" placeholder="....." required>

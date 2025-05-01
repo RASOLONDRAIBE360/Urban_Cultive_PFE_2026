@@ -7,6 +7,7 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
 $nom = $_POST['nom'];
 $prenom = $_POST['prenom'];
+$num_tel = $_POST['num_tel'];
 $date = $_POST['date'];
 $email = $_POST['email'];
 $id = $_POST['id'];
@@ -25,11 +26,12 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
 
             $MysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sqlRequest = "UPDATE users SET Nom = :nom, Prenom = :prenom, Date_Naissance = :date, Email = :email WHERE User_id = :id";
+            $sqlRequest = "UPDATE users SET Nom = :nom, Prenom = :prenom, Num_tel = :num_tel, Date_Naissance = :date, Email = :email WHERE User_id = :id";
             $pdoStatement = $MysqlClient->prepare($sqlRequest);
             $pdoStatement->execute([
                 ':nom'=>$nom,
                 ':prenom'=>$prenom,
+                ':num_tel'=>$num_tel,
                 ':date'=>$date,
                 ':email'=>$email,
                 ':id' => $id,
