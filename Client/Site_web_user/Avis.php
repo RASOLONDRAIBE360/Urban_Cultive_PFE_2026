@@ -27,6 +27,7 @@
         <?php unset($_SESSION['infoAvis']);?>
     <?php endif;?>
     <?php $Avis = $_SESSION['Avis'];?>
+
     <?php foreach ($Avis as $avis) :?>
 
     <div class="conseil">
@@ -43,13 +44,16 @@
 
             <form action="../CRUD/Communaute/LikeAvis.php" method="post">
                 <input type="hidden" name="id_parc" value="<?php echo $avis['Id_parc'];?>">
+                <input type="hidden" name="id_avis" value="<?php echo $avis['Id_avis'];?>">
                 <input type="hidden" name="type_action" value="like">
-                <button type="submit" class="like-btn">👍 <?php echo $likeCount = ($_SESSION['NumberLike'] == 0) ? 0 : $_SESSION['NumberLike']; ?></button>
+                <button type="submit" class="like-btn">👍 <?php echo $avis['NumberLike']; ?></button>
             </form>
+
             <form action="../CRUD/Communaute/LikeAvis.php" method="post">
                 <input type="hidden" name="id_parc" value="<?php echo $avis['Id_parc'];?>">
+                <input type="hidden" name="id_avis" value="<?php echo $avis['Id_avis'];?>">
                 <input type="hidden" name="type_action" value="dislike">
-                <button type="submit" class="dislike-btn">👎 <?php echo $dislikeCount = ($_SESSION['NumberDislike'] == 0) ? 0 : $_SESSION['NumberDislike']; ?></button>
+                <button type="submit" class="dislike-btn">👎 <?php echo $avis['NumberDislike']; ?></button>
             </form>
         
         </div>

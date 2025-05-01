@@ -5,6 +5,7 @@ require_once (__DIR__.'/../../Config/MySQL.php');
 
 $nom = $_POST['nom'] ?? null;
 $prenom = $_POST['prenom'] ?? null;
+$num_tel = $_POST['num_tel'] ?? null;
 $date = $_POST['date'] ?? null;
 $email = $_POST['email'] ?? null;
 $motDePasse = $_POST['motDePasse'] ?? null;
@@ -50,13 +51,14 @@ if($motDePasse != $conf_password){
 
                 } else {
                     
-                    $sqlQuery = "INSERT INTO users (Nom, Prenom, Date_Naissance, Email, Mot_de_Passe) VALUES (:nom, :prenom, :date, :email, :motDePasse)";
+                    $sqlQuery = "INSERT INTO users (Nom, Prenom, Num_tel, Date_Naissance, Email, Mot_de_Passe) VALUES (:nom, :prenom, :num_tel, :date, :email, :motDePasse)";
 
                     $dbprepare = $mysqlClient->prepare($sqlQuery);
 
                     $dbprepare->execute([
                         ':nom' => $nom,
                         ':prenom' => $prenom,
+                        ':num_tel' => $num_tel,
                         ':date' => $date,
                         ':email' => $email,
                         ':motDePasse' => $motDePasse,

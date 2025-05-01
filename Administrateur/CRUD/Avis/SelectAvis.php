@@ -10,16 +10,20 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
 
             $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            $sqlQuery = "SELECT User_id, Nom, Prenom, Num_tel, Date_Naissance, Email, Role 
-                    FROM users
+            $sqlQuery = "SELECT Id_avis, avis.Id_parc, Nom, Prenom, Email, Avis 
+                    FROM avis
+                    INNER JOIN users
+                    ON avis.User_id = users.User_id
+                    INNER JOIN info_parc
+                    ON avis.Id_parc = info_parc.Id_parc
                     WHERE Role = 'utilisateur'
-                    ORDER BY User_id DESC";
+                    ORDER BY Id_avis DESC";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 
             $dbprepare->execute();
             
-            $listeUtilisateurs = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
+            $listeAvis = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
