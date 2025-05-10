@@ -3,43 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion Participative des Parcelles Urbaines</title>
+    <title>UrbanCultive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Client/css/AccueilModal.css">
     <link rel="stylesheet" href="../Client/css/PresentationSite.css">
 </head>
 <body>
 
-    <header>
-        <h1>Gestion Participative des Parcelles Urbaines</h1>
-    </header>
+    <?php session_start();?>
 
-    <section class="hero">
+    <?php require_once(__DIR__."/../HeaderIntroduction/Header.php");?>
+    <section class="hero" id="Accueil">
+        <div class="background-overlay"></div>
         <div class="hero-content">
-            <h2>Un projet innovant pour faciliter la gestion des parcelles</h2>
+            <h1> GESTION PARTICIPATIVE DE PARCELLE URBAINE </h1>
             <p>
-                Mon projet consiste à créer un site web permettant une gestion participative des parcelles urbaines.
-                Il vise à rendre l’utilisation intuitive en proposant des fonctionnalités efficaces, garantissant ainsi 
-                une expérience fluide et facilitant les démarches de location.
+                Une plateforme de gestion participatif de parcelle 
+                urbaine qui offre à l’utilisateur la possibilité de consulter, 
+                de réserver ainsi que de partager des avis sur des parcelles spécifiques.
             </p>
             <div class="buttons">
-                <button onclick='window.location.href="../Login/FormulaireInscription.php"'>S'inscrire</button>
-                <button onclick='window.location.href="../Login/FormulaireConnexion.php"'>Se Connecter</button>
+                <button class="animated-btn" id="button1" onclick='window.location.href="../Login/FormulaireInscription.php"'>Créer un compte</button>
             </div>
         </div>
     </section>
+    <section class="parcelles" id="Parcelles">
 
-    <section class="features">
-        <h2>Les fonctionnalités implémentées</h2>
-        <ul>
-            <li>📌 Reservation en ligne des parcelles disponibles.</li>
-            <li>🗑️ Partage d'avis et de conseils sur la culture d'une parcelle.</li>
-            <li>✏️ Reception de notification par email.</li>
-            <li>🏡 Acces aux parcelles deja louees.</li>
-        </ul>
+        <?php require(__DIR__."/../CRUD/Parcelle/SelectParcelleIntroduction.php");?>
+
+        <h1> Découvrez nos différentes parcelles </h1>
+        <?php 
+        // Limiter l'affichage à seulement 3 parcelles
+        $parcellesAffichees = array_slice($parcelles, 0, 4); 
+        ?>
+        <?php foreach($parcellesAffichees as $parcelle) :?>
+            <?php
+            $imagePath = str_replace("../../", "../", $parcelle['Chemin_image']);
+            ?>
+            <div class="card" onclick="ouvrirModal('<?php echo $parcelle['Id_parc'];?>')">
+                <img src="<?php echo $imagePath;?>" alt="Image de la parcelle">
+                <div class="card-content">
+                    <h3><?php echo $parcelle['Id_parc'];?></h3>
+                    <p><?php echo $parcelle['Taille_parc'];?>m²</p>
+                    <p><?php echo $parcelle['Prix_parc'];?> Rs/mois</p>
+                </div>
+            </div>
+        <?php endforeach;?>
+    
+            <!-- Modals --> 
+
+        <?php foreach($parcellesAffichees as $parcelle):?>
+            <?php
+            $imagePath = str_replace("../../", "../", $parcelle['Chemin_image']);
+            ?>
+            <div id="<?php echo $parcelle['Id_parc'];?>" class="modal">
+                <div class="modal-content">
+                    <span class="fermer" onclick="fermerModal('<?php echo $parcelle['Id_parc'];?>')">&times;</span>
+                    <h2><?php echo $parcelle['Id_parc']?></h2>
+                    <img src="<?php echo $imagePath;?>" alt="Image de la parcelle" style="border-radius: 8px; width: 300px; height: auto; ">
+                    <p><strong>Surface : </strong><?php echo $parcelle['Taille_parc'];?>m²</p>
+                    <p><strong>Exposition : </strong><?php echo $parcelle['Exposition'];?></p>
+                    <p><strong>Équipements : </strong><?php echo $parcelle['Equipements'];?></p>
+                    <p><strong>Idéal pour : </strong><?php echo $parcelle['Preferences'];?></p>
+                    <p><strong>Prix : </strong><?php echo $parcelle['Prix_parc'];?> Rs/mois</p>
+                    <p><?php echo $parcelle['Description'];?></p>
+                </div>
+            </div>
+        <?php endforeach;?>
     </section>
 
-    <footer>
-        <p>&copy; 2025 - Projet Tutorié | Développé avec passion</p>
-    </footer>
+    <script src="../Client/Javascript/Accueil.js"></script>
+    <script src="../Client/Javascript/PresentationSite.js"></script>
 
 </body>
 </html>

@@ -1,123 +1,199 @@
-/* Importation d'une belle police */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+html {
+    scroll-behavior: smooth;
+}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Styles généraux */
+header {
+    font-size: 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000; /* S'assure que le header reste au-dessus du contenu */
+}
+
+.header-scroll {
+    background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent au scroll */
+    transition: background-color 0.5s ease-in-out; /* Transition fluide */
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+nav a.btn {
+    padding: 10px 15px;
+    background: rgb(176, 202, 160);
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    backdrop-filter: blur(50px);
+}
+
+nav a {
+    position: relative;
+    right: 45px;
+    display: inline-block;
+    margin: 0 15px;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+nav a:not(.btn)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0px; /* Place la ligne sous le texte */
+    width: 0;
+    height: 2px;
+    background: rgb(176, 202, 160);
+    transition: width 0.4s ease-in-out;
+}
+
+nav a:not(.btn):hover::after {
+    width: 100%; /* La ligne apparaît de gauche à droite */
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: center;
-}
-
-/* HEADER */
-header {
-    background-color: #3c837bee;
-    color: white;
-    padding: 20px;
-    font-size: 22px;
-}
-
-/* SECTION HERO */
-.hero {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
-    background: url('https://source.unsplash.com/1600x900/?urban,city,park') center/cover no-repeat;
     position: relative;
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 1;
-    max-width: 600px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.hero h2 {
-    font-size: 26px;
-    color: #305243;
-}
-
-.hero p {
-    font-size: 18px;
-    margin: 15px 0;
-    color: #555;
-}
-
-/* BOUTONS */
-.buttons {
-    margin-top: 20px;
-}
-
-button {
-    background: #6e9a5e;
-    color: white;
-    border: none;
-    padding: 14px 22px;
-    margin: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background: #93cf7d;
-    transform: translateY(-3px);
-}
-
-/* SECTION FONCTIONNALITÉS */
-.features {
-    background-color: white;
-    padding: 40px;
-    text-align: center;
-    margin: 20px auto;
-    max-width: 900px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.features h2 {
-    font-size: 24px;
-    color: #305243;
-    margin-bottom: 15px;
-}
-
-.features ul {
-    list-style: none;
+    margin: 0;
     padding: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
-.features li {
-    font-size: 18px;
-    margin: 10px 0;
-    color: #555;
-}
-
-/* FOOTER */
-footer {
-    background-color: #222;
+/* Titre principal */
+header h1 {
+    font-size: 4rem;
+    font-weight: bold;
     color: white;
-    padding: 15px;
-    font-size: 14px;
-    position: relative;
-    bottom: 0;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+    margin-top: 50px;
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+/* Section principale */
+.hero {
+    position: relative; /* Définit le contexte pour `.background-overlay` */
+    height: 100vh; /* Assure que la section prend toute la hauteur de l'écran */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background-overlay {
+    position: absolute; /* Permet de couvrir entièrement `.hero` */
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-image: url('../../Upload/pexels-yosiazwan-3752402.jpg'); /* Image de fond */
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%);
+    z-index: -1;
+}
+
+.hero-content h1{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.5rem;
+    color: rgb(176, 202, 160);
+    position: relative;
+    top: 60px;
+    margin: 50px;
+}
+
+.hero-content p{
+    position: relative;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    font-size: 1.5rem;
+    padding: 50px 300px;
+}
+
+.buttons button {
+    position: relative;
+    top: 10px;
+    justify-content: center;
+    font-size: 1.8rem;
+    padding: 15px 90px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: 0.4s ease-in-out;
+    border-radius: 50px;
+    backdrop-filter: blur(5px);
+    transform: scale(0.85);
+}
+
+.buttons button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: black;
+    transform: scale(0.9);
+}
+
+.parcelles h1{
+    position: absolute;
+    bottom: 500px;
+    text-align: center;
+    font-size: 2.5rem;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(121, 161, 121);
+}
+
+.parcelles {
+    display: flex; /* au lieu de inline-block */
+    justify-content: center;
+    gap: 30px;
+    padding-top: 95px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    flex: 1;
+    max-width: 300px;
+    min-width: 260px;
+    max-height: 400px;
+    min-height: 400px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    top: 230px;
+    right: 10px;
+    margin-left: 20px;
+    margin-bottom: 280px;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+    text-align: center;
+    padding: 10px;
 }
