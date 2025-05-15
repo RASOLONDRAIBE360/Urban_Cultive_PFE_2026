@@ -16,15 +16,19 @@ body {
     background-image: url('Projet_HTML_CSS/pexels-sora-shimazaki-5668833.jpg');
     background-repeat: no-repeat;
     background-size: 1500px 1200px;
+    overflow: scroll;
 }
 
 .signup-container {
-    background-color: #fff;
+    position: relative;
+    margin-top: 550px;
     padding: 30px;
+    background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
+    margin-bottom: 400px;
 }
 
 h2 {
