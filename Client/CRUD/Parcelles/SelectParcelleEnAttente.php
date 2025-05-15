@@ -19,7 +19,7 @@ $user_id = $_SESSION['user_id_user'] ?? null;
                     WHERE User_id = :user_id 
                     AND Status_res = 'attente'
                     AND Status_parc = 'dispo' 
-                    AND Date_res >= CURDATE()";
+                    AND (Date_res <= CURDATE() OR Date_res >= CURDATE())";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
 

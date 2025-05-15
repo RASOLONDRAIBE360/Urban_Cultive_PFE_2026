@@ -26,8 +26,23 @@ $id_res = $_POST["id_res"];
                 ':id_res'=>$id_res,
             ]);
 
-             
-            if ($pdoStatement->rowCount() > 0){
+            $sqlRequestEmail = "SELECT Email 
+            FROM users
+            INNER JOIN reservation_parc 
+            ON users.User_id = reservation_parc.User_id
+            WHERE reservation_parc.Id_res = :id_res";
+
+            $emailPrepare = $MysqlClient->prepare($sqlRequestEmail);
+
+            $emailPrepare->execute([
+                'id_res' => $id_res,
+            ]);
+
+            $Utilisateurs = $emailPrepare->fetchAll(PDO::FETCH_ASSOC);
+        
+            $_SESSION['Utilisateurs'] = $Utilisateurs;
+
+            if ($pdoStatement->rowCount() > 0 && $emailPrepare->rowCount() > 0){
                 $_SESSION['successValidation'] = "Reservation refusé";
                 echo '<script>window.location.href="../../Site_web_admin/Reservation.php?showModal=1";</script>';
             } else {
