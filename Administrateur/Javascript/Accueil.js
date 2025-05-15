@@ -17,7 +17,7 @@ if (showModal) {
     ouvrirModal("modal" + showModal); // Ouvre "modal2" si showModal=2
 }
 
- // Sélectionner tous les liens de navigation
+// Sélectionner tous les liens de navigation
 const navLinks = document.querySelectorAll('.sidebar ul li a');
 
 // Obtenir uniquement le chemin de l'Url actuelle (sans le domaine)

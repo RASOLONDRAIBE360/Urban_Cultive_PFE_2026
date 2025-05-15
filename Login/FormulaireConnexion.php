@@ -10,7 +10,6 @@
     <?php session_start();?>
     <div class="container">
         <div class="left">
-
             <h2>Se connecter</h2>
             <form action="../CRUD/Connexion/SelectConnexion.php" method="post">
                 <div class="input-group">

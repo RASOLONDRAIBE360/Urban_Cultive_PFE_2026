@@ -9,7 +9,7 @@
 <body>
     <?php session_start();?>
 
-    <div class="signup-container">
+    <section class="signup-container">
         <form class="signup-form" action="../CRUD/Inscription/CreateInscription.php" method="post">
             <h2>Créer un compte</h2>
 
@@ -106,6 +106,6 @@
                 <p>Vous avez déjà un compte ? <a href="FormulaireConnexion.php">Se connecter</a></p>
             </div>
         </form>
-    </div>
+    </section>
 </body>
 </html>

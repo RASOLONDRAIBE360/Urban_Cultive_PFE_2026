@@ -19,8 +19,7 @@ $user_id = $_SESSION['user_id_user'] ?? null;
                     ON info_parc.Id_parc = reservation_parc.Id_parc 
                     WHERE User_id = :user_id 
                     AND Status_res = 'valide' 
-                    AND Date_res >= CURDATE()                    
-                    AND Date_fin > CURDATE()";
+                    AND Date_res <= CURDATE()";
 
             $dbprepare = $mysqlClient->prepare($sqlQuery);
             

@@ -123,7 +123,7 @@
 
                         $warning_icon = ""; // Par défaut, pas d'icône
 
-                        if (strtotime($reservation['Date_res']) <= strtotime($one_week_later) && $reservation['Status_res'] == 'attente') {
+                        if ((strtotime($reservation['Date_res']) <= strtotime($one_week_later) && $reservation['Status_res'] == 'attente') || (strtotime($reservation['Date_res']) == strtotime($todayFormatted) && $reservation['Status_res'] == 'attente')) {
                             $warning_icon = "<i class='fas fa-exclamation-circle' style='color:red;' title='Urgent : Prise à effet de la date dans moins de 7 jours'></i>";
                         } elseif (strtotime($reservation['Date_res']) <= strtotime($two_weeks_later) && $reservation['Status_res'] == 'attente') {
                             $warning_icon = "<i class='fas fa-exclamation-triangle' style='color:orange;' title='Attention : Prise à effet de la date dans moins de 14 jours'></i>";
