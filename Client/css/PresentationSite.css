@@ -154,12 +154,13 @@ header h1 {
 }
 
 .parcelles {
-    display: flex; /* au lieu de inline-block */
+    display: flex;
     justify-content: center;
     gap: 30px;
-    padding-top: 95px;
+    padding-top: 40px;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
 }
 
 .card {
@@ -196,4 +197,78 @@ header h1 {
 .card-content {
     text-align: center;
     padding: 10px;
+}
+
+#Fonctionnalite {
+    padding: 60px 20px;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fff;
+    position: relative;
+    bottom: 200px;
+    margin-top: 300px;
+}
+
+#Fonctionnalite h2 {
+  font-size: 3.0rem;
+  font-weight: 700;
+  color: rgb(109 157 80);
+  margin-bottom: 10px;
+}
+
+#Fonctionnalite .description {
+    font-size: 1.3rem;
+    color: #4f4f4f;
+    max-width: 700px;
+    margin: 0 auto 50px;
+}
+
+.fonctionnalites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.bloc {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: left;
+    display: flex;
+    gap: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease;
+    position: relative;
+    top: 60px;
+}
+
+.bloc:hover {
+  transform: translateY(-4px);
+}
+
+.bloc .icon {
+  background-color: #eafaf1;
+  color: #2ecc71;
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.bloc h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #1d1d1f;
+  font-weight: 600;
+}
+
+.bloc p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
 }

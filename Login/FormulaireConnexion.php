@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page de Connexion - Administrateur</title>
     <link rel="stylesheet" href="../Administrateur/css/Connexion.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
     <?php session_start();?>
+    <button class="btn-retour" onclick="window.location.href='../Introduction/PresentationSite.php'"><i class="fa-solid fa-house"></i></button>
     <div class="container">
         <div class="left">
             <h2>Se connecter</h2>

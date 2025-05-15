@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if($mail->send()){ 
             $_SESSION['successEmail'] = "Email envoyé avec succès !";
-            echo '<script>window.location.href = "../Site_web_admin/Reservation.php?showModal=1";</script>';
+            echo '<script>window.location.href = "../Site_web_admin/Reservation.php";</script>';
             exit;
         } else {
             $_SESSION['erreurEmail'] = "Echec de l'envoie d'email";

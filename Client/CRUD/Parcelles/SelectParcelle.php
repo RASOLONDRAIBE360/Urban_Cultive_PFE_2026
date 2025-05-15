@@ -15,7 +15,8 @@ require_once (__DIR__.'/../../../Config/MySQL.php');
                         LEFT JOIN reservation_parc
                         ON info_parc.Id_res = reservation_parc.Id_res
                         SET Status_parc = 'dispo'
-                        WHERE info_parc.Id_res is NULL";
+                        WHERE (info_parc.Id_res IS NULL OR info_parc.Id_res IS NOT NULL) 
+                        AND (Status_res = 'attente' OR Status_res = 'refus')";
             
             $dbRequestUpdate = $mysqlClient->prepare($sqlRequestUpdate);
 

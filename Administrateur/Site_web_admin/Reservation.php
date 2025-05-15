@@ -12,14 +12,12 @@
     <?php session_start(); ?>
     <?php require_once(__DIR__.'/../CRUD/Reservations/SelectReservation.php')?>
     <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
-
-    <div class="main-content">
-    
     <?php require_once(__DIR__.'/../CRUD/Reservations/CountReservation.php')?>
     <?php require_once(__DIR__.'/../CRUD/Locataires/CountLocataires.php')?>
     <?php require_once(__DIR__.'/../CRUD/Parcelles/CountParcelles.php')?>
 
-    <?php require_once(__DIR__.'/../Header/Header.php')?>
+    <div class="main-content">
+        <?php require_once(__DIR__.'/../Header/Header.php')?>
 
     <div class="recent-orders">
         <h2>Liste Reservation(s)</h2>
@@ -110,9 +108,9 @@
                         $todayFormatted = $today->format('Y-m-d');
 
                         if ($reservation['Date_limite'] <= $todayFormatted AND $reservation['Status_envoie'] == 0){
-                            header('Location: ../CRUD/MailAutomatise.php');
+                            echo "<script> window.location.href = '../CRUD/MailAutomatise.php'</script>;";
                         } else if ($reservation['Date_fin'] == $todayFormatted AND $reservation['Status_envoie'] == 1){
-                            header('Location: ../CRUD/MailAutomatise.php');
+                            echo "<script> window.location.href = '../CRUD/MailAutomatise.php'</script>;";
                             //Pour vérifier que le fichier dont j'essaie d'accéder se trouve réellement au bon endroit j'utilise
                             /*var_dump(file_exists(__DIR__.'/../CRUD/MailAutomatise.php'));*/
                         }
@@ -160,7 +158,6 @@
                         <form action="../CRUD/Reservations/AttenteReservation.php" method="post">
 
                             <input type="hidden" name="id_res" value="<?php echo $reservation['Id_res']; ?>">
-                            <?php $_SESSION['id_res'] = $reservation['Id_res'];?>
                             <button class="btn edit-btn" type="submit">MISE EN ATTENTE</button>
 
                         </form>
@@ -243,11 +240,8 @@
                 </p>
                 <?php unset($_SESSION['erreurEmail']);?>
             <?php endif;?>
-
-            <?php require_once(__DIR__.'/../CRUD/Reservations/SelectPartielleReservation.php') ?>
-
+            
             <?php $Utilisateurs = $_SESSION['Utilisateurs'];?>
-
             <?php foreach($Utilisateurs as $Utilisateur):?>
                 <input type="email" name="dest" value="<?php echo $Utilisateur['Email']; ?>" readonly style="color: #5e5e5e; background: #fafafa; cursor: default; border-color: #ccc; caret-color: transparent;">
             <?php endforeach;?>

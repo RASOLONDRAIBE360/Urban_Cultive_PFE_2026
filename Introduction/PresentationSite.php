@@ -71,6 +71,43 @@
             </div>
         <?php endforeach;?>
     </section>
+    <section id="Fonctionnalite">
+    <h2>Nos Fonctionnalités</h2>
+    <p class="description">Découvrez tous les outils mis à votre disposition pour une gestion optimale et collaborative de vos parcelles.</p>
+
+    <div class="fonctionnalites-grid">
+        <div class="bloc">
+        <div class="icon">📌</div>
+        <div>
+            <h3>Réservation en ligne</h3>
+            <p>Réservez vos parcelles disponibles en quelques clics.</p>
+        </div>
+        </div>
+
+        <div class="bloc">
+        <div class="icon">🗑️</div>
+        <div>
+            <h3>Partage d'avis</h3>
+            <p>Échangez des conseils sur la culture des parcelles.</p>
+        </div>
+        </div>
+
+        <div class="bloc">
+        <div class="icon">✏️</div>
+        <div>
+            <h3>Notifications</h3>
+            <p>Recevez des alertes importantes par email.</p>
+        </div>
+        </div>
+
+        <div class="bloc">
+        <div class="icon">🏡</div>
+        <div>
+            <h3>Accès</h3>
+            <p>Consultez les informations des parcelles déjà louées.</p>
+        </div>
+        </div>
+    </section>
 
     <script src="../Client/Javascript/Accueil.js"></script>
     <script src="../Client/Javascript/PresentationSite.js"></script>

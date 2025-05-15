@@ -14,17 +14,24 @@ $conf_password = $_POST['conf_password'] ?? null;
 if (strlen($motDePasse) < 8){
     
     $_SESSION['erreurPwd1'] = "Le mot de passe doit contenir au moins 8 caractères.";
-    echo '<script>window.location.href = "../../Login/FormulaireInscription.php";</script>'; 
+    header('Location: ../../Login/FormulaireInscription.php');
     exit();
 }
 
 if($motDePasse != $conf_password){
 
     $_SESSION['erreurPwd2'] = "Les mots de passe ne correspondent pas.";
-    echo '<script>window.location.href = "../../Login/FormulaireInscription.php";</script>';
+    header('Location: ../../Login/FormulaireInscription.php');
     exit();
     
 }
+
+if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['erreurEmail'] = "Adresse e-mail invalide!!!";
+    header('Location: ../../Login/FormulaireInscription.php');
+    exit();
+}else{
+
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),
@@ -75,6 +82,6 @@ if($motDePasse != $conf_password){
 
         } catch (Exception $exception) {
             die('Erreur : ' . $exception->getMessage());
-        }     
-
+        }   
+}  
 ?>

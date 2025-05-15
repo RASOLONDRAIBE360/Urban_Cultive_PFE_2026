@@ -13,6 +13,24 @@ body {
     background-color: #f4f4f4;
 }
 
+.btn-retour{
+    padding: 12px 24px;
+    margin: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(#6f8d78, #4e8f62);    border: none;
+    border-radius: 60px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    position: relative;
+    top: 190px;
+    left: 400px;
+}
+
 .container {
     display: flex;
     width: 90%;
