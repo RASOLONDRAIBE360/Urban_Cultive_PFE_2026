@@ -1,0 +1,55 @@
+/* chic-alerts.css */
+.chic-alert-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.chic-alert {
+    min-width: 300px;
+    padding: 15px 25px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    pointer-events: auto;
+}
+
+.chic-alert.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.chic-alert.success {
+    border-left: 5px solid #2d6a4f;
+    color: #1b4332;
+}
+
+.chic-alert.error {
+    border-left: 5px solid #c92a2a;
+    color: #a01a1a;
+}
+
+.chic-alert-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
