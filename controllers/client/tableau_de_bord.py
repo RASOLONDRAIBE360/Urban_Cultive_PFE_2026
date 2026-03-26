@@ -103,17 +103,10 @@ horaire_arrosage = {
 # Topic pour publication de l'etat des pompes
 topic_etat_pompe = "status/pompe"
 
-# ---------------------- INITIALISATION DES VARIABLES POUR LE SERVICE IA ------------------------
+# ---------------------- CONFIGURATION DE LA CONNEXION A LA BASE DE DONNEES ------------------------
 # Instanciation pour la gestion de la connexion à la base de données
 db_config = DBConfig()
-
-# Instanciation du service AgriAI pour l'utilisation du modèle d'IA
-agri_ai_service = AgriAIService()
-
-# Instanciation de la classe CreateAlerteAI pour l'insertion 
-# des alertes dans la base de données
-create_alerte_ai = CreateAlerteAI(db_config)
-# ---------------------- INITIALISATION DES VARIABLES POUR LE SERVICE IA ------------------------
+# ---------------------- CONFIGURATION DE LA CONNEXION A LA BASE DE DONNEES ------------------------
 
 arduino_service.init_arduino(ip_arduino)
 
@@ -226,15 +219,6 @@ def on_message(client, userdata, msg):
             # Activation automatique lorsque : "LE SOL EST SEC + LA TEMPERATURE EST ELEVE + LA LUMINOSITE EST FAIBLE"
             # La luminosite doit être faible pour éviter l'évaporation de l'eau en contact avec le soleil
             if humidite < 40 and temp > 35 and luminosite < 15000:
-                # Instruction pour pouvoir envoyer à l'IA les données de capteur à analyser pour
-                # y retourner le résultat (label) qui sera utilisé pour pouvoir renvoyer 
-                # les recommandations au client
-                # Retourne un dictionnaire avec les clés : "msg", "action", "humidity", "temperature", "luminosity"
-                prediction_ai = agri_ai_service.predict_label(humidite, temp, luminosite)
-
-                # On enregistre la prédiction de l'IA  dans la base de données
-                create_alerte_ai.create_alerte_ai(id_parc, prediction_ai)
-
                 if horaire_arrosage[id_parc] is None:
                     horaire_arrosage[id_parc] = time.time()
                 else :
@@ -253,15 +237,6 @@ def on_message(client, userdata, msg):
 
             # Activation automatique lorsque : "LA TEMPERATURE EST ELEVE + LA LUMINOSITE EST FAIBLE"
             elif humidite > 60:#luminosite < 15000 and temp > 30:
-                # Instruction pour pouvoir envoyer à l'IA les données de capteur à analyser pour
-                # y retourner le résultat (label) qui sera utilisé pour pouvoir renvoyer 
-                # les recommandations au client
-                # Retourne un dictionnaire avec les clés : "msg", "action", "humidity", "temperature", "luminosity"
-                prediction_ai = agri_ai_service.predict_label(humidite, temp, luminosite)
-
-                # On enregistre la prédiction de l'IA  dans la base de données
-                create_alerte_ai.create_alerte_ai(id_parc, prediction_ai)
-
                 if horaire_arrosage[id_parc] is None:
                     horaire_arrosage[id_parc] = time.time()
                 else :
