@@ -30,7 +30,9 @@ $id_parc = $_POST['id_parc'] ?? null;
             }
             
         } catch (Exception $exception) {
-            die('Erreur lors de la tentative de suppression de parcelle : ' . $exception->getMessage());
+            $_SESSION['erreurSuppression'] = "Erreur technique : " . $exception->getMessage();
+            echo "<script>window.location.href = '../../../../views/administrateur/Site_web_admin/Parcelle.php';</script>";
+            exit();
         }
 
 ?>

@@ -20,7 +20,7 @@ class DBConfig:
             # Chaque paire (clé, valeur) ont été récupérés du dictionnaire self.DB_SETTINGS et ont été insérés
             # comme arguments à la fonction .connect()
             self.conn = mysql.connector.connect(**self.DB_SETTINGS)
-
+    
             # self.cursor -> permet de créer un curseur pour exécution des requêtes SQL
             self.cursor = self.conn.cursor()
 

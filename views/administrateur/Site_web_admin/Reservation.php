@@ -170,95 +170,51 @@
     </div>
     </div>
 
+    <!-- MODAL MIS EN COMMENTAIRE POUR AUTOMATISATION DES MAILS -->
+    <!--
     <div class="form-container" id="modal1">
         <div class="modal-content">
-
         <h1> VALIDATION RESERVATION </h1>
         <span class="fermer" onclick="fermerModal('modal1')">&times;</span>
-        
-        <?php if(isset($_SESSION['successValidation'])) :?>
-            <p style="color: green; 
-                          font-weight: bold; 
-                          text-align: center;
-                          position: relative;
-                          bottom: 10px;">
-                          
-                    <?php echo $_SESSION['successValidation'];?>
-
-            </p>
-            <?php unset($_SESSION['successValidation']);?>
-        <?php endif;?>
-
-        <?php if(isset($_SESSION['erreurValidation'])) :?>
-            <p style="color: red; 
-                          font-weight: bold; 
-                          text-align: center;
-                          position: relative;
-                          bottom: 10px;">
-                          
-                    <?php echo $_SESSION['erreurValidation'];?>
-
-            </p>
-            <?php unset($_SESSION['erreurValidation']);?>
-        <?php endif;?>
-
-        <?php if(isset($_SESSION['successEmail'])) :?>
-            <p style="color: green; 
-                          font-weight: bold; 
-                          text-align: center;
-                          position: relative;
-                          bottom: 10px;">
-                          
-                    <?php echo $_SESSION['successEmail'];?>
-
-            </p>
-            <?php unset($_SESSION['successEmail']);?>
-        <?php endif;?>
-
         <form action="../../../models/CRUD/mail/Mail.php" method="post">
-
-            <?php if(isset($_SESSION['successEmail'])) :?>
-                <p style="color: green; 
-                            font-weight: bold; 
-                            text-align: center;
-                            position: relative;
-                            bottom: 10px;">
-                            
-                            <?php echo $_SESSION['successEmail'];?>
-
-                </p>
-                <?php unset($_SESSION['successEmail']);?>
-            <?php endif;?>
-            <?php if(isset($_SESSION['erreurEmail'])) :?>
-                <p style="color: red; 
-                            font-weight: bold; 
-                            text-align: center;
-                            position: relative;
-                            bottom: 10px;">
-                            
-                            <?php echo $_SESSION['erreurEmail'];?>
-
-                </p>
-                <?php unset($_SESSION['erreurEmail']);?>
-            <?php endif;?>
-            
-            <?php $Utilisateurs = $_SESSION['Utilisateurs'];?>
-            <?php foreach($Utilisateurs as $Utilisateur):?>
-                <input type="email" name="dest" value="<?php echo $Utilisateur['Email']; ?>" readonly style="color: #5e5e5e; background: #fafafa; cursor: default; border-color: #ccc; caret-color: transparent;">
-            <?php endforeach;?>
-            
             <label for="objet">Objet</label>
             <input type="text" id="objet" name="objet">
-
             <label for="message">Message</label>
             <textarea id="message" name="message" cols="65" rows="5" required></textarea>
-
             <button type="submit">Envoyer</button>
-
         </form>
         </div>
     </div>
-    
+    -->
+
+    <?php if(isset($_SESSION['successValidation'])) :?>
+        <p style="color: green; font-weight: bold; text-align: center; position: relative; bottom: 10px;">
+            <?php echo $_SESSION['successValidation'];?>
+        </p>
+        <?php unset($_SESSION['successValidation']);?>
+    <?php endif;?>
+
+    <?php if(isset($_SESSION['erreurUpdateValidation'])) :?>
+        <p style="color: red; font-weight: bold; text-align: center; position: relative; bottom: 10px;">
+            <?php echo $_SESSION['erreurUpdateValidation'];?>
+        </p>
+        <?php unset($_SESSION['erreurUpdateValidation']);?>
+    <?php endif;?>
+
+    <?php if(isset($_SESSION['successEmail'])) :?>
+        <p style="color: green; font-weight: bold; text-align: center; position: relative; bottom: 10px;">
+            <?php echo $_SESSION['successEmail'];?>
+        </p>
+        <?php unset($_SESSION['successEmail']);?>
+    <?php endif;?>
+
+    <?php if(isset($_SESSION['erreurEmail'])) :?>
+        <p style="color: red; font-weight: bold; text-align: center; position: relative; bottom: 10px;">
+            <?php echo $_SESSION['erreurEmail'];?>
+        </p>
+        <?php unset($_SESSION['erreurEmail']);?>
+    <?php endif;?>
+
     <script src="../../../public/assets/javascript/administrateur/Accueil.js"></script>
 </body>
 </html>

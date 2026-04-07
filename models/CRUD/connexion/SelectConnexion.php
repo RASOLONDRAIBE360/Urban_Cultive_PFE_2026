@@ -82,7 +82,9 @@ $password = $_POST['password'] ?? null;
             }
 
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurEmail'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href = "../../../views/login/FormulaireConnexion.php";</script>';
+            exit();
             }
 
 ?>

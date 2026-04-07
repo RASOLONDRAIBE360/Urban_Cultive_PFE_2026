@@ -75,13 +75,16 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                             $_SESSION['success'] = "Inscription réussie !";
                             echo "<script>window.location.href = '../../../views/login/FormulaireInscription.php';</script>";
                         } else {
-                            echo "<script> alert('Erreur lors de l\'inscription.'); window.location.href = '../../../views/login/FormulaireInscription.php';</script>";
+                            $_SESSION['erreurCreate'] = "Erreur lors de l'inscription.";
+                            echo "<script>window.location.href = '../../../views/login/FormulaireInscription.php';</script>";
                         }
 
                 }
 
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurCreate'] = "Erreur technique : " . $exception->getMessage();
+            echo "<script>window.location.href = '../../../views/login/FormulaireInscription.php';</script>";
+            exit();
         }   
 }  
 ?>

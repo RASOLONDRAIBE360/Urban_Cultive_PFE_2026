@@ -46,14 +46,49 @@ $id_res = $_POST["id_res"];
 
             if ($pdoStatement->rowCount() > 0 && $emailPrepare->rowCount() > 0){
                 $_SESSION['successValidation'] = "Reservation mise en attente";
-                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php?showModal=1";</script>';
+
+                // ENVOI AUTOMATIQUE D'EMAIL D'ATTENTE
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/PHPMailer.php');
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/Exception.php');
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/SMTP.php');
+                
+                $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'rstevybryan@gmail.com';
+                    $mail->Password = 'bxka xoez zjyk ppfe';
+                    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                    $mail->CharSet = 'UTF-8';
+                    $mail->setFrom('rstevybryan@gmail.com', 'Urban Cultive Admin');
+                    
+                    $destinataire = $Utilisateurs[0]['Email'];
+                    $mail->addAddress($destinataire);
+                    $mail->isHTML(true);
+                    $mail->Subject = "Votre réservation est toujours en attente";
+                    $mail->Body = "<h2>Demande en cours de traitement</h2>
+                                  <p>Bonjour, votre réservation est actuellement en cours d'examen par notre équipe d'administration.</p>
+                                  <p>Nous reviendrons vers vous très prochainement avec une réponse définitive.</p>";
+                    $mail->send();
+                    $_SESSION['successEmail'] = "Email d'attente envoyé avec succès !";
+                } catch (Exception $e) {
+                    $_SESSION['erreurEmail'] = "Erreur lors de l'envoi automatique : {$mail->ErrorInfo}";
+                }
+
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
+                exit();
             } else {
-                $_SESSION['erreurValidation'] = "Reservation déjà mise en attente";
-                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php?showModal=1";</script>';
+                $_SESSION['erreurValidation'] = "Reservation déjà mise en attente ou introuvable";
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
+                exit();
             }
 
         }catch(Exception $exception){
-            die('Erreur :'. $exception->getMessage());
+            $_SESSION['erreurUpdateValidation'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
+            exit();
         }
 
 ?>

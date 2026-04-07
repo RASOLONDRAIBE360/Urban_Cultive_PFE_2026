@@ -118,7 +118,9 @@ $date_debut = $_POST['date_debut'] ?? null;
             }
 
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurReservation'] = "Erreur technique : " . $exception->getMessage();
+            echo "<script>window.location.href = '../../gestionReservation/FormulaireReservation.php';</script>";
+            exit();
         }
         
 

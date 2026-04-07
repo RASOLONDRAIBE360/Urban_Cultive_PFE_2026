@@ -13,7 +13,9 @@ $email = $_POST['email'];
 $id = $_POST['id'];
 
 if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-    echo '<script>alert("Verifier le format de l\'email saisie."); window.location.href="../../../views/administrateur/Site_web_admin/Accueil.php";</script>';
+    $_SESSION['erreurUpdate'] = "Verifier le format de l'email saisie.";
+    echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php";</script>';
+    exit();
 } else {
 
         try{
@@ -66,14 +68,16 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
                         $_SESSION['role_user'] = $utilisateur['Role'];
                     }
                 }
-                echo '<script>window.location.href="../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
             } else {
                 $_SESSION['erreurUpdate'] = "Aucune modification apportée.";
-                echo '<script>window.location.href="../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
             }
 
         }catch(Exception $exception){
-            die('Erreur :'. $exception->getMessage());
+            $_SESSION['erreurUpdate'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php";</script>';
+            exit();
         }
 }
 ?>

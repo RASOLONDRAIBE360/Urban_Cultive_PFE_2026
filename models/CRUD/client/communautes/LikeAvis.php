@@ -81,6 +81,8 @@ try {
     exit;
 
 } catch (Exception $e) {
-    die('Erreur : ' . $e->getMessage());
+    $_SESSION['erreurPublication'] = "Erreur technique : " . $e->getMessage();
+    header('Location: ../../../../views/client/site_web_user/Avis.php');
+    exit();
 }
 ?>

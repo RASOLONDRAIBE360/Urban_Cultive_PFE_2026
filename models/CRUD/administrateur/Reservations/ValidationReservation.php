@@ -47,16 +47,49 @@ $id_res = $_POST["id_res"];
 
             if ($pdoStatement->rowCount() > 0 && $emailPrepare->rowCount() > 0){
                 $_SESSION['successValidation'] = "Reservation validé";
-                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php?showModal=1";</script>';
+
+                // ENVOI AUTOMATIQUE D'EMAIL DE VALIDATION
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/PHPMailer.php');
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/Exception.php');
+                require_once(__DIR__.'/../../../../vendor/PHPMailer/src/SMTP.php');
+                
+                $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'rstevybryan@gmail.com';
+                    $mail->Password = 'bxka xoez zjyk ppfe';
+                    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                    $mail->CharSet = 'UTF-8';
+                    $mail->setFrom('rstevybryan@gmail.com', 'Urban Cultive Admin');
+                    
+                    $destinataire = $Utilisateurs[0]['Email'];
+                    $mail->addAddress($destinataire);
+                    $mail->isHTML(true);
+                    $mail->Subject = "Confirmation de votre réservation";
+                    $mail->Body = "<h2>Votre réservation a été validée !</h2>
+                                  <p>Bonjour, nous avons le plaisir de vous informer que votre réservation a été acceptée et validée par l'administrateur.</p>
+                                  <p>Vous pouvez maintenant profiter de votre parcelle.</p>";
+                    $mail->send();
+                    $_SESSION['successEmail'] = "Email envoyé automatiquement avec succès !";
+                } catch (Exception $e) {
+                    $_SESSION['erreurEmail'] = "Erreur lors de l'envoi automatique : {$mail->ErrorInfo}";
+                }
+
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
                 exit();
             } else {
-                $_SESSION['erreurValidation'] = "Reservation déjà validé";
-                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php?showModal=1";</script>';
+                $_SESSION['erreurValidation'] = "Reservation déjà validé ou introuvable";
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
                 exit();
             }
         
         }catch(Exception $exception){
-            die('Erreur :'. $exception->getMessage());
+            $_SESSION['erreurUpdateValidation'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Reservation.php";</script>';
+            exit();
         }
 
 ?>

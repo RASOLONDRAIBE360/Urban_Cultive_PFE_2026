@@ -26,7 +26,7 @@ require_once (__DIR__.'/../../../../config/MySQL.php');
             $listeAvis = $dbprepare->fetchAll(PDO::FETCH_ASSOC);
             
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurAvis'] = "Erreur technique : " . $exception->getMessage();
         }
 
 ?>

@@ -44,7 +44,9 @@ $id_avis = $_POST['id_avis'] ?? null;
 
             
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurDeleteAvis'] = "Erreur technique : " . $exception->getMessage();
+            header('Location: ../../../../views/administrateur/Site_web_admin/Avis.php');
+            exit();
         }
 
 ?>

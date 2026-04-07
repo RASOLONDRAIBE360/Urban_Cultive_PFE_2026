@@ -47,7 +47,9 @@ try{
     exit;
 
     } catch(Exception $exception){
-        die('Erreur :'. $exception->getMessage());
+        $_SESSION['erreurUpdateReservation'] = "Erreur technique : " . $exception->getMessage();
+        header("Location: ../../../../views/client/site_web_user/Reservation.php");
+        exit();
     }
 
 ?>

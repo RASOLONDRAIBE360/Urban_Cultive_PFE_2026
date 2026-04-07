@@ -94,6 +94,8 @@ $id_parc = $_POST['id_parc'];
             }
             
     }catch(Exception $exception){
-        die('Erreur :'. $exception->getMessage());
+        $_SESSION['erreurUpdate'] = "Erreur technique : " . $exception->getMessage();
+        echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Parcelle.php";</script>';
+        exit();
     }
 ?>

@@ -7,6 +7,7 @@ import time as t_sleep
 import jwt
 import json
 from streamlit_cookies_manager import EncryptedCookieManager
+import pandas as pd
 
 st.set_page_config(page_title="Dashboard IoT", layout="wide")
 
@@ -41,7 +42,7 @@ if token:
         cookies.save()
         st.query_params.clear()        
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-        st.warning("Veuillez passer par la plateforme PHP pour accéder au Tableau de bord")
+        st.toast("Veuillez passer par la plateforme PHP pour accéder au Tableau de bord", icon="⚠️")
         
 elif st.session_state.parcelle_data is None and 'saved_data' in cookies:
     # Si la cookie est présente on charge les données qui y sont stockées pour 
@@ -55,7 +56,7 @@ parcelle_data = st.session_state.parcelle_data
 with st.sidebar: 
     selected = option_menu( 
         menu_title="MENU", 
-        options=["Tableau de bord", "Alerte & recommandation"], 
+        options=["Tableau de bord", "Analyse des données"], 
         orientation="vertical", 
         styles={ 
             "container": {"padding": "0!important", "background-color": "#f0f2f6"}, 
@@ -67,11 +68,16 @@ with st.sidebar:
     list_id_parc = [p["Id_parc"] for p in parcelle_data]
     choix_parcelle = st.selectbox("choix parcelle", list_id_parc)
 
+# ---------------------------------------- INTERFACE DU TABLEAU DE BORD STREAMLIT ------------------------------------------------
 if selected == "Tableau de bord":
     #------------------------ CONTROLE DES LED --------------------------------------#
     ############ DEBUT 
 
-    st.title("MONITORING EN TEMPS REEL")        
+    st.markdown("""
+        <h1 style='text-align: left; margin-top: -95px; margin-bottom: 30px; font-size: 40px; font-weight: 700;'>
+            MONITORING EN TEMPS REEL
+        </h1>
+    """, unsafe_allow_html=True)        
 
     #------------------------ RECUPERATION DONNE CAPTEUR --------------------------------------#
     # -------------------------------------------------------------
@@ -90,63 +96,67 @@ if selected == "Tableau de bord":
                 justify-content: center;
                 align-items: center;
                 font-family: 'Inter', sans-serif;
-                margin-top: 40px; /* Plus de décalage avec le haut de la page */
-                flex-wrap: wrap;
-                gap: 40px; /* Plus d'espace (décalage) entre les boîtes */
+                margin-top: 30px;
+                flex-wrap: nowrap;
+                gap: 80px;
             }}
 
             .data-box {{
                 background: #ffffff;
-                border: 1px solid #f1f5f9; /* Bordure ultra discrète */
-                border-radius: 20px; /* Arrondis très doux */
-                padding: 30px; /* Énormément d'espace à l'intérieur pour respirer */
-                width: 220px; /* Boîtes élargies */
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02); /* Ombre presque invisible, juste pour le volume */
+                border: 1px solid #edf2f7;
+                border-radius: 16px;
+                padding: 22px 18px;
+                width: 190px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
                 display: flex;
                 flex-direction: column;
-                align-items: flex-start; /* Alignement à gauche (très professionnel) */
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                align-items: center;
+                text-align: center;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }}
 
-            /* Animation au survol tout en douceur */
             .data-box:hover {{
-                transform: translateY(-5px);
-                box-shadow: 0 15px 45px rgba(0, 0, 0, 0.06); 
+                transform: translateY(-4px);
+                box-shadow: 0 12px 20px rgba(0, 0, 0, 0.06);
+                border-color: #e2e8f0;
             }}
 
-            /* Icône dans un carré arrondi (Squircle : style iOS) */
             .icon-wrapper {{
-                width: 48px;
-                height: 48px;
-                border-radius: 14px; 
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin-bottom: 30px; /* Décalage très prononcé entre l'icône et les textes */
-                font-size: 20px;
+                margin-bottom: 15px;
+                font-size: 18px;
+                transition: transform 0.3s ease;
+            }}
+
+            .data-box:hover .icon-wrapper {{
+                transform: scale(1.1);
             }}
             
-            /* Couleurs pastel très raffinées pour les icônes */
-            .hum-box .icon-wrapper {{ background: #eff6ff; color: #3b82f6; }}
-            .temp-box .icon-wrapper {{ background: #fef2f2; color: #ef4444; }}
+            .hum-box .icon-wrapper {{ background: #f0f9ff; color: #0ea5e9; }}
+            .temp-box .icon-wrapper {{ background: #fff1f2; color: #f43f5e; }}
             .lum-box .icon-wrapper {{ background: #fffbeb; color: #f59e0b; }}
 
-            /* Le titre du capteur (petit et adouci) */
             .data-box h5 {{
                 margin: 0;
-                font-size: 14px;
-                color: #94a3b8; /* Gris clair élégant */
-                font-weight: 500; /* Police ni trop fine, ni trop grasse */
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #64748b;
+                font-weight: 600;
             }}
 
-            /* La valeur dynamique (Grosse et impactante) */
             .data-box span {{
                 display: block;
-                margin-top: 8px; /* Léger décalage avec le petit titre */
-                font-size: 32px; /* Valeur plus grosse */
+                margin-top: 6px;
+                font-size: 26px;
                 font-weight: 700;
-                color: #0f172a; /* Gris très sombre, quasiment noir */
-                letter-spacing: -0.5px; /* Rapproche légèrement les chiffres pour un look moderne */
+                color: #1e293b;
+                letter-spacing: -0.02em;
             }}
         </style>
 
@@ -206,7 +216,7 @@ if selected == "Tableau de bord":
                     const val_dht11 = message.toString();
                     const data_dht11 = JSON.parse(val_dht11);
                     
-                    if(data_dht11.temperature === "error" || data_dht11.temperature === -999) {{
+                    if(data_dht11.temperature === "error" || data_dht11.temperature === -999 || data_dht11.temperature === "undefined") {{
                         valueElement_temperature.innerText = "Erreur";
                     }} else {{
                         valueElement_temperature.innerText = data_dht11.temperature + " °C";
@@ -218,7 +228,7 @@ if selected == "Tableau de bord":
                     const val_bh1750 = message.toString();
                     const data_bh1750 = JSON.parse(val_bh1750);
                     
-                    if(data_bh1750.luminosite === "error" || data_bh1750.luminosite === -999){{
+                    if(data_bh1750.luminosite === "error" || data_bh1750.luminosite === -999 || data_bh1750.luminosite.luminosite === "undefined"){{
                         valueElement_luminosite.innerText = "Erreur";
                     }} else {{
                         valueElement_luminosite.innerText = data_bh1750.luminosite.toFixed(2) + " lx";
@@ -230,7 +240,7 @@ if selected == "Tableau de bord":
                     const val_raindrop_sensor = message.toString();
                     const data_raindrop_sensor = JSON.parse(val_raindrop_sensor);
                     
-                    if (data_raindrop_sensor.humidite === "error" || data_raindrop_sensor.humidite === -999){{
+                    if (data_raindrop_sensor.humidite === "error" || data_raindrop_sensor.humidite === -999 || data_raindrop_sensor.humidite === "undefined"){{
                         valueElement_humidite.innerText = "Erreur";
                     }} else {{
                         valueElement_humidite.innerText = data_raindrop_sensor.humidite + " %";
@@ -246,71 +256,35 @@ if selected == "Tableau de bord":
     # --- LE RESTE DE VOTRE INTERFACE (LED, ARROSAGE) ---
     st.divider()
 
-    # --- LE PLUS IMPORTANT : La pause ---
-    t_sleep.sleep(1)
+    col1, col2 = st.columns(2)
 
-    if 'mode_manuel' not in st.session_state :
-        st.session_state.mode_manuel = False
-    
-    def changer_etat_boutton():
-        st.session_state.mode_manuel = not st.session_state.mode_manuel
-    
-    label_button = "Mode : Auto" if not st.session_state.mode_manuel else "Mode : Manuel"
-
-    with st.container(border=True):
-        st.button(label_button, on_click=changer_etat_boutton, type="secondary")
-
-        if not st.session_state.mode_manuel:
-            payload = {
-                "mode": "auto"
-            }
-
-            response_activation_auto = requests.post(f"http://localhost:5000/mode/arrosage/id_parc={choix_parcelle}", json=payload)
-
-        elif st.session_state.mode_manuel:
-            payload={
-                "mode": "manuel"
-            }
-
-            response_activation_manuel = requests.post(f"http://localhost:5000/mode/arrosage/id_parc={choix_parcelle}", json=payload)
-            
-            col1, col2 = st.columns(2)
-
-            with col1:
-                if st.button('Activer Pompe'):
-                    try:
-                        response = requests.post(f"http://localhost:5000/led/on/id_parc={choix_parcelle}")
-                        data = response.json()
-                        
-                        if(data['status'] == "success"):
-                            st.success(f"{choix_parcelle} allume -> {data['message']} - {data['status']}")
-                        else:
-                            st.error("Erreur lors de l'activation de la pompe")
-
-                    except Exception as e:
-                        st.error("Serveur Flask injoignable")
-
-            with col2:
-                if st.button('Eteindre Pompe'):
-                    try:
-                        response = requests.post(f"http://localhost:5000/led/off/id_parc={choix_parcelle}")
-                        data = response.json()
-
-                        if(data['status'] == "success"):
-                            st.success(f"{choix_parcelle} eteint -> {data['message']} - {data['status']}")
-                        else:
-                            st.error("Erreur lors de l'extinction de la pompe")
-
-                    except Exception:
-                        st.error("Serveur Flask injoignable")
-    ############ FIN
-
-    col3, col4 = st.columns(2)
-    
-    with col3:
+    with col1:
         with st.container(border=True):
             st.markdown(""" <h1 style="font-size: 25px; font-weight: 15px"> 
-                                Statut Arrosage 
+                                Actions rapide 
+                            </h1>""", unsafe_allow_html=True)
+
+            if st.button("Forcer extinctions des pompes"):
+                try:
+                    payload = {
+                        "list_id_parc": list_id_parc
+                    }
+
+                    response = requests.post(f"http://localhost:5000/led/off", json=payload)
+                    data = response.json()
+
+                    if data["status_code"] == 200:
+                        st.toast(f"Extinction des pompes {list_id_parc} réussi.", icon="✅")
+                    else:
+                        st.toast("Erreur survenu lors de la tentative d'extinction des pompes.", icon="🛑")
+
+                except Exception as e:
+                    st.toast("Serveur Flask injoignable.", icon="⚠️")
+    
+    with col2:
+        with st.container(border=True):
+            st.markdown(""" <h1 style="font-size: 25px; font-weight: 15px"> 
+                                Status Arrosage 
                             </h1>""", unsafe_allow_html=True)
 
             with st.container(border=True):
@@ -330,6 +304,10 @@ if selected == "Tableau de bord":
                     # On affecte une valeur par défaut dans le cas où la requête échoue
                     except:
                         etat_arrosage = "Desactive"
+
+                        couleur_fond = "#f8d7da"
+                        couleur_bord = "red"
+                        texte = "Serveur Flask injoignable"
                     
                     # Affichage du statut de la pompe
                     affichage_etat_pompe = f"""
@@ -380,11 +358,92 @@ if selected == "Tableau de bord":
 
                         </script>
                     """
-
                     # On affiche la petite boîte pour statut arrosage 
                     components.html(affichage_etat_pompe, height=50)
 
-    with col4:
+    if 'mode_manuel' not in st.session_state :
+        st.session_state.mode_manuel = False
+    
+    @st.fragment
+    def bouton_commande_pompe(choix_parcelle, duree_arrosage):
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            if st.button('Activer Pompe'):
+                try:
+                    payload_duree_arrosage = {
+                        "duree_arrosage_manuelle": duree_arrosage,
+                    }
+
+                    response = requests.post(f"http://localhost:5000/led/on/id_parc={choix_parcelle}", json=payload_duree_arrosage)
+                    data = response.json()
+                    
+                    if(data['status_code'] == 200):
+                        st.toast(f"{choix_parcelle} allume -> {data['message']} - {data['status']}", icon="✅")
+                    else:
+                        st.toast(data['message'], icon="🛑")
+
+                except Exception as e:
+                    st.toast(f"Serveur Flask injoignable pour l'activation de la pompe -> {choix_parcelle}", icon="⚠️")
+
+        with col4:
+            if st.button('Eteindre Pompe'):
+                try:
+                    payload = {
+                        "list_id_parc": [f"{choix_parcelle}"]
+                    }
+                    
+                    response = requests.post(f"http://localhost:5000/led/off", json=payload)
+                    data = response.json()
+
+                    if data['status_code'] == 200:
+                        st.toast(f"{choix_parcelle} eteint -> {data['message']} - {data['status']}", icon="✅")
+                    else:
+                        st.toast("Erreur lors de l'extinction de la pompe", icon="🛑")
+
+                except Exception:
+                    st.toast("Serveur Flask injoignable pour désactivation de la pompe", icon="⚠️")
+
+    def changer_etat_bouton():
+        st.session_state.mode_manuel = not st.session_state.mode_manuel
+    
+    label_button = "Mode : Auto" if not st.session_state.mode_manuel else "Mode : Manuel"
+
+    with st.container(border=True):
+        st.button(label_button, on_click=changer_etat_bouton, type="secondary")
+
+        if not st.session_state.mode_manuel:
+            payload_mode = {
+                "mode": "auto"
+            }
+
+            try:
+                response_activation_auto = requests.post(f"http://localhost:5000/mode/arrosage/id_parc={choix_parcelle}", json=payload_mode)
+
+            except:
+                st.toast("Système inactif : \"Serveur Flask injoignable\"", icon="⚠️")
+                
+        elif st.session_state.mode_manuel:
+            payload_mode ={
+                "mode": "manuel"
+            }
+            
+            try:
+                # C'est pour arrêter le système d'évaluation automatique de la valeur des capteurs pour empêcher l'activation automatique des pompes
+                response_activation_manuel = requests.post(f"http://localhost:5000/mode/arrosage/id_parc={choix_parcelle}", json=payload_mode)
+            
+            except:
+                st.toast("Système inactif : \"Serveur Flask injoignable\"", icon="⚠️")
+
+            duree_arrosage_manuelle = st.number_input("Duree arrosage (secondes)", min_value = 0, max_value = 60, value=0, step=1)
+
+            bouton_commande_pompe(choix_parcelle, duree_arrosage_manuelle)
+    ############ FIN
+
+    col5, col6 = st.columns(2)
+
+    with col5:
         #------------------------ PROGRAMMATION ARROSAGE --------------------------------------#
         ############ DEBUT 
         with st.form(key="programmation_arrosage"):
@@ -398,7 +457,7 @@ if selected == "Tableau de bord":
                 heure = st.number_input("Heure", min_value=0, max_value=23, value=0, step=1)
 
             with c2:
-                st.markdown("<h1  style='text-align: center; padding-top: 15px;'>:</h1>", unsafe_allow_html=True)
+                st.markdown("<h1 style='text-align: center; padding-top: 15px;'>:</h1>", unsafe_allow_html=True)
 
             with c3:
                 minute = st.number_input("Minute", min_value=0, max_value=59, value=0, step=1)
@@ -406,38 +465,179 @@ if selected == "Tableau de bord":
             heure_formate = time(heure, minute)
             moment_programme = datetime.combine(date_choisie, heure_formate)
 
-            duree_arrosage = st.slider("Durée de l'arrosage", min_value=1, max_value=60, value=10, step=1)
+            duree_arrosage = st.number_input("Durée de l'arrosage (secondes)", min_value=1, max_value=60, value=1, step=1)
 
-            payload = {
+            payload_planification_arrosage = {
                 "date_heure": moment_programme.strftime("%Y-%m-%d %H:%M"),
                 "duree": duree_arrosage
             }
 
-            col1, col2 = st.columns(2)
+            if st.form_submit_button("Programmer l'arrosage"):
+                try:
+                    if moment_programme < datetime.now():
+                        msg_error = st.error("L'heure choisie est déjà passée")
+                        t_sleep.sleep(2)
+                        msg_error.empty()
 
-            with col1:
-                if st.form_submit_button("Programmer l'arrosage"):
-                    try:
-                        if moment_programme < datetime.now() or duree_arrosage == 0:
-                            st.error("L'heure choisie est déjà passée ou la durée est de 0")
-                        else:
-                            response = requests.post(f"http://localhost:5000/planifier/id_parc={choix_parcelle}", json=payload)
-                            data = response.json()
-                            st.success(f"{data['message']} pour {data['date_execution']} pour une durée de {data['duree']} minutes - {data['status']}")
-                    except Exception:
-                        st.error("Serveur Flask injoignable")
-            
-            with col2:
-                if st.form_submit_button("Annuler l'arrosage"):
-                    try:
-                        response = requests.post(f"http://localhost:5000/cancelPlanifier/id_parc={choix_parcelle}")
+                    elif duree_arrosage <= 0:
+                        msg_error = st.error("Duree arrosage doit être supérieur à 0")
+
+                        # Attente de 2 secondes avant suppression et disparition du message d'erreur
+                        t_sleep.sleep(2)
+
+                        # Supprimer le message d'erreur de la page
+                        msg_error.empty()
+                    else:
+                        response = requests.post(f"http://localhost:5000/planifier/id_parc={choix_parcelle}", json=payload_planification_arrosage)
                         data = response.json()
 
-                        if data["status"] == 200:
-                            st.success(data["message"])
-                        else:
-                            st.error(data["message"])
-                    except Exception:
-                        st.error("Serveur Flask injoignable")
+                        if data["status_code"] == 200:
+                            st.toast(f"{data['message']} pour {data['date_execution']} pour une durée de {data['duree']} minutes - {data['status']}", icon="✅")
+                        
+                        elif data["status_code"] == 409:
+                            st.toast(f"L'Arrosage prévu existe déjà dans la base de donnée", icon="⚠️")
+
+                        else :
+                            st.toast(data["message"], icon="🛑")
+
+                except Exception as e:
+                    st.toast("Serveur Flask injoignable", icon="⚠️")
         ############ FIN
+    
+    with col6:
+        with st.container(border=True):
+            st.header("Liste Arrosage Planifié")
+
+            if st.button("Rafraîchir la liste"):
+                st.rerun()
+            # response va contenir toutes les informations renvoyés par le serveur flask (réponse à la requête qui a été envoyé par l'utilisateur depuis l'interface streamlit)
+            # Le Code de Statut : (200 pour succès, 404 si non trouvé, 500 si erreur serveur).
+            # Les En-têtes (Headers) : Des méta-données (ex: Content-Type: application/json, la date, la taille du message).
+            # Le Contenu Brut (Binary/Text) : Le message non encore interprété.
+            # Le Temps de réponse : Combien de temps le serveur a mis pour répondre.
+            response = requests.get(f"http://localhost:5000/historique_arrosage/id_parc={choix_parcelle}")
+
+            # On demande à python ici d'ouvrir l'enveloppe de la lettre et de récupèrer les contenus du document json 
+            data_json = response.json()
+
+            liste_planification = data_json["list_data_planification"]
+
+            # S'il existe belle et bien une liste des arrosages planifiées qui est stocké dans la variable "liste_planification".
+            # Alors nous allons afficher le tableau dans la section "Liste Arrosage Planifié" sur mon interface streamlit
+            if liste_planification:
+                
+                # Nous allons utiliser une boucle "for" pour extraire une à une toutes les tuples renvoyer par la requêtes précédente
+                for p in liste_planification:
+                    id_planning, id_parc, duree_arrosage, date_arrosage_raw, heure_arrosage_raw = p
+
+                    # On met chaque ligne de donnée dans un bloc de container (une sorte de "carte")
+                    with st.container():
+                        col_info, col_delete = st.columns([4, 1])
+
+                        with col_info:
+                            date_arrosage = str(date_arrosage_raw)
+                            heure_arrosage = str(heure_arrosage_raw)[:5]
+
+                            # 2. Design "Historique Horloge / Timeline" ultra-moderne HTML/CSS
+                            design_timeline = f"""
+                            <div style="
+                                border-left: 4px solid #10b981; /* Barre verticale verte élégante */
+                                padding-left: 14px; 
+                                margin-bottom: 5px;
+                            ">
+                                <div style="font-size: 28px; font-weight: 800; font-family: 'Segoe UI', sans-serif; line-height: 1;">
+                                    {heure_arrosage}
+                                </div>
+                                <div style="font-size: 14px; opacity: 0.7; margin-top: 5px;">
+                                    🌱 Parcelle <b>{id_parc}</b> &nbsp;|&nbsp; 💧 Durée : <b>{duree_arrosage} s</b>
+                                </div>
+                            </div>
+                            """
+                            st.markdown(design_timeline, unsafe_allow_html=True)
+
+                        with col_delete:
+                            # Espace vide pour descendre et centrer parfaitement la poubelle face à l'heure
+                            st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+                            
+                            # Simple bouton corbeille
+                            # RÈGLE D'OR STREAMLIT : Il DOIT avoir une "key" unique liée à son ID pour ne pas crasher dans une boucle !
+                            if st.button("🗑️", key=f"delete_btn_{id_planning}"):
+                                payload_delete_planification = {
+                                    "id_planning": id_planning
+                                } 
+
+                                response = requests.delete(f"http://localhost:5000/cancelPlanifier/id_parc={choix_parcelle}", json=payload_delete_planification)
+
+                                data_json = response.json()
+
+                                if data_json["status_code"] == 200:
+                                    st.rerun()
+                                else:
+                                    st.toast("Échec de la suppression", icon="🛑")
+
+                        # Ligne de séparation très discrète entre chaque alarme
+                        st.markdown("<hr style='margin: 5px 0px 15px 0px; opacity: 0.2;'>", unsafe_allow_html=True)
+
+            else:
+                st.info("Aucune planification trouvée.")
+# ---------------------------------------- INTERFACE DU TABLEAU DE BORD STREAMLIT ------------------------------------------------
+                
+# ------------------------------------- INTERFACE DE L'ANALYSE DES DONNEES STREAMLIT ---------------------------------------------
+elif selected == "Analyse des données":
+    st.write(f"### TABLEAU RECAPITULATIF INFO CAPTEUR POUR {choix_parcelle}")
+
+    response = requests.get(f"http://localhost:5000/select/donnee_capteur/id_parc={choix_parcelle}")
+    data_json = response.json()
+
+    df_info_capteur_texte = pd.DataFrame(
+       data_json["liste_donnee_capteur"],
+       columns=["Id_parc", "Humidite", "Temperature", "Luminosite", "Type_alerte", "Message", "Date_pub"]
+    )
+
+    # st.dataframe va nous servir d'affichage des info capteur dans une table
+    st.dataframe(
+        df_info_capteur_texte,
+        column_config={
+            "Id_parc": st.column_config.TextColumn("Parcelle", help="ID unique de la parcelle"),
+
+            "Humidite": st.column_config.NumberColumn(
+                "Niveau d'Humidité (%)"
+            ),
+
+            "Temperature": st.column_config.NumberColumn(
+                "Temperature (°C)",
+                format="%.1f"
+            ),
+
+            "Luminosite": st.column_config.NumberColumn(
+                "Luminosite (lux)",
+                format="%.2f"
+            ),
+
+            "Type_alerte": st.column_config.TextColumn(
+                "Type_alerte"
+            ),
+
+            "Message": st.column_config.TextColumn(
+                "Message",
+            ),
+
+            "Date_pub": st.column_config.TimeColumn("Publié le", format="YYYY/MM/DD"),
+        },
+        hide_index=True,
+        use_container_width=True
+    )
+
+    df_info_capteur = pd.DataFrame(df_info_capteur_texte)
+    # On va convertir le jeu de donnée Dataframe en jeu de donnée csv pour permettre à l'utilisateur de le télécharger par la suite
+    # index = False pour indiquer à python d'ignorer la colonne de numérotation qui est rajouté par pandas par défaut (lors de la création du tableau -> le DataFrame)
+    csv = df_info_capteur.to_csv(index=False).encode('utf-8')
+
+    st.download_button(
+        "Exporter rapport complet",
+        data=csv,
+        file_name=f"rapport_info_capteur.csv",
+        mime="text/csv" # mime sert à indiquer au navigateur le type de document dont il a à télécharger (ex : ce document l'a s'agit d'un fichier csv ou autre)
+    )
+# ------------------------------------- INTERFACE DE L'ANALYSE DES DONNEES STREAMLIT ---------------------------------------------
 

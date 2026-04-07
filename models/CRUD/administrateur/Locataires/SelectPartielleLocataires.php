@@ -28,14 +28,16 @@ $user_id = $_POST['user_id'];
             $_SESSION['my_user_id'] = $user_id;
             
             if(!empty($listeUtilisateur)){
-                echo '<script>window.location.href="../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
                 exit();
             } else{
-                echo '<script>window.location.href="../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
+                echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php?showModal=1";</script>';
             }
 
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurUpdate'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href="../../../../views/administrateur/Site_web_admin/Accueil.php";</script>';
+            exit();
         }
 
 ?>

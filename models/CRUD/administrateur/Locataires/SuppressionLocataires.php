@@ -35,14 +35,16 @@ $email = $_POST['email'] ?? null;
 
             if ($dbprepare->rowCount() > 0) {
                 $_SESSION['successSuppression'] = 'Utilisateur supprimé avec succès.';
-                echo "<script>window.location.href = '../../../views/administrateur/Site_web_admin/Accueil.php';</script>";
+                echo "<script>window.location.href = '../../../../views/administrateur/Site_web_admin/Accueil.php';</script>";
             } else {
                 $_SESSION['erreurSuppression'] = 'Aucun utilisateur trouvé.';
-                echo "<script>window.location.href = '../../../views/administrateur/Site_web_admin/Accueil.php';</script>";
+                echo "<script>window.location.href = '../../../../views/administrateur/Site_web_admin/Accueil.php';</script>";
                    }
             
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurSuppression'] = "Erreur technique : " . $exception->getMessage();
+            echo "<script>window.location.href = '../../../../views/administrateur/Site_web_admin/Accueil.php';</script>";
+            exit();
         }
 
 ?>

@@ -4,15 +4,20 @@ from datetime import datetime
 from flask_apscheduler import APScheduler
 import serial 
 import serial.tools.list_ports
+
+import threading 
+
 from services.client.tableau_de_bord import ArduinoService
-import threading
-import paho.mqtt.client as mqtt
+from services.client.planification_service.planification_service import PlanificationService
+from services.client.donnee_capteur_service.donnee_capteur_service import DonneeCapteurService
+from services.client.led_service.led_service import LedService
+from services.client.telegram_service.telegram_service import TelegramService
+
 import json
 
-# Importation des scripts nécessaires pour l'utilisation de l'IA
 from config.db_python.db_config import DBConfig
-from models.model_agri_ai.CRUD.create_alerte_ai import CreateAlerteAI
-from models.model_agri_ai.agri_ai_service import AgriAIService
+from services.client.donnee_capteur_service.recuperate_data_sensor_mqtt import RecuperateDataSensorMQTT
+
 
 """
 Cette ligne permet de créer une instance de l'application Flask.
@@ -23,11 +28,34 @@ Cette ligne permet de créer une instance de l'application Flask.
 """
 app = Flask(__name__)
 
+# Nous allons utilisé ce dictionnaire pour capturer la valeur spécifiant l'état de la notification actuelle 
+# Ce qui va nous permettre de réaliser la logique de fonctionnement suivant : 
+# Tant que l'utilisateur se trouve dans la même condition de départ pour l'état d'arrosage (ex : si au départ l'utilisateur était dans la condition
+# spécifiant que la condition est mauvaise pour effectuer un arrosage et qu'une notification telegram lui a été déjà envoyé) alors la valeur qui sera
+# stocké dans ce dictionnaire pour l'id_parc spécifique permettra de bloquer l'envoie de notification à chaque fois que l'utilisateur fait l'action de cliquer
+# sur le bouton "Activer la pompe"
+etat_notif_actuelle = {
+    "OP_001": None,
+    "OP_002": None,
+    "OP_003": None,
+    "OP_004": None
+}
+
 """
     Elle permet d'instancier l'objet pour permettre l'utilisation de l'APScheluder -> nécessaire pour la planification
     des tâches périodiques
 """
 scheduler = APScheduler()
+
+# Instanciation de la classe "DBConfig" pour initialisation de la connexion à la base de donnée
+db_config = DBConfig()
+
+planificationService = PlanificationService()
+ledService = LedService()
+donneeCapteurService = DonneeCapteurService()
+telegramService = TelegramService()
+
+# Dictionnaire pour stocker les timers actifs retiré, logique déplacée vers led_service
 
 """
     Elle permet d'initialiser l'application Flask avec l'APScheduler
@@ -44,106 +72,187 @@ scheduler.init_app(app)
 scheduler.start()
 
 arduino_service = ArduinoService()
+mqtt_service = RecuperateDataSensorMQTT()
 
-ip_arduino = "192.168.100.125"
-
-delai_conf = 10
-
-# On va utiliser un dictionnaire pour stocker les dernières données des capteurs pour chaque parcelle
-# Etant donné que la fonction "on_message" se réexécute à chaque message reçu du broker MQTT
-# les valeurs qui ont été récupéré avant par la fonction "on_message" sont perdues. Pour y remédier 
-# à ce problème on va stocker dernières données des capteurs pour chaque parcelle
-derniere_donnees_capteurs = {
-    "OP_001": {
-        "temperature": 0.0,
-        "luminosite": 0.0,
-        "humidite": 0
-    },
-    "OP_002": {
-        "temperature": 0.0,
-        "luminosite": 0.0,
-        "humidite": 0
-    },
-    "OP_003": {
-        "temperature": 0.0,
-        "luminosite": 0.0,
-        "humidite": 0
-    },
-    "OP_004": {
-        "temperature": 0.0,
-        "luminosite": 0.0,
-        "humidite": 0
-    }
-}
-
-# Dictionnaire pour définir le mode par défaut de l'arrosage
-mode_arrosage_dict = {
-    "OP_001": "manuel",
-    "OP_002": "manuel",
-    "OP_003": "manuel",
-    "OP_004": "manuel"
-}
-
-# Dictionnaire pour gérer l'état des pompes
-etat_pompe_dict = {
-    "OP_001": "Desactive",
-    "OP_002": "Desactive",
-    "OP_003": "Desactive",
-    "OP_004": "Desactive"
-}
-
-# Dictionnaire pour gérer un horaire indépendant pour chaque parcelle
-horaire_arrosage = {
-    "OP_001": None,
-    "OP_002": None,
-    "OP_003": None,
-    "OP_004": None
-}
-
-# Topic pour publication de l'etat des pompes
-topic_etat_pompe = "status/pompe"
-
-# ---------------------- CONFIGURATION DE LA CONNEXION A LA BASE DE DONNEES ------------------------
-# Instanciation pour la gestion de la connexion à la base de données
-db_config = DBConfig()
-# ---------------------- CONFIGURATION DE LA CONNEXION A LA BASE DE DONNEES ------------------------
-
-arduino_service.init_arduino(ip_arduino)
+arduino_service.init_arduino(mqtt_service.ip_arduino)
 
 # Cette API permettra de changer le mode d'arrosage de la pompe
 @app.route('/mode/arrosage/id_parc=<id_parc>', methods=["POST"])
 def mode_arrosage(id_parc):
     mode = request.json["mode"]
 
+    # Avant de mettre à jour la valeur stocké dans le dictionnaire nous allons récupérer l'ancien valeur du mode pour l'id_parc spécifié'
+    ancien_mode = mqtt_service.mode_arrosage_dict[id_parc]
+
     # On met à jour le mode d'arrosage pour la parcelle donnée
-    mode_arrosage_dict[id_parc] = mode
+    mqtt_service.mode_arrosage_dict[id_parc] = mode
+
+    if ancien_mode != mode:
+        msg_final_send = f"*MODE ACTUEL:* {mqtt_service.mode_arrosage_dict[id_parc]}"
+
+        # Envoie du mode actif actuel (MANUEL ou AUTO) sur le bot du telegram
+        telegramService.envoyer_notification_telegram(msg_final_send)
 
     return jsonify({
         "id_parc": id_parc,
-        "mode_arrosage_dict": mode_arrosage_dict[id_parc],
-        "status": "success"
+        "mode_arrosage_dict": mqtt_service.mode_arrosage_dict[id_parc],
+        "status": "success",
+        "status_code": 200
     })
 
+# API pour récupérer les données des capteurs ainsi que les messages de notification du choix parcelle de l'utilisateur pour l'afficher dans mon tableau sur streamlit
+@app.route('/select/donnee_capteur/id_parc=<id_parc>', methods=["GET"])
+def recuperate_data_sensor(id_parc):
+    liste_donnee_capteur, status_code = donneeCapteurService.select_donnee_capteur(id_parc, db_config)
+    if status_code:
+        return jsonify({
+            "message": f"Liste des info capteur extrait avec succès pour id_parc={id_parc}",
+            "liste_donnee_capteur": liste_donnee_capteur,
+            "status": "success",
+            "status_code": 200,
+        })
+
+# API pour la récupération de l'état initial de la pompe au départ
 @app.route('/status/pompe/id_parc=<id_parc>', methods=["GET"])
 def status_pompe(id_parc):
     return jsonify({
         "id_parc": id_parc,
-        "etat_pompe_dict": etat_pompe_dict[id_parc],
-        "status": "success"
+        "etat_pompe_dict": mqtt_service.etat_pompe_dict[id_parc],
+        "status": "success",
+        "status_code": 200
     })
 
-@app.route('/led/off/id_parc=<id_parc>', methods=["POST"])
-def led_off(id_parc):
-    arduino_service.led_off_service(ip_arduino, id_parc)
-    etat_pompe_dict[id_parc] = "Desactive"
+# Récupération des lignes de donnée pour l'historique de planification des prochaines arrosages
+@app.route('/historique_arrosage/id_parc=<id_parc>', methods=["GET"])
+def recuperation_data_planifie(id_parc):
+    list_data_planification, status_code = planificationService.select_planification_arrosage(id_parc, db_config)
+    
+    # Si la variable "list_data_planification" n'est pas vide alors on va retourner toutes les lignes de données
+    # ayant été récupéré. Dans le cas contraire on retourne un tableau vide sur streamlit pour au moins affiché un 
+    # tableau vide sur l'interface streamlit
+    if status_code == 200:
+        if list_data_planification:
+            return jsonify({
+                "message": f"Liste des prochaines planification extrait avec succès pour id_parc={id_parc}.",
+                "status_code": 200,
+                "list_data_planification": list_data_planification
+            })
+        else:
+            return jsonify({
+                "message": f"Liste des prochaines planification vide",
+                "status_code": 200,
+                "list_data_planification": list_data_planification
+            })
 
-    return jsonify({
-        "id_parc": id_parc,
-        "message": "LED eteinte",
-        "status": "success"
-    })
+    else:
+        return jsonify({
+            "message": f"Erreur survenu lors de la tentative de selection de la liste des prochaines planification.",
+            "status_code": 400,
+            "list_data_planification": list_data_planification
+        })
 
-""" Cette ligne permet de définir une route pour l'application Flask.
+@app.route('/planifier/id_parc=<id_parc>', methods=["POST"])
+def planifier(id_parc):
+    try:
+        data_json = request.get_json()
+
+        date_heure = data_json["date_heure"]
+        duree = data_json["duree"]
+
+        # Nous avons passé en argument les fonctions telle que : led_on_thread et led_off_thread.
+        # PlanificationService n'a absolument aucune idée de ce qu'est une "Pompe à eau" ou un "Capteur d'humidité". 
+        # Son seul travail au monde, c'est de régler des réveils (scheduler.add_job()).
+        id_planning, status_code = planificationService.planifier(id_parc, mqtt_service.ip_arduino, scheduler, date_heure, duree, db_config)   
+        
+        if status_code == 200:
+            return jsonify({
+                "message": f"Arrosage programmé pour id_parc = {id_parc}",
+                "date_heure_planification": datetime.now(),
+                "duree": duree,
+                "date_execution": date_heure,
+                "status": "success",
+                "status_code": 200
+            })
+        
+        elif status_code == 409:
+            return jsonify({
+                "message": f"Arrosage planifié avec l'ID={id_planning} existant déjà dans la base de donnée",
+                "status": "erreur doublon",
+                "status_code": 409
+            })
+
+        else:
+            return jsonify({
+                "message": f"Erreur survenue lors de la tentative de planification d'une prochaine arrosage pour id_parc={id_parc}",
+                "status": "echec",
+                "status_code": 400
+            })
+
+    except Exception as e :
+        print(f"Erreur lors de la tentative de planification technique pour id_parc = {id_parc}")
+
+        return jsonify({
+            "message": f"Erreur lors de la tentative de planification technique pour id_parc = {id_parc}",
+            "status": "echec",
+            "status_code": 400
+        })
+
+@app.route('/cancelPlanifier/id_parc=<id_parc>', methods=["DELETE"])
+def cancelPlanifier(id_parc):
+    data_json = request.get_json()
+
+    id_planning = data_json["id_planning"]
+
+    status_code = planificationService.cancelPlanifier(scheduler, id_planning, db_config)
+
+    # 1ere condition : dans le cas où la planification de la 1ère tâche n'a pas encore été déclenché avant l'annulation en garde le status de la pompe comme il est.
+    # 2eme condition : la tâche pour l'activation de la pompe a déjà eu lieu donc c'est le second tâche (qui consiste à annuler la désactivation de la pompe après une certaine durée spécifier par l'utilisateur)
+    # qui sera annulé. Cela ne va rien changer aussi par rapport au statut d'activation de la pompe. Donc rien à publier via la communication mqtt
+    if status_code == 200:
+        return jsonify({
+            "message": f"Arrosage annulé pour id_parc = {id_parc}",
+            "status": "success",
+            "status_code": 200
+        })
+
+    else:
+        return jsonify({
+            "message": f"Tentative d'annulation de planification pour id_parc = {id_parc} échouée",
+            "status": "echec",
+            "status_code": 400
+        })
+
+@app.route('/led/off', methods=["POST"])
+def led_off():    
+    data_json = request.get_json()
+    list_id_parc = data_json["list_id_parc"]
+
+    print(f"Tentative d'extinction de la pompe pour : {list_id_parc}")
+
+    # Attente d'une liste d'id_parc (côté Arduino IDE) du à l'integration du système "Forcer extinction des pompes"
+    # Condition pour vérifier qu'il n'y a plus de compte à rebour pour éteindre la pompe stocké dans le dictionnaire "timers_actifs"
+    # Pour éviter de l'eteindre une fois de plus, après l'avoir éteint avec le bouton "Eteindre la pompe"
+    status_code = ledService.led_off_thread(list_id_parc, mqtt_service.mqtt_client)
+
+    if status_code == 200:
+        msg = "Pompe éteinte" if len(list_id_parc) == 1 else "Pompes éteintes"
+        return jsonify({
+            "list_id_parc": list_id_parc,
+            "message": msg,
+            "status": "success",
+            "status_code": 200
+        })
+    
+    else:
+        return jsonify({
+            "list_id_parc": list_id_parc,
+            "message": f"Erreur de désactivation pour {list_id_parc}",
+            "status": "success",
+            "status_code": 400
+        })
+
+""" 
+    Cette ligne permet de définir une route pour l'application Flask.
     C'est une URL qui sera utilisée pour accéder à la fonction index().
     En fonction du nom dont nous avons donné à notre instance que nous allons
     adapter la décoration @app.route(). Ex : si le nom dont nous avons attribué 
@@ -151,153 +260,145 @@ def led_off(id_parc):
 """
 @app.route('/led/on/id_parc=<id_parc>', methods=["POST"])
 def led_on(id_parc):
-    arduino_service.led_on_service(ip_arduino, id_parc)
-    etat_pompe_dict[id_parc] = "Active"
+    data_json = request.get_json()
+    duree_arrosage = data_json['duree_arrosage_manuelle']
 
-    return jsonify({
-        "id_parc": id_parc,
-        "message": "LED allumée",
-        "status": "success"
-    })
+    # On stocke dans une liste l'id_parc avant de l'envoyé à la fonction led_off_service.
+    # Etant donné qu'il attend une liste et non une simple valeur. Cela est dû au fait que nous
+    # utilisons la fonction led_off_service pour éteindre dans un premier temps une pompe individuellement
+    # ou alors dans un second temps toutes les pompes lorsque l'utilisateur clique sur le bouton "Forcer extinction des pompes"
+    # sur l'interface streamlit
+    list_id_parc = [f"{id_parc}"]
 
-def led_off_thread(ip_arduino, id_parc):
-    arduino_service.led_off_service(ip_arduino, id_parc)
-    etat_pompe_dict[id_parc] = "Desactive"
-    mqtt_client.publish (f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
+    humidite = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["humidite"]
+    temperature = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["temperature"]
+    luminosite = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["luminosite"]
+  
+    # 1. SCENARIO : CANICULE (Chaud + Soleil + PAS de pluie)
+    if temperature > 30 and  luminosite > 10000:
+        if humidite < 15:
+            if not mqtt_service.tentatives_arrosage[id_parc]:
 
-def led_on_thread(ip_arduino, id_parc):
-    arduino_service.led_on_service(ip_arduino, id_parc)
-    etat_pompe_dict[id_parc] = "Active"
-    mqtt_client.publish(f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
-    
-# Fonction appelée lorsque le client MQTT se connecte au broker MQTT
-def on_connect(client, userdata, flags, rc):
-    print("Connecté au broker MQTT avec le code : " + str(rc))
+                etat_notif_actuelle[id_parc] = "Urgence"
 
-    # "#" -> nous permet de s'abonner à tous les topics qui commencent par "data/temperature/"
-    client.subscribe(f"data/temperature/#")
-    client.subscribe(f"data/luminosite/#")
-    client.subscribe(f"data/humidite/#")
+                type_alerte = "Urgence"
+                msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*FORTE CHALEUR :* risque d'évaporation d'eau\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
 
-# Fonction appelée à chaque message reçu du broker MQTT
-def on_message(client, userdata, msg):
-    topic = msg.topic
+                telegramService.envoyer_notification_telegram(msg_final_send)
 
-    # On récupère l'id_parc à partir du topic
+                # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
+                mqtt_service.tentatives_arrosage[id_parc] = True
 
-    # Dans le topic "data/temperature/OP_001", l'id_parc est à la 3ème position (index 2)
+                return jsonify({
+                    "id_parc": id_parc,
+                    "message": "Alerte: Urgence",
+                    "status": "success",
+                    "status_code": 200
+                })
 
-    # On utilise split("/") pour séparer le topic en plusieurs parties
-    # On utilise [2] pour récupérer la 3ème partie (l'id_parc)
+        else:
+            if not mqtt_service.tentatives_arrosage[id_parc]:
 
-    # liste = ["data", "temperature", "OP_001"]
-    # id_parc = liste[2]
+                etat_notif_actuelle[id_parc] = "Avertissement_humidite_sol"
 
-    if len(topic.split("/")) == 3:
-        id_parc = topic.split("/")[2]
+                type_alerte = "Avertissement"
+                msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*LE SOL EST DEJA HUMIDE*\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
 
-        # Extraction du donnée type capteur
-        cle = topic.split("/")[1]
+                telegramService.envoyer_notification_telegram(msg_final_send)
 
-        if mode_arrosage_dict[id_parc] == "manuel":
-            return
+                # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
+                mqtt_service.tentatives_arrosage[id_parc] = True
+
+                return jsonify({
+                    "id_parc": id_parc,
+                    "message": "Alerte: Avertissement_humidite_sol",
+                    "status": "success",
+                    "status_code": 200
+                })
+    # 1. SCENARIO : CANICULE (Chaud + Soleil + PAS de pluie)
+
+    # 2. SCENARIO : RISQUE DE MALADIE (Chaleur + Terre trop trempée)
+    elif humidite > 60 and temperature > 22:
+        # Ici on ne met pas la condition : etat_notif_actuelle[id_parc] != "Avertissement_maladie" en combinaison (&&) avec la condition qui est déjà là pourquoi ?
+        # Puisque le fait d'écrire if not mqtt_service.tentatives_arrosage[id_parc] et if etat_notif_actuelle[id_parc] != "Avertissement_maladie" revient à la même chose 
+        # pour bloquer l'envoie une second fois de plus la notification telegram qui avait déjà été envoyé
+        if not mqtt_service.tentatives_arrosage[id_parc]:
+
+            etat_notif_actuelle[id_parc] = "Avertissement_maladie"
+
+            type_alerte = "Avertissement"
+            msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*TEMPERATURE TROP ELEVEE ET TERRE TROP MOUILLEE*\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
+
+            telegramService.envoyer_notification_telegram(msg_final_send)
+
+            # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
+            mqtt_service.tentatives_arrosage[id_parc] = True
+
+            return jsonify({
+                "id_parc": id_parc,
+                "message": "Alerte: Avertissement_maladie",
+                "status": "success",
+                "status_code": 200
+            })
+    # 2. SCENARIO : RISQUE DE MALADIE (Chaleur + Terre trop trempée)
+
+    # 3. SCENARIO : TERRE SECHE
+    elif humidite < 15 and 15 < temperature < 28: 
+        # Ici je n'utilise donc pas la même condition que ceux qui sont au-dessus : 
+        # if not mqtt_service.tentatives_arrosage[id_parc]: 
+        # Puisque nous n'avons pas besoin de reconfirmer une second fois le choix de l'utilisateur (pour en capturer sa première tentative)
+        # Une fois que la condition est idéale pour l'arrosage on envoie tout de suite une notification telegram et en même temps, on activera
+        # directement la pompe
+        if etat_notif_actuelle[id_parc] != "IDEALES":
+
+            etat_notif_actuelle[id_parc] = "IDEALES"
+
+            type_alerte = "Info"
+            msg_str = f"{id_parc} -> TERRE SECHE : Vos plantes commencent à avoir soif."
+            msg_final_send = f"*Type_alerte:* {type_alerte}\n\n{msg_str}\n\n*Recommandation:* Un petit arrosage sur la terre leur ferait du bien"
+
+            telegramService.envoyer_notification_telegram(msg_final_send)
+
+        # On valide directement l'arrosage sans confirmation. Pour pouvoir entrer directement dans la condition qui permet d'activer la pompe à l'étape
+        # qui suit (ci-dessous)
+        mqtt_service.tentatives_arrosage[id_parc] = True
+
+    # 4. SCENARIO : METEO NORMALE (Ni canicule, ni maladie, ni sec)
+    else :
+        # On active la pompe sans faire d'histoire ni de Telegram
+        mqtt_service.tentatives_arrosage[id_parc] = True
+
+        # On réinitialise la mémoire au cas où il faisait canicule hier
+        etat_notif_actuelle[id_parc] = "NORMAL"
+
+    if mqtt_service.tentatives_arrosage[id_parc] :
+        # Nous faisons appel à cette fonction pour pouvoir publier via la communication mqtt le statut de la pompe actuelle. Et ainsi 
+        # de l'afficher en temps réelle sur mon interface streamlit
+        status_code = ledService.led_on_thread(id_parc, mqtt_service.mqtt_client, duree_arrosage)
+
+        if status_code == 200:
+            list_id_parc = [id_parc]
+
+            # Appel de la méthode de désactivation avec un délai (compte à rebours)
+            ledService.led_off_thread(list_id_parc, mqtt_service.mqtt_client, duree_arrosage, mqtt_service)
+
+            mqtt_service.tentatives_arrosage[id_parc] = False
+
+            return jsonify({
+                "id_parc": id_parc,
+                "message": "Pompe Activé",
+                "status": "success",
+                "status_code": 200
+            })
         
         else :
-            # On charge/récupère les données envoyer par le capteur en format JSON puis on le décode
-            msg_json = json.loads(msg.payload.decode("utf-8"))
-
-            # On met à jour la valeur du capteur qui vient d'être envoyé par l'Arduino
-            derniere_donnees_capteurs[id_parc][cle] = float(msg_json[cle])
-
-            # Etant donné que les données de capteur ne seront pas envoyés en même temps
-            # on va utiliser la valeur des capteurs qui sont déjà stockés dans le dictionnaire 
-            # pour la condition qui suit
-            temp = derniere_donnees_capteurs[id_parc]["temperature"]
-            luminosite = derniere_donnees_capteurs[id_parc]["luminosite"]
-            humidite = derniere_donnees_capteurs[id_parc]["humidite"]
-
-            # Activation automatique lorsque : "LE SOL EST SEC + LA TEMPERATURE EST ELEVE + LA LUMINOSITE EST FAIBLE"
-            # La luminosite doit être faible pour éviter l'évaporation de l'eau en contact avec le soleil
-            if humidite < 40 and temp > 35 and luminosite < 15000:
-                if horaire_arrosage[id_parc] is None:
-                    horaire_arrosage[id_parc] = time.time()
-                else :
-                    temps_ecoule = time.time() - horaire_arrosage[id_parc]
-                    if temps_ecoule > delai_conf:
-                        print(f"Capteur DHT11 / Capteur raindrop sensor -> Alerte confirmée pour {id_parc} : {temp} °C / {humidite} %. Allumage automatique de la pompe pour 20s")
-                        
-                        led_on_thread(ip_arduino, id_parc)
-                        etat_pompe_dict[id_parc] = "Active"
-
-                        # Appel de la fonction pour éteindre la pompe après 20s
-                        threading.Timer(5, led_off_thread, args=[ip_arduino, id_parc]).start()
-
-                        # Réinitialisation de l'horaire de déclenchement
-                        horaire_arrosage[id_parc] = None
-
-            # Activation automatique lorsque : "LA TEMPERATURE EST ELEVE + LA LUMINOSITE EST FAIBLE"
-            elif humidite > 60:#luminosite < 15000 and temp > 30:
-                if horaire_arrosage[id_parc] is None:
-                    horaire_arrosage[id_parc] = time.time()
-                else :
-                    temps_ecoule = time.time() - horaire_arrosage[id_parc]
-                    if temps_ecoule > delai_conf:
-                        print(f"Capteur DHT11 / Capteur BH1750 / Capteur raindrop sensor -> Alerte confirmée pour {id_parc} : {temp} °C / {luminosite} lx / {humidite} %. Allumage automatique de la pompe pour 20s")
-                        
-                        # Etant donnee que l'API route pour gérer l'allumage de la pompe return un document JSON
-                        # nous ne pourrons pas nous en servir ici. Puisqu'elle est fait pour être utiliser
-                        # dans le cadre d'une requête HTTP et non dans le cadre d'une exécution de thread (application qui tourne en arrière plan)
-                        
-                        # Pour cela nous allons faire appel au service directement qui gère l'allumage de la pompe sans passer par l'API route
-                        led_on_thread(ip_arduino, id_parc)
-                        etat_pompe_dict[id_parc] = "Active"
-
-                        # Appel de la fonction pour éteindre la pompe après 20s
-                        threading.Timer(5, led_off_thread, args=[ip_arduino, id_parc]).start()
-
-                        # Réinitialisation de l'horaire de déclenchement
-                        horaire_arrosage[id_parc] = None
-
-            else:
-                print(f"Alerte annulée pour {id_parc}")
-                horaire_arrosage[id_parc] = None
-
-# On lance le client MQTT en arrière plan du serveur Flask
-mqtt_client = mqtt.Client()
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
-mqtt_client.connect("192.168.100.117", 1883)
-
-# Necessaire pour maintenir la connexion au broker MQTT
-mqtt_client.loop_start()
-
-@app.route('/planifier/id_parc=<id_parc>', methods=["POST"])
-def planifier(id_parc):
-    arduino_service.planifier(id_parc, ip_arduino, scheduler)    
-    return jsonify({
-        "message": f"Arrosage programmé pour id_parc = {id_parc}",
-        "date_heure_planification": datetime.now(),
-        "duree": duree,
-        "date_execution": date_heure,
-        "status": "success"
-    })
-
-@app.route('/cancelPlanifier/id_parc=<id_parc>', methods=["DELETE"])
-def cancelPlanifier(id_parc):
-    response =arduino_service.cancelPlanifier(id_parc, scheduler)
-    data = response.json()
-
-    if data["status"] == 200:
-        return jsonify({
-            "message": f"Arrosage annulé pour id_parc = {id_parc}",
-            "status": 200
-        })
-    else:
-        return jsonify({
-            "message": f"Arrosage non annulé pour id_parc = {id_parc}",
-            "status": 400
-        })
-
+            return jsonify({
+                "id_parc": id_parc,
+                "message": "Erreur d'activation de la pompe",
+                "status": "echec",
+                "status_code": 400
+            })
+        
 """ 
     Cette ligne permet de démarrer l'application Flask.
     Elle permet de lancer le serveur de développement de Flask.

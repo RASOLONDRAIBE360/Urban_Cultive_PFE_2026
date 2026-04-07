@@ -21,6 +21,5 @@ require_once (__DIR__.'/../../../config/MySQL.php');
             } catch (Exception $exception) {
                 die('Erreur : ' . $exception->getMessage());
             }
-        //} 
-
+            
 ?>

@@ -8,7 +8,9 @@ $email = $_POST['email'] ?? null;
 $motDePasse = $_POST['motDePasse'] ?? null;
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo '<script>alert("Le format Email est invalide."); window.location.href = "../../Login/Formulaire_inscription.php";</script>';
+    $_SESSION['erreurEmail'] = "Le format Email est invalide.";
+    echo '<script>window.location.href = "../../Login/Formulaire_inscription.php";</script>';
+    exit();
 } else {
 
         try {
@@ -35,11 +37,14 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             if($pdoStatement->rowCount() > 0){
                 echo ('<script>window.location.href = "../../Login/Formulaire_connexion.php";</script>');
             } else {
-                echo '<script>alert("L\'utilisateur existe déjà."); window.location.href = "../../Login/Formulaire_inscription.php";</script>';
+                $_SESSION['erreurEmail'] = "L'utilisateur existe déjà.";
+                echo '<script>window.location.href = "../../Login/Formulaire_inscription.php";</script>';
             }
 
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurEmail'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href = "../../Login/Formulaire_inscription.php";</script>';
+            exit();
             }
         }
 

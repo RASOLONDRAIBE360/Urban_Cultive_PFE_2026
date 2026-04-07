@@ -91,7 +91,9 @@ $descrip = $_POST['descrip'];
             }
 
         } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurCreate'] = "Erreur technique : " . $exception->getMessage();
+            echo "<script>window.location.href = '../../../../views/administrateur/Site_web_admin/Parcelle.php?showModal=2';</script>";
+            exit();
         }     
 
 ?>

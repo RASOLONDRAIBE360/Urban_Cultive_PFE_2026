@@ -1,3 +1,4 @@
+/*
 /* Style global pour la modal */
 .form-container {
     display: none;
@@ -115,6 +116,7 @@
 .form-container button:hover {
     background-color: #82a896;
 }
+*/
 
 /* Responsivité */
 @media screen and (max-width: 768px) {

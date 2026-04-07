@@ -36,7 +36,9 @@ $user_id = $_SESSION['user_id_user'] ?? null;
             }
 
             } catch (Exception $exception) {
-            die('Erreur : ' . $exception->getMessage());
+            $_SESSION['erreurPublication'] = "Erreur technique : " . $exception->getMessage();
+            echo '<script>window.location.href = "../../../../views/client/site_web_user/Communaute.php";</script>';
+            exit();
             }
 
 ?>

@@ -71,7 +71,9 @@ try{
     }
     
     } catch(Exception $exception){
-        die('Erreur :'. $exception->getMessage());
+        $_SESSION['erreurRenewal'] = "Erreur technique : " . $exception->getMessage();
+        header("Location: ../../../../views/client/site_web_user/Parcelle.php");
+        exit();
     }
 
 ?>
