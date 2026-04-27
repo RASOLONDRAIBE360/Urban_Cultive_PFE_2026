@@ -1,23 +1,18 @@
 from flask import Flask, request, jsonify
-import time
 from datetime import datetime
 from flask_apscheduler import APScheduler
-import serial 
-import serial.tools.list_ports
 
-import threading 
+from models.CRUD.client.dashboard_iot.seuillage.seuil_capteur import SeuilCapteurModel
 
 from services.client.tableau_de_bord import ArduinoService
 from services.client.planification_service.planification_service import PlanificationService
 from services.client.donnee_capteur_service.donnee_capteur_service import DonneeCapteurService
 from services.client.led_service.led_service import LedService
 from services.client.telegram_service.telegram_service import TelegramService
-
-import json
+from services.client.seuillage.seuillage_service import SeuillageService
 
 from config.db_python.db_config import DBConfig
 from services.client.donnee_capteur_service.recuperate_data_sensor_mqtt import RecuperateDataSensorMQTT
-
 
 """
 Cette ligne permet de créer une instance de l'application Flask.
@@ -27,19 +22,6 @@ Cette ligne permet de créer une instance de l'application Flask.
     une fonction spécifique sera exécutée par l'application Flask
 """
 app = Flask(__name__)
-
-# Nous allons utilisé ce dictionnaire pour capturer la valeur spécifiant l'état de la notification actuelle 
-# Ce qui va nous permettre de réaliser la logique de fonctionnement suivant : 
-# Tant que l'utilisateur se trouve dans la même condition de départ pour l'état d'arrosage (ex : si au départ l'utilisateur était dans la condition
-# spécifiant que la condition est mauvaise pour effectuer un arrosage et qu'une notification telegram lui a été déjà envoyé) alors la valeur qui sera
-# stocké dans ce dictionnaire pour l'id_parc spécifique permettra de bloquer l'envoie de notification à chaque fois que l'utilisateur fait l'action de cliquer
-# sur le bouton "Activer la pompe"
-etat_notif_actuelle = {
-    "OP_001": None,
-    "OP_002": None,
-    "OP_003": None,
-    "OP_004": None
-}
 
 """
     Elle permet d'instancier l'objet pour permettre l'utilisation de l'APScheluder -> nécessaire pour la planification
@@ -54,8 +36,6 @@ planificationService = PlanificationService()
 ledService = LedService()
 donneeCapteurService = DonneeCapteurService()
 telegramService = TelegramService()
-
-# Dictionnaire pour stocker les timers actifs retiré, logique déplacée vers led_service
 
 """
     Elle permet d'initialiser l'application Flask avec l'APScheduler
@@ -76,31 +56,8 @@ mqtt_service = RecuperateDataSensorMQTT()
 
 arduino_service.init_arduino(mqtt_service.ip_arduino)
 
-# Cette API permettra de changer le mode d'arrosage de la pompe
-@app.route('/mode/arrosage/id_parc=<id_parc>', methods=["POST"])
-def mode_arrosage(id_parc):
-    mode = request.json["mode"]
-
-    # Avant de mettre à jour la valeur stocké dans le dictionnaire nous allons récupérer l'ancien valeur du mode pour l'id_parc spécifié'
-    ancien_mode = mqtt_service.mode_arrosage_dict[id_parc]
-
-    # On met à jour le mode d'arrosage pour la parcelle donnée
-    mqtt_service.mode_arrosage_dict[id_parc] = mode
-
-    if ancien_mode != mode:
-        msg_final_send = f"*MODE ACTUEL:* {mqtt_service.mode_arrosage_dict[id_parc]}"
-
-        # Envoie du mode actif actuel (MANUEL ou AUTO) sur le bot du telegram
-        telegramService.envoyer_notification_telegram(msg_final_send)
-
-    return jsonify({
-        "id_parc": id_parc,
-        "mode_arrosage_dict": mqtt_service.mode_arrosage_dict[id_parc],
-        "status": "success",
-        "status_code": 200
-    })
-
-# API pour récupérer les données des capteurs ainsi que les messages de notification du choix parcelle de l'utilisateur pour l'afficher dans mon tableau sur streamlit
+# API pour récupérer les données des capteurs ainsi que les messages de notification du choix parcelle 
+# de l'utilisateur pour l'afficher dans mon tableau sur streamlit
 @app.route('/select/donnee_capteur/id_parc=<id_parc>', methods=["GET"])
 def recuperate_data_sensor(id_parc):
     liste_donnee_capteur, status_code = donneeCapteurService.select_donnee_capteur(id_parc, db_config)
@@ -125,7 +82,7 @@ def status_pompe(id_parc):
 # Récupération des lignes de donnée pour l'historique de planification des prochaines arrosages
 @app.route('/historique_arrosage/id_parc=<id_parc>', methods=["GET"])
 def recuperation_data_planifie(id_parc):
-    list_data_planification, status_code = planificationService.select_planification_arrosage(id_parc, db_config)
+    list_data_planification, status_code = planificationService.select_liste_planification_arrosage(id_parc, db_config)
     
     # Si la variable "list_data_planification" n'est pas vide alors on va retourner toutes les lignes de données
     # ayant été récupéré. Dans le cas contraire on retourne un tableau vide sur streamlit pour au moins affiché un 
@@ -159,10 +116,21 @@ def planifier(id_parc):
         date_heure = data_json["date_heure"]
         duree = data_json["duree"]
 
+        intervalle_repetition = data_json.get("intervalle_sec", 0)
+        nombre_freq = data_json.get("nombre_freq", 1)
+
         # Nous avons passé en argument les fonctions telle que : led_on_thread et led_off_thread.
         # PlanificationService n'a absolument aucune idée de ce qu'est une "Pompe à eau" ou un "Capteur d'humidité". 
         # Son seul travail au monde, c'est de régler des réveils (scheduler.add_job()).
-        id_planning, status_code = planificationService.planifier(id_parc, mqtt_service.ip_arduino, scheduler, date_heure, duree, db_config)   
+        id_planning, status_code = planificationService.planifier(
+            id_parc, 
+            scheduler, 
+            date_heure, 
+            duree, 
+            intervalle_repetition,
+            nombre_freq,
+            db_config
+            )   
         
         if status_code == 200:
             return jsonify({
@@ -270,135 +238,189 @@ def led_on(id_parc):
     # sur l'interface streamlit
     list_id_parc = [f"{id_parc}"]
 
-    humidite = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["humidite"]
-    temperature = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["temperature"]
-    luminosite = mqtt_service.derniere_donnees_capteurs_conf[id_parc]["luminosite"]
-  
-    # 1. SCENARIO : CANICULE (Chaud + Soleil + PAS de pluie)
-    if temperature > 30 and  luminosite > 10000:
-        if humidite < 15:
-            if not mqtt_service.tentatives_arrosage[id_parc]:
+    status_code = ledService.led_on_thread(id_parc, mqtt_service.mqtt_client, duree_arrosage)
 
-                etat_notif_actuelle[id_parc] = "Urgence"
+    if status_code == 200:
 
-                type_alerte = "Urgence"
-                msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*FORTE CHALEUR :* risque d'évaporation d'eau\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
+        mqtt_service.tentatives_arrosage[id_parc] = False
 
-                telegramService.envoyer_notification_telegram(msg_final_send)
-
-                # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
-                mqtt_service.tentatives_arrosage[id_parc] = True
-
-                return jsonify({
-                    "id_parc": id_parc,
-                    "message": "Alerte: Urgence",
-                    "status": "success",
-                    "status_code": 200
-                })
-
-        else:
-            if not mqtt_service.tentatives_arrosage[id_parc]:
-
-                etat_notif_actuelle[id_parc] = "Avertissement_humidite_sol"
-
-                type_alerte = "Avertissement"
-                msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*LE SOL EST DEJA HUMIDE*\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
-
-                telegramService.envoyer_notification_telegram(msg_final_send)
-
-                # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
-                mqtt_service.tentatives_arrosage[id_parc] = True
-
-                return jsonify({
-                    "id_parc": id_parc,
-                    "message": "Alerte: Avertissement_humidite_sol",
-                    "status": "success",
-                    "status_code": 200
-                })
-    # 1. SCENARIO : CANICULE (Chaud + Soleil + PAS de pluie)
-
-    # 2. SCENARIO : RISQUE DE MALADIE (Chaleur + Terre trop trempée)
-    elif humidite > 60 and temperature > 22:
-        # Ici on ne met pas la condition : etat_notif_actuelle[id_parc] != "Avertissement_maladie" en combinaison (&&) avec la condition qui est déjà là pourquoi ?
-        # Puisque le fait d'écrire if not mqtt_service.tentatives_arrosage[id_parc] et if etat_notif_actuelle[id_parc] != "Avertissement_maladie" revient à la même chose 
-        # pour bloquer l'envoie une second fois de plus la notification telegram qui avait déjà été envoyé
-        if not mqtt_service.tentatives_arrosage[id_parc]:
-
-            etat_notif_actuelle[id_parc] = "Avertissement_maladie"
-
-            type_alerte = "Avertissement"
-            msg_final_send = f"*Type_alerte:* {type_alerte}\n\nLes conditions sont défavorables pour activer l'arrosage\n\n*TEMPERATURE TROP ELEVEE ET TERRE TROP MOUILLEE*\n\nRecliquer sur le bouton *Activer pompe* pour l'activer quand même."
-
-            telegramService.envoyer_notification_telegram(msg_final_send)
-
-            # Pour marquer la tentative d'activation de la pompe par l'utilisateur malgré la situation défavorable des données capteur
-            mqtt_service.tentatives_arrosage[id_parc] = True
-
-            return jsonify({
-                "id_parc": id_parc,
-                "message": "Alerte: Avertissement_maladie",
-                "status": "success",
-                "status_code": 200
-            })
-    # 2. SCENARIO : RISQUE DE MALADIE (Chaleur + Terre trop trempée)
-
-    # 3. SCENARIO : TERRE SECHE
-    elif humidite < 15 and 15 < temperature < 28: 
-        # Ici je n'utilise donc pas la même condition que ceux qui sont au-dessus : 
-        # if not mqtt_service.tentatives_arrosage[id_parc]: 
-        # Puisque nous n'avons pas besoin de reconfirmer une second fois le choix de l'utilisateur (pour en capturer sa première tentative)
-        # Une fois que la condition est idéale pour l'arrosage on envoie tout de suite une notification telegram et en même temps, on activera
-        # directement la pompe
-        if etat_notif_actuelle[id_parc] != "IDEALES":
-
-            etat_notif_actuelle[id_parc] = "IDEALES"
-
-            type_alerte = "Info"
-            msg_str = f"{id_parc} -> TERRE SECHE : Vos plantes commencent à avoir soif."
-            msg_final_send = f"*Type_alerte:* {type_alerte}\n\n{msg_str}\n\n*Recommandation:* Un petit arrosage sur la terre leur ferait du bien"
-
-            telegramService.envoyer_notification_telegram(msg_final_send)
-
-        # On valide directement l'arrosage sans confirmation. Pour pouvoir entrer directement dans la condition qui permet d'activer la pompe à l'étape
-        # qui suit (ci-dessous)
-        mqtt_service.tentatives_arrosage[id_parc] = True
-
-    # 4. SCENARIO : METEO NORMALE (Ni canicule, ni maladie, ni sec)
+        return jsonify({
+            "id_parc": id_parc,
+            "message": "Pompe Activé",
+            "status": "success",
+            "status_code": 200
+        })
+    
     else :
-        # On active la pompe sans faire d'histoire ni de Telegram
-        mqtt_service.tentatives_arrosage[id_parc] = True
+        return jsonify({
+            "id_parc": id_parc,
+            "message": "Erreur d'activation de la pompe",
+            "status": "echec",
+            "status_code": 400
+        })
 
-        # On réinitialise la mémoire au cas où il faisait canicule hier
-        etat_notif_actuelle[id_parc] = "NORMAL"
+@app.route('/register/seuillage', methods=["POST"])
+def modif_valeur_seuillage():
+    data_json = request.get_json()
 
-    if mqtt_service.tentatives_arrosage[id_parc] :
-        # Nous faisons appel à cette fonction pour pouvoir publier via la communication mqtt le statut de la pompe actuelle. Et ainsi 
-        # de l'afficher en temps réelle sur mon interface streamlit
-        status_code = ledService.led_on_thread(id_parc, mqtt_service.mqtt_client, duree_arrosage)
+    id_parc = data_json.get("id_parc", "")
+    temp_seuil = data_json.get("temp_seuil", 0)
+    humidite_seuil = data_json.get("humidite_seuil", 0)
 
-        if status_code == 200:
-            list_id_parc = [id_parc]
+    seuilCapteurModel = SeuilCapteurModel(
+        id_parc,
+        temp_seuil,
+        humidite_seuil
+    )
 
-            # Appel de la méthode de désactivation avec un délai (compte à rebours)
-            ledService.led_off_thread(list_id_parc, mqtt_service.mqtt_client, duree_arrosage, mqtt_service)
+    seuillageService = SeuillageService(db_config)
+    status_code = seuillageService.updateSeuilData(seuilCapteurModel)
 
-            mqtt_service.tentatives_arrosage[id_parc] = False
+    if status_code == 200:
+        print("Enregistrement du Seuillage Réussi !")
 
-            return jsonify({
-                "id_parc": id_parc,
-                "message": "Pompe Activé",
-                "status": "success",
-                "status_code": 200
-            })
+        # Une fois que la mise à jour des valeurs de seuil effectué avec succès en remet les valeurs de l'id_parc spécifique
+        # stocké dans le dictionnaire à son état initial self.dernier_seuil_enregistre[id_parc] = [None, None]. Pour permettre 
+        # la mise à jour des valeurs de seuil stocké en cache (dans le dictionnaire) pour l'id_parc spécifique
+        mqtt_service.dernier_seuil_enregistre[id_parc] = [None, None]
         
-        else :
-            return jsonify({
-                "id_parc": id_parc,
-                "message": "Erreur d'activation de la pompe",
-                "status": "echec",
-                "status_code": 400
-            })
-        
+        return jsonify({
+            "message": "Enregistrement du Seuillage Réussi !",
+            "status_code": 200,
+            "status": "succes"
+        })
+
+    else:
+        print("Erreur survenu lors de la tentative d'enregistrement du seuillage !")
+        return jsonify({
+            "message": "Erreur survenu lors de la tentative d'enregistrement du seuillage !",
+            "status_code": 400,
+            "status": "echec"
+        })
+
+@app.route('/recuperate/seuillage/id_parc=<id_parc>', methods=["GET"])
+def recuperate_seuil_data(id_parc):
+    seuillageService = SeuillageService(
+        db_config
+    )
+
+    liste_seuil_data, status_code = seuillageService.selectSeuilData(
+        id_parc
+    )
+
+    if status_code == 200:
+        print(f"Recuperation donnee de seuil pour id_parc = {id_parc}")
+        return jsonify({
+            "message": f"Recuperation donnee de seuil pour id_parc = {id_parc}",
+            "liste_seuil_data": liste_seuil_data,
+            "status_code": 200,
+            "status": "succes"
+        })
+
+    else:
+        print(f"Erreur survenu lors de la tentative de recuperation donnee de seuil pour id_parc = {id_parc}")
+        return jsonify({
+            "message": f"Erreur survenu lors de la tentative de recuperation donnee de seuil pour id_parc = {id_parc}",
+            "liste_seuil_data": liste_seuil_data,
+            "status_code": 400,
+            "status": "succes"
+        })
+
+#@app.route('/update_info_planification', methods=["PUT"])
+#def update_info_planification():
+#    data_json = request.get_json()
+
+#    id_planning = data_json["id_planning"]
+#    nouveau_moment_programme = data_json["nouveau_moment_programme"]
+#    nouveau_duree_arrosage = data_json["nouveau_duree_arrosage"]
+#    nouveau_intervalle_rep = data_json["nouveau_intervalle_rep"]
+#    nouveau_nombre_freq = data_json["nouveau_nombre_freq"]
+
+#    planificationService.update_planifier(scheduler, id)
+
+@app.route('/update_status_planification_activation', methods=["PUT"])
+def update_status_planification_activation():
+    data_json = request.get_json()
+
+    id_parc = data_json["id_parc"]
+    id_planning = data_json["id_planning"]
+    status = data_json["status"]
+
+    status_code = planificationService.update_status_planification_arrosage(
+                                            scheduler=scheduler, 
+                                            id_parc=id_parc, 
+                                            id_planning=id_planning, 
+                                            status=status, 
+                                            db_config=db_config
+                                        )
+
+    if status_code == 200:
+        return jsonify({
+            "message": f"Désactivation planification pour id_planning = {id_planning} !",
+            "status_code": 200
+        })
+
+    elif status_code == 400:
+        return jsonify({
+            "message": f"Echec de désactivation de l'arrosage planifié pour id_planning = {id_planning} !",
+            "status_code": 400
+        })
+
+@app.route('/update_mode_systeme', methods=["PUT"])
+def update_mode_systeme():
+    data_json = request.get_json()
+    mode_systeme_actuel = data_json["mode_systeme_actuel"]
+    id_parc = data_json["id_parc"]
+
+    mode_systeme_update, status_code = planificationService.update_mode(id_parc, mode_systeme_actuel, db_config)
+    
+    if status_code == 200:
+        # Pour synchroniser le programmateur (pour les arrosages planifier) avec le nouveau mode 
+        planificationService.gestion_job_planification_arrosage(scheduler, id_parc, mode_systeme_update, db_config)
+
+        msg_final_send = f"<b>MODE ACTUEL:</b> {mode_systeme_update}"
+
+        # Envoie du mode actif actuel (MANUEL ou AUTO) sur le bot du telegram
+        telegramService.envoyer_notification_telegram(id_parc, db_config, msg_final_send)
+
+        return jsonify({
+            "message": "Mise à jour mode du système !",
+            "mode_systeme_update": mode_systeme_update,
+            "status_code": 200
+        })
+
+    elif status_code == 400:
+        msg_final_send = (
+            "<b>❌ ERREUR :</b><br>"
+            "<i>Echec de mise à jour du mode actuel du système !</i>"
+        )
+
+        # Envoie du mode actif actuel (MANUEL ou AUTO) sur le bot du telegram
+        telegramService.envoyer_notification_telegram(id_parc, db_config, msg_final_send)
+
+        return jsonify({
+            "message": "Echec de mise à jour du mode actuel du système !",
+            "status_code": 400
+        })
+
+@app.route('/select_mode_systeme/id_parc=<id_parc>', methods=["GET"])
+def select_mode_systeme(id_parc):
+    mode_systeme_actuel, status_code = planificationService.select_mode(id_parc, db_config)
+
+    if status_code == 200:
+        return jsonify({
+            "message": "Récupération du mode actuel du système !",
+            "mode_systeme_actuel": mode_systeme_actuel,
+            "status_code": 200
+        })
+
+    elif status_code == 400:
+        return jsonify({
+            "message": "Echec de la récupération du mode actuel du système !",
+            "mode_systeme_actuel": mode_systeme_actuel,
+            "status_code": 400
+        })
+
 """ 
     Cette ligne permet de démarrer l'application Flask.
     Elle permet de lancer le serveur de développement de Flask.

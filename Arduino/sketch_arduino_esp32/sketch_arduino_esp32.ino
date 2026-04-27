@@ -16,7 +16,7 @@ void setup() {
   /*
     - C’est ce qui permet d’envoyer/recevoir des messages via le Moniteur Série.
   */
-  Serial.begin(115200); // Pour mon PC (Debug)
+  Serial.begin(115200); // Augmentation à 115200 baud rate la vitesse de récéption et traitement des données envoyé par l'Arduino UNO
 
   // Communication Série avec l'Arduino (Vitesse 9600, RX=16, TX=17)
   // A quoi sert la règle de communication SERIAL_8N1 ?
@@ -31,8 +31,9 @@ void setup() {
   // On envoies 8 petites lumières qui représentent la lettre A
   // On termine avec une lumière spéciale qui dit "J'ai fini" (bit de stop)
   // L'ami, qui connaît le règle 8N1, sait exactement comment lire mon message
-  // RX = 16 | TX = 17 
-  mySerial.begin(9600, SERIAL_8N1, 16, 17);
+  // RX = 16 (ESP32) -> TX = 11 (Arduino UNO) : Fil Jaune | TX = 17 (ESP32) -> RX = 10 (Arduino UNO) : Fil Orange
+  mySerial.begin(57600, SERIAL_8N1, 16, 17); // Augmentation à 115200 baud rate la vitesse
+  // de transfert des données (commandes et list_id_parc reçu via flask) vers l'arduino UNO
 
   //mySerial.setRxBufferSize(256);
 
@@ -64,9 +65,13 @@ void loop(){
     client.loop();
   }
 
-  // LECTURE NON-BLOQUANTE DE L'UNO
-  while (mySerial.available() > 0) {
+  // A chaque fois que l'on sort du boucle while il faut toujours réinitialiser le compteur.
+  // Pour qu'il puisse réaccèder au fonction de reception et traitement des informations provenant de l'Arduino UNO
+  limiteNombreCaractere = 0;
+
+  while (mySerial.available() > 0 && limiteNombreCaractere < 100) {
     char c = mySerial.read(); // On lit 1 seul caractère
+    limiteNombreCaractere++; // Incrémentation du compteur
     
     if (c == '\n') { // On a reçu la fin de la ligne !
       processUnoMessage(inputBuffer); // On traite le message

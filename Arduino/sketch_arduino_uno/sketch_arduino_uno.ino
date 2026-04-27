@@ -13,18 +13,19 @@ void setup() {
   //----------------- CONFIG MODULE RELAIS -------------------
   // On utilise Serial (Pins 0 et 1) pour parler avec l'ESP32
 
-  Serial.begin(9600); // Pour mon pc (debug)
-  espSerial.begin(9600); // Pour parler avec l'esp32
+  Serial.begin(115200); // Augmentation de la vitesse de récéption et traitement des données reçu de l'ESP32
+  Serial2.begin(57600); // Augmentation de la vitesse de transfert vers l'ESP32
+  Serial2.setTimeout(100);
 
   pinMode(pinRelais_1, OUTPUT);
   pinMode(pinRelais_2, OUTPUT);
-  //pinMode(pinRelais_7, OUTPUT);
-  //pinMode(pinRelais_8, OUTPUT);
+  pinMode(pinRelais_7, OUTPUT);
+  pinMode(pinRelais_8, OUTPUT);
 
   digitalWrite(pinRelais_1, HIGH);
   digitalWrite(pinRelais_2, HIGH);
-  //digitalWrite(pinRelais_7, HIGH);
-  //digitalWrite(pinRelais_8, HIGH);*/
+  digitalWrite(pinRelais_7, HIGH);
+  digitalWrite(pinRelais_8, HIGH);
   //----------------- CONFIG MODULE RELAIS -------------------
 
   //----------------- CONFIG CAPTEUR BH1750 -------------------
@@ -56,22 +57,18 @@ void setup() {
 void loop() {
     // ECOUTE PERMANENTE SANS BLOQUER
     ecouter_ESP32();
-  
-    recuperate_data_sensor_dht11();
-    Serial.println("");
 
-    // ECOUTE PERMANENTE SANS BLOQUER
-    ecouter_ESP32();
+    // Envoyer les données des capteurs à l'ESP32 seulement quand c'est le moment
+    if (millis() - derniereEnvoieDonneeCapteur >= dureeAttenteEnvoie){
+      derniereEnvoieDonneeCapteur = millis();
+      recuperate_data_sensor_dht11();
+      Serial.println("");
 
-    recuperate_data_sensor_bh1750();
-    Serial.println("");
+      recuperate_data_sensor_bh1750();
+      Serial.println("");
 
-    // ECOUTE PERMANENTE SANS BLOQUER
-    ecouter_ESP32();
+      recuperate_data_sensor_raindrop_sensor();
+      Serial.println("");
+    }
 
-    recuperate_data_sensor_raindrop_sensor();
-    Serial.println("");
-
-    // ECOUTE PERMANENTE SANS BLOQUER
-    ecouter_ESP32();
 }

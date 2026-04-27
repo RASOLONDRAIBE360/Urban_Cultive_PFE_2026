@@ -3,9 +3,11 @@ unsigned long lastReconnectAttempt = 0;
 /********  GESTION DU TEMPS DE CONNEXION  *********/
 
 /********  GESTION TIMING  *********/
-unsigned long tempsFin = 0;
-bool arrosageActif = false;
 String inputBuffer = "";
+
+// Variable permettant de limiter le nombre de caractère qui sera lue par l'ESP32. Pour éviter qu'il ne perd pas de 
+// vue la vérification de toute éventuelle information qui peut être envoyé par flask via la communication MQTT à travers le wifi
+int limiteNombreCaractere = 0;
 /********  GESTION TIMING  *********/
 
 /********  CONFI POUR UTILISATION DE LA COMMUNICATION UART2 AFIN D'ASSURER LA COMMUNICATION ENTRE L'ESP32 ET L'ARDUINO UNO *******/

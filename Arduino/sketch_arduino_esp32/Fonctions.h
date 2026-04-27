@@ -128,7 +128,7 @@ void callback(char* topic, byte* payload, unsigned int length){
 }
 /*************** RECUPERATION DE LA COMMANDE DE MANIPULATION DE LA LED VIA LA COMMUNICATION MQTT ****************/
 
-/*************** RECUPERATION DES DONNEES CAPTEUR ENVOYER PAR L'ARDUINO UNO ****************/
+/*************** RECUPERATION DES DONNEES CAPTEUR ENVOYER PAR L'ARDUINO UNO POUR L'ENVOYER VERS FLASK ****************/
 void recuperate_send_data_sensor_to_flask(String trame_info_sensor){
   // Pour nettoyer le texte reçu de l'Arduino UNO (contenant les info sur le topic ainsi que la valeur des capteurs).
   // Le nettoyage ici s'agit de la suppression des espaces qui peut y avoir avant et après le texte reçu pour mieux faciliter le processus d'extraction
@@ -180,7 +180,7 @@ void recuperate_send_data_sensor_to_flask(String trame_info_sensor){
     }
   }
 }
-/*************** RECUPERATION DES DONNEES CAPTEUR ENVOYER PAR L'ARDUINO UNO ****************/
+/*************** RECUPERATION DES DONNEES CAPTEUR ENVOYER PAR L'ARDUINO UNO POUR L'ENVOYER VERS FLASK ****************/
 
 // 3. La fonction de traitement (déportée pour la clarté)
 void processUnoMessage(String msg) {
@@ -193,7 +193,13 @@ void processUnoMessage(String msg) {
     }
     Serial.print(F("Status transmis à Flask : "));
     Serial.println(msg);
-  } else {
+  } 
+  
+  // Dans le cas où il peut y avoir un conflit du message qui est envoyé par l'Arduino UNO entre les données des capteurs
+  // et la reponse de retour pour l'action réaliser par l'Arduino UNO (activation ou désactivation de la pompe) alors nous allons juste faire
+  // une extraction extraction intelligente pour récupération au-dessus la valeur du status_code et la condition suivant/ci-dessous la 
+  // valeur des données capteur
+  if (msg.indexOf("DATA:") != 1) {
     // C'est une donnée capteur (ex: DATA:data/temp->25)
     recuperate_send_data_sensor_to_flask(msg);
   }

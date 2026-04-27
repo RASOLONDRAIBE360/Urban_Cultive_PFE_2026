@@ -11,7 +11,7 @@ bool allumerLed(String id_parc){
     digitalWrite(pinRelais_2, LOW);
     return true;
 
-  } /*else if (id_parc == "OP_003"){
+  } else if (id_parc == "OP_003"){
 
     digitalWrite(pinRelais_7, LOW);
     return true;
@@ -21,7 +21,7 @@ bool allumerLed(String id_parc){
     digitalWrite(pinRelais_8, LOW);
     return true;
 
-  }*/
+  }
 
   return false; // Echec : l'ID de parcelle n'existe pas
 }
@@ -40,7 +40,7 @@ bool eteindreLed(String id_parc){
     digitalWrite(pinRelais_2, HIGH);
     return true;
 
-  } /*else if (id_parc == "OP_003"){
+  } else if (id_parc == "OP_003"){
 
     digitalWrite(pinRelais_7, HIGH);
     return true;
@@ -50,7 +50,7 @@ bool eteindreLed(String id_parc){
     digitalWrite(pinRelais_8, HIGH);
     return true;
 
-  }*/
+  }
 
   return false; // Echec : l'ID de parcelle n'existe pas
 }
@@ -108,19 +108,19 @@ void recuperate_data_send_esp32(String msg){
     if (success_led_on){
       // Si l'action a réussi (ID trouvé et pin activé)
       if (id_parc == "OP_001"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"ON\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"ON\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"ON\"}"));
 
       } else if (id_parc == "OP_002"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"ON\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"ON\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"ON\"}"));
 
       } else if (id_parc == "OP_003"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"ON\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"ON\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"ON\"}"));
 
       } else if (id_parc == "OP_004"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"ON\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"ON\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"ON\"}"));
 
       }
@@ -132,19 +132,19 @@ void recuperate_data_send_esp32(String msg){
     if (success_led_off){
       // Si l'action a réussi (ID trouvé et pin activé)
       if (id_parc == "OP_001"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"OFF\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"OFF\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_001\", \"Action\": \"OFF\"}"));
 
       } else if (id_parc == "OP_002"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"OFF\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"OFF\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_002\", \"Action\": \"OFF\"}"));
 
       } else if (id_parc == "OP_003"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"OFF\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"OFF\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_003\", \"Action\": \"OFF\"}"));
 
       } else if (id_parc == "OP_004"){
-        espSerial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"OFF\"}"));
+        Serial2.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"OFF\"}"));
         Serial.println(F("{\"Status_code\": 200, \"Id_parc\": \"OP_004\", \"Action\": \"OFF\"}"));
 
       }
@@ -160,8 +160,8 @@ void recuperate_data_send_esp32(String msg){
 /********* FONCTION POUR VERIFIER TOUTE EVENTUELLE MESSAGE QUI PEUT ETRE ENVOYER PAR L'ESP32 **********/
 void ecouter_ESP32() {
   // LECTURE NON-BLOQUANTE DE L'ESP32 SANS readStringUntil()
-  while(espSerial.available() > 0) {
-    char c = espSerial.read();
+  while(Serial2.available() > 0) {
+    char c = Serial2.read();
     
     if (c == '\n') { // On a reçu la fin de la commande
       recuperate_data_send_esp32(inputBufferESP32);
@@ -219,26 +219,15 @@ void send_data_sensor_to_esp32(const char* topic, float sensorValue){
   }
 
   // On ajoute "DATA:" pour faciliter l'extraction côté ESP32
-  espSerial.print("DATA:");
-  espSerial.print(topic);
-  espSerial.print("->");
-  espSerial.println(sensorValue);
+  Serial2.print("DATA:");
+  Serial2.print(topic);
+  Serial2.print("->");
+  Serial2.println(sensorValue);
 
   Serial.print(F("Envoyé à l'ESP32 : DATA:"));
   Serial.print(topic);
   Serial.print(F("->"));
   Serial.println(sensorValue);
-
-  // DELAI INTELLIGENT : Au lieu d'un delay(50) qui rend l'UNO sourd et rate des messages,
-  // nous utilisons un délai qui lit le port en continu !
-
-  // L'assignation de debutChronoEnvoi = millis() est executé strictement une seule fois. Et une fois qu'on
-  // entre dans le boucle while on n'y sort plus tant que le temps n'est pas écoulé
-  debutChronoEnvoi = millis();
-
-  while(millis() - debutChronoEnvoi < 50) {
-    ecouter_ESP32();
-  }
 }
 //*************** ENVOYER DES INFO CAPTEUR VERS L'ESP32 *****************/
 

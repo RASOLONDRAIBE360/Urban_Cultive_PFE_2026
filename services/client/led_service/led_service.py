@@ -3,7 +3,12 @@ import json
 import threading
 
 # Dictionnaires pour mémoriser les actions programmées et éviter les conflits
-timers_pompes_off = {}
+timers_actifs = {
+    "OP_001": None,
+    "OP_002": None,
+    "OP_003": None,
+    "OP_004": None
+}
 
 class LedService:
 
@@ -42,34 +47,30 @@ class LedService:
 # Après avoir réaliser un action spécifique (activation ou extinction de la pompe)
 # Ici la fonction led_off_thread ou led_on_thread ne prend pas comme paramètre "self" puisque ce ne sont pas des fonctions qui sont propres
 # à une classe
-    def led_off_thread(self, list_id_parc, mqtt_client, duree_arrosage=0, mqtt_service=None):
+    def led_off_thread(self, list_id_parc, mqtt_client):
+        # On part du principe que l'action va échouer. Pour lui donner une valeur défaut.
+        # Afin d'éviter toute éventuelle erreur lié à une variable non défini (au niveau du return status_code)
+        status_code = 400
+
         # 1. Annuler les timers existants (arrêt manuel prioritaire)
         for id_parc in list_id_parc:
-            if id_parc in timers_pompes_off:
-                timers_pompes_off[id_parc].cancel()
-                del timers_pompes_off[id_parc]
-                print(f"[TIMER] Timer annulé pour {id_parc}")
-            
+            # On vérifie si la parcelle a un timer en cours (non None)
+            if timers_actifs.get(id_parc) is not None:
+                try:
+                    timers_actifs[id_parc].cancel()
+                    del timers_actifs[id_parc]
+                    print(f"[TIMER] Timer annulé pour {id_parc}")
+                
+                except Exception as e:
+                    print(f"[TIMER] Erreur lors de l'annulation pour {id_parc}: {e}")
+                
                 status_code = self.led_off_service(mqtt_client, list_id_parc)
-
-        #for id_parc in list_id_parc:
-        #    if status_code == 200:
-                # Désormais la logique de mise à jour pour l'état de la pompe d'arrosage serait la suivante :
-                # L'interface ne changera de couleur (pour indiquer l'état actuelle de la pompe : si activé ou désactivé)
-                # que lorsque l'Arduino aura crié "C'est bon, j'ai fini !"
-                # La gestion de la mise à jour sera donc laisser à la fonction "on_message" (qui se situe dans le service : recuperate_data_sensor_mqtt.py)
-        #        etat_pompe_dict[id_parc] = "Desactive"
-        #        mqtt_client.publish (f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
-
-        #    else :
-                # En cas d'erreur lors de la tentative d'éteignage de la pompe nous renvoyant le status de la pompe
-                # comme telle sans mise à jour
-        #        print(f"[ERREUR] Échec extinction de la pompe pour {id_parc} (Status: {status_code})")
-        #        mqtt_client.publish (f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
 
         return status_code
 
     def led_on_thread(self, id_parc, mqtt_client, duree_arrosage):
+        status_code = 400
+        
         self.led_on_service(mqtt_client, id_parc)
         def exec_off():
             list_id_parc = [id_parc]
@@ -77,15 +78,8 @@ class LedService:
 
         timer = threading.Timer(duree_arrosage, exec_off)
         timer.start()
+        timers_actifs[id_parc] = timer
         status_code = 200
-        
-        #if status_code == 200:
-        #    etat_pompe_dict[id_parc] = "Active"
-        #    mqtt_client.publish(f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
-
-        #else :
-        #    print(f"[ERREUR] Échec activation de la pompe pour {id_parc} (Status: {status_code})")
-        #    mqtt_client.publish (f"{topic_etat_pompe}/{id_parc}", f"{etat_pompe_dict[id_parc]}")
 
         return status_code
 ######################## THREAD ##########################

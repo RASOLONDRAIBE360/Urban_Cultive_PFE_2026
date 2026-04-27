@@ -4,10 +4,15 @@ bool success_led_off = false;
 /************ VARIABLE POUR SUIVRE L'ETAT D'UNE ACTION (ACTIVATION OU DESACTIVATION) SUR LA POMPE *************/
 
 /******************** GESTION DU TEMPS (NON-BLOQUANT) ********************/
-unsigned long lastSensorReadTime = 0;
-unsigned long debutChronoMultiplexeur = 0;
-unsigned long debutChronoEnvoi = 0;
-const unsigned long SENSOR_INTERVAL = 2000; // Intervalle de lecture des capteurs (ms)
+// Pour capturer la dernière fois où les données capteur a été envoyé vers l'ESP32 
+// pour éviter l'envoie en continue des données de capteur dans le buffer de l'ESP32
+// ce qui bloquerais l'ESP32 à se focaliser que sur cette tâche spécifique et à délâcher
+// son attention sur les autres tâches telle que : l'écoute de toute éventuelle message (document json)
+// qui pourrait être renvoyé par flask via la communication MQTT
+unsigned long derniereEnvoieDonneeCapteur = 0;
+
+// Pour définir la durée d'attente avant la prochaine envoie des données de capteurs vers l'ESP32
+const unsigned long dureeAttenteEnvoie = 2000; // 3 secondes 
 /******************** GESTION DU TEMPS (NON-BLOQUANT) ********************/
 
 /******** MESSAGE BUFFER ASYNCHRONE **********/
@@ -16,14 +21,14 @@ String inputBufferESP32 = "";
 
 /********  GESTION DES BROCHES MODULE RELAIS  *********/
 const int pinRelais_1 = 9;
-const int pinRelais_2 = 13;
-//const int pinRelais_7 = 11;
-//const int pinRelais_8 = 10; 
+const int pinRelais_2 = 10;
+const int pinRelais_7 = 11;
+const int pinRelais_8 = 12; 
 /********  GESTION DES BROCHES MODULE RELAIS  *********/
 
 /******** RECONFIG DES PORT SERIAL (RX et TX) SUR L'ARDUINO UNO ********/
 // RX = 10 | TX = 11
-SoftwareSerial espSerial(10, 11);
+//SoftwareSerial espSerial(10, 11);
 /******** RECONFIG DES PORT SERIAL (RX et TX) SUR L'ARDUINO UNO ********/
 
 /********  GESTION DES BROCHES POUR BH1750  *********/
@@ -38,9 +43,9 @@ BH1750 lightMeter2;
 BH1750 lightMeter3;
 BH1750 lightMeter4;
 
-const int pinS0 = 2;
-const int pinS1 = 3;
-const int pinS2 = 4;
+const int pinS0 = 36;
+const int pinS1 = 38;
+const int pinS2 = 40;
 /********  GESTION DES BROCHES POUR BH1750  *********/
 
 /********  GESTION DES BROCHES POUR DHT11  *********/
@@ -50,10 +55,10 @@ const int pinS2 = 4;
   plus stable en lecture de valeur de donnée des capteurs (peut fonctionner en parallèle
   avec le wifi)  
 */
-#define pinDHT1 5 // parcelle 1
-#define pinDHT2 6 //parcelle 2
-#define pinDHT3 7 // parcelle 3
-#define pinDHT4 8 // parcelle 4
+#define pinDHT1 4 // parcelle 1
+#define pinDHT2 5 //parcelle 2
+#define pinDHT3 6 // parcelle 3
+#define pinDHT4 7 // parcelle 4
 
 /*
   Configuration de l'objet DHT côté arduino pour indiquer le "pin" sur lequel il est branché 
