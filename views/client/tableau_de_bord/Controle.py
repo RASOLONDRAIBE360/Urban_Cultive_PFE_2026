@@ -171,6 +171,12 @@ with st.sidebar:
             "color": "white", # texte blanc 
             "font-weight": "bold", "border-radius": "8px", }, } ) # Affichage selon la sélection 
 
+    # Vérification si l'utilisateur possède des parcelles louées
+    if not parcelle_data:
+        st.warning("Aucune parcelle louée. Effectuez une réservation pour avoir accès aux fonctionnalités du Dashboard")
+        st.toast("Aucune parcelle louée. Effectuez une réservation pour avoir accès aux fonctionnalités du Dashboard", icon="⚠️")
+        st.stop()
+
     list_id_parc = [p["Id_parc"] for p in parcelle_data]
     choix_parcelle = st.selectbox("choix parcelle", list_id_parc)
 
@@ -315,7 +321,7 @@ if selected == "Tableau de bord":
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.14.1/mqtt.min.js"></script>
         <script>
             // 1. Connexion au Broker MQTT via WebSocket
-            const broker =  'ws://10.119.163.221:9001';
+            const broker =  'ws://11.0.0.22:9001';
 
             const topic_temperature = 'data/temperature/{choix_parcelle}';
             const topic_luminosite = 'data/luminosite/{choix_parcelle}';
@@ -453,7 +459,7 @@ if selected == "Tableau de bord":
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.14.1/mqtt.min.js"></script>
                         <script>
                             // 1. Connexion au broker
-                            const client = mqtt.connect("ws://10.119.163.221:9001"); 
+                            const client = mqtt.connect("ws://11.0.0.22:9001"); 
 
                             // 2. Capture de l'élément HTML pour l'affichage dynamique du statut d'arrosage de la pompe
                             const valueElement_status_pompe = document.getElementById("mon_texte");
@@ -945,7 +951,7 @@ elif selected == "Analyse des données":
                 const cLum = new Chart(document.getElementById('chartLum'), preparerConfigChart('Lum (lx)', '#ffc107', 50));
 
                 // Connexion au broker MQTT via le canal websocket 
-                const broker = 'ws://10.119.163.221:9001';
+                const broker = 'ws://11.0.0.22:9001';
                 const topic_humidite = 'data/humidite/{choix_parcelle}';
                 const topic_temperature = 'data/temperature/{choix_parcelle}';
                 const topic_luminosite = 'data/luminosite/{choix_parcelle}';

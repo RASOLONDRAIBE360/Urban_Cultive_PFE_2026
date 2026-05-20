@@ -1,4 +1,3 @@
-/*
 function ouvrirModal(id) {
     document.getElementById(id).style.display = "flex";
 }
@@ -17,7 +16,6 @@ const showModal = urlParams.get("showModal");
 if (showModal) {
     ouvrirModal("modal" + showModal); // Ouvre "modal2" si showModal=2
 }
-*/
 
 // Sélectionner tous les liens de navigation
 const navLinks = document.querySelectorAll('.sidebar ul li a');

@@ -1,3 +1,10 @@
+<?php 
+session_start(); 
+// Si la session est vide, on peut tenter de la restaurer ou rediriger
+if (!isset($_SESSION['user_id_user'])) {
+    header('Location: ../../../views/login/FormulaireConnexion.php'); exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,8 +17,6 @@
 </head>
 <body>
   
-  <?php session_start();?>
-
   <button class="avis-btn" onclick='window.location.href="../../../views/client/site_web_user/Accueil.php"'>Retour</button>
 
   <!-- En-tête -->
@@ -54,9 +59,10 @@
         <?php endif;?>
       <form action="../client/reservations/CreateReservation.php" method="post" class="reservation-form">
         
-        <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id_user'];?>">
+        <!-- On s'assure que l'ID n'est pas vide ici -->
+        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($_SESSION['user_id_user'] ?? ''); ?>">
       
-        <?php $Myparcelles = $_SESSION['MyParcelles'];?>
+        <?php $Myparcelles = $_SESSION['MyParcelles'] ?? []; ?>
 
         <?php foreach($Myparcelles as $MyParcelle) :?>
 

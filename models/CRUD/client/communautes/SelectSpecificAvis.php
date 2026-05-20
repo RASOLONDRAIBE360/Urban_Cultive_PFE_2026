@@ -21,9 +21,10 @@ try {
 
     $mysqlClient->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Récupération des avis
-    $sqlQuery = "SELECT * 
+    // Récupération des avis avec l'email de l'auteur
+    $sqlQuery = "SELECT avis.*, users.Email 
         FROM avis 
+        INNER JOIN users ON avis.User_id = users.User_id
         WHERE Id_parc = :id_parc";
 
     $dbprepare = $mysqlClient->prepare($sqlQuery);
@@ -39,14 +40,16 @@ try {
         $_SESSION['infoAvis'] = "Aucun avis pour l'instant";
     } else {
         // Récupération des likes et dislikes en une seule requête
-        $sqlRequestVerifAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date,
+        $sqlRequestVerifAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date, users.Email,
             SUM(CASE WHEN Type_action = 'like' THEN 1 ELSE 0 END) AS NumberLike,
             SUM(CASE WHEN Type_action = 'dislike' THEN 1 ELSE 0 END) AS NumberDislike
         FROM avis
+        INNER JOIN users
+        ON avis.User_id = users.User_id
         LEFT JOIN like_avis
         ON avis.Id_avis = like_avis.Id_avis
         WHERE avis.Id_parc = :id_parc
-        GROUP BY avis.Id_avis";
+        GROUP BY avis.Id_avis, avis.Id_parc, Avis, Date, users.Email";
 
         $pdoStatement = $mysqlClient->prepare($sqlRequestVerifAvis);
         $pdoStatement->execute([

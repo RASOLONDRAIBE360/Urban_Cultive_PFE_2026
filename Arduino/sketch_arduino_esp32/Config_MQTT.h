@@ -6,7 +6,7 @@
   (exemple : données d'un capteur sur l'ESP32/Arduino)
   et les redistribue aux "subscribers" abonnés au même topic.
 */
-const char* mqtt_server = "10.119.163.221";//"10.47.121.221"; //"11.0.0.116";//"192.168.100.117"; // C'est l'ip de mon pc qui est utilisé comme hôte du serveur mosquitto (le serveur broker) pour assurer la communication sous protocole MQTT
+const char* mqtt_server = "11.0.0.22"; // C'est l'ip de mon pc qui est utilisé comme hôte du serveur mosquitto (le serveur broker) pour assurer la communication sous protocole MQTT
 const int mqtt_port = 1883;
 
 /*

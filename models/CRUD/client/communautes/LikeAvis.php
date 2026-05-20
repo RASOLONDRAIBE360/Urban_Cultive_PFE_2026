@@ -64,13 +64,14 @@ try {
     }
 
     // 4. Rafraîchir les avis
-    $sqlAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date,
+    $sqlAvis = "SELECT avis.Id_avis, avis.Id_parc, Avis, Date, users.Email,
                        SUM(CASE WHEN Type_action = 'like' THEN 1 ELSE 0 END) AS NumberLike,
                        SUM(CASE WHEN Type_action = 'dislike' THEN 1 ELSE 0 END) AS NumberDislike
                 FROM avis
+                INNER JOIN users ON avis.User_id = users.User_id
                 LEFT JOIN like_avis ON avis.Id_avis = like_avis.Id_avis
                 WHERE avis.Id_parc = :id_parc
-                GROUP BY avis.Id_avis";
+                GROUP BY avis.Id_avis, avis.Id_parc, Avis, Date, users.Email";
 
     $stmt = $mysqlClient->prepare($sqlAvis);
     $stmt->execute([':id_parc' => $id_parc]);

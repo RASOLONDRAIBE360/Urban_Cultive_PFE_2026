@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
     $mail->Username = 'rstevybryan@gmail.com';
-    $mail->Password = 'bxka xoez zjyk ppfe';/*Mot de passe d'application qui permet d'eviter les exigences de sécurité par rapport à la connexion à deux étapes
+    $mail->Password = 'bvkp rsdw lyru kkzf';/*Mot de passe d'application qui permet d'eviter les exigences de sécurité par rapport à la connexion à deux étapes
     lorsque je me sert du service gmail pour l'envoie des emails pour ainsi éviter le déclenchement d'alerte pour le non suivie du procédure de connexion à deux étapes
     En d'autre terme le mot de passe d'application va permettre à des services tiers (comme PHPMailer) d'envoyer des e-mails sans être bloqués par la vérification en deux étapes de Gmail
 */ 

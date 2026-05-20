@@ -35,7 +35,7 @@
 
         <div class="conseil-header">
 
-            <span class="auteur"><?php echo $_SESSION['email_user'];?></span>
+            <span class="auteur"><?php echo $avis['Email'];?></span>
             <span class="parcelle"><?php echo $avis['Id_parc'];?></span>
             <span class="date"><?php echo $avis['Date'];?></span>
 

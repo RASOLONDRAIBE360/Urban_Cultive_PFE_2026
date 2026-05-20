@@ -7,10 +7,11 @@ $id_parc = $_POST['id_parc'] ?? null;
 $taille_parc = $_POST['taille_parc'] ?? null;
 $nom_parc = $_POST['nom_parc'] ?? null;
 $prix_parc = $_POST['prix_parc'] ?? null;
-$equip = $_POST['equip'];
-$expo = $_POST['expo'];
-$pref = $_POST['pref'];
-$descrip = $_POST['descrip'];
+$equip = $_POST['equip'] ?? null;
+$expo = $_POST['expo'] ?? null;
+$pref = $_POST['pref'] ?? null;
+$descrip = $_POST['descrip'] ?? null;
+$status_parc = 'dispo'; // Default status for new parcels
 
     try {
             $mysqlClient = new PDO(
@@ -58,8 +59,8 @@ $descrip = $_POST['descrip'];
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePathSystem)) {
                 // Insérer le chemin dans la base de données
 
-                $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Exposition, Equipements, Preferences, Description, Chemin_image) 
-                        VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :expo, :equip, :pref, :descrip, :cheminWeb)";
+                $sqlQuery = "INSERT INTO info_parc (Id_parc, Taille_parc, Nom_parc, Prix_parc, Status_parc, Exposition, Equipements, Preferences, Description, Chemin_image) 
+                        VALUES (:id_parc, :taille_parc, :nom_parc, :prix_parc, :status_parc, :expo, :equip, :pref, :descrip, :cheminWeb)";
 
                 $dbprepare = $mysqlClient->prepare($sqlQuery);
 
@@ -68,6 +69,7 @@ $descrip = $_POST['descrip'];
                     ':taille_parc' => $taille_parc,
                     ':nom_parc' => $nom_parc,
                     ':prix_parc' => $prix_parc,
+                    ':status_parc' => $status_parc,
                     ':equip'=>$equip,
                     ':expo'=>$expo,
                     ':pref'=>$pref,

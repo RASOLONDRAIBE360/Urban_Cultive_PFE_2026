@@ -10,6 +10,13 @@ $id_parc = $_POST['id_parc'] ?? null;
 $duree_res = $_POST['duree'] ?? null;
 $date_debut = $_POST['date_debut'] ?? null;
 
+// Vérification de sécurité pour éviter l'erreur de clé étrangère
+if (empty($user_id)) {
+    $_SESSION['erreurReservation'] = "Erreur : ID utilisateur manquant. Veuillez vous reconnecter.";
+    header('Location: ../../gestionReservation/FormulaireReservation.php');
+    exit();
+}
+
         try {
             $mysqlClient = new PDO(
                     sprintf('mysql:host=%s;dbname=%s;port=%s;charset=utf8', MYSQL_HOST, MYSQL_NAME, MYSQL_PORT),

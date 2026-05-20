@@ -106,7 +106,7 @@ class RecuperateDataSensorMQTT():
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
-        self.mqtt_client.connect("10.119.163.221", 1883) #("11.0.0.116", 1883) #("192.168.100.117", 1883)
+        self.mqtt_client.connect("11.0.0.22", 1883) #("11.0.0.116", 1883) #("192.168.100.117", 1883)
         self.mqtt_client.loop_start()
 
     # Fonction appelée lorsque le client MQTT se connecte au broker MQTT
@@ -250,7 +250,6 @@ class RecuperateDataSensorMQTT():
                 if self.dernier_seuil_enregistre[id_parc][0] is None and self.dernier_seuil_enregistre[id_parc][1] is None:
                     liste_seuil_data, status_code = self.seuillageService.selectSeuilData(id_parc)
                 
-
                     if status_code == 200 and liste_seuil_data:
                         for seuil_data in liste_seuil_data:
                             Id_seuil, Id_parc, Temp_seuil, Humidite_seuil = seuil_data
@@ -279,7 +278,7 @@ class RecuperateDataSensorMQTT():
                 Humidite_seuil = self.dernier_seuil_enregistre[id_parc][0]
                 Temp_seuil = self.dernier_seuil_enregistre[id_parc][1]
 
-                if temp > Temp_seuil and humidite > Humidite_seuil:
+                if temp > Temp_seuil and humidite < Humidite_seuil:
                     self.status_envoie_notif = 0
 
                     if self.verifier_delai_confirmation(id_parc):
@@ -288,9 +287,9 @@ class RecuperateDataSensorMQTT():
                             msg_str = f"<b>{id_parc} -> LIMITE SEUIL DEPASSE :</b> <br><br><ul><li><i>{temp} > Temp_seuil</i></li> & <li><i>{humidite} > Humidite_seuil</i></li></ul>"
 
                             msg_final_send = (
-                                f"<b>{type_alerte}</b>\n\n"
-                                f"{msg_str}\n\n"
-                                f"L'arrosage va s'activer dans {self.duree_arrosage_pompe[id_parc]}sec...."
+                                f"<b>{type_alerte}</b><br><br>"
+                                f"<i>{msg_str}</i><br><br>"
+                                f"<i>L'arrosage va s'activer dans <b><{self.duree_arrosage_pompe[id_parc]}</b>sec....</i>"
                             )
 
                             self.telegramService.envoyer_notification_telegram(id_parc, self.db_config, msg_final_send)

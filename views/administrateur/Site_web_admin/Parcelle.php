@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +11,6 @@
 </head>
 <body>
 
-<?php session_start(); ?>
     <?php require_once(__DIR__.'/../../../models/CRUD/administrateur/Parcelles/SelectParcelles.php')?>
     <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
     
@@ -102,11 +102,13 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                <td colspan="13">
-                    <button class="add-btn" onclick="ouvrirModal('modal2')">
-                        <i>+</i> Ajouter une parcelle
-                    </button>
-                </td>
+                <tr>
+                    <td colspan="13">
+                        <button class="add-btn" type="button" onclick="ouvrirModal('modal2')">
+                            <i>+</i> Ajouter une parcelle
+                        </button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -297,7 +299,17 @@
         </div>
     </div>
 
-    <script src="../../../public/assets/javascript/administrateur/Accueil.js"></script>
+    <script>
+        function ouvrirModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = "flex";
+        }
+        function fermerModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = "none";
+        }
+    </script>
+    <script src="../../../public/assets/javascript/administrateur/Accueil.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>

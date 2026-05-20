@@ -86,7 +86,11 @@ if (!isset($_SESSION['user_id_user'])) {
         /*
             On utilise /D pour dire à "start" de se placer dans le bon dossier avant de lancer Python
         */
-        popen("start /D \"$racine_projet \" \"\" $python_exec -m $flask_path", "r");
+        //popen("start /D \"$racine_projet \" \"\" $python_exec -m $flask_path", "r");
+
+        // On utilise PowerShell pour lancer le processus sans fenêtre (-WindowStyle Hidden)
+        $cmd_flask = "powershell -WindowStyle Hidden -Command \"Start-Process '$python_exec' -ArgumentList '-m $flask_path' -WorkingDirectory '$racine_projet' -WindowStyle Hidden\"";
+        pclose(popen($cmd_flask, "r"));
     }
                     
     // 2. Lancer le serveurStreamlit en mode SILENCIEUX (headless) avec la machine virtuelle de python de manière asynchrone aussi
@@ -97,7 +101,10 @@ if (!isset($_SESSION['user_id_user'])) {
         le lancement du script
     */
     if(!isServerRunning(8501)){
-        popen("start \"\" $streamlit_exec run $streamlit_path --server.headless true", "r");
+        //popen("start \"\" $streamlit_exec run $streamlit_path --server.headless true", "r");
+        
+        $cmd_streamlit = "powershell -WindowStyle Hidden -Command \"Start-Process '$streamlit_exec' -ArgumentList 'run $streamlit_path --server.headless true' -WindowStyle Hidden\"";
+        pclose(popen($cmd_streamlit, "r"));
     }
 
     echo json_encode($_SESSION['parcellesOnReservation']);
