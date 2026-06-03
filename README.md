@@ -44,3 +44,11 @@ La branche `develop` marque une refonte majeure de l'application. Elle introduit
 
 ### Rôle de la branche
 Cette branche sert de zone de développement actif pour toutes les fonctionnalités intelligentes et physiques du projet. Elle prépare la future version d'UrbanCultive en transformant le simple site de réservation en un système d'agriculture urbaine connectée.
+
+## 🎬 Démonstration Vidéo
+
+Une démonstration complète du projet est disponible en vidéo. Elle vous permettra de voir UrbanCultive en action, de la gestion des parcelles au monitoring IoT en temps réel.
+
+[![Démonstration UrbanCultive](src/urbancultive_logo.jpg)](https://youtu.be/nYXUe8QqFIA)
+
+> 👆 Cliquez sur l'image pour regarder la démonstration sur YouTube.
