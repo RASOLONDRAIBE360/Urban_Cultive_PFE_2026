@@ -106,7 +106,7 @@ class RecuperateDataSensorMQTT():
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
-        self.mqtt_client.connect("11.0.0.22", 1883) #("11.0.0.116", 1883) #("192.168.100.117", 1883)
+        self.mqtt_client.connect("11.0.0.19", 1883) #("11.0.0.116", 1883) #("192.168.100.117", 1883)
         self.mqtt_client.loop_start()
 
     # Fonction appelée lorsque le client MQTT se connecte au broker MQTT

@@ -321,7 +321,7 @@ if selected == "Tableau de bord":
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.14.1/mqtt.min.js"></script>
         <script>
             // 1. Connexion au Broker MQTT via WebSocket
-            const broker =  'ws://11.0.0.22:9001';
+            const broker =  'ws://11.0.0.19:9001';
 
             const topic_temperature = 'data/temperature/{choix_parcelle}';
             const topic_luminosite = 'data/luminosite/{choix_parcelle}';
@@ -459,7 +459,7 @@ if selected == "Tableau de bord":
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.14.1/mqtt.min.js"></script>
                         <script>
                             // 1. Connexion au broker
-                            const client = mqtt.connect("ws://11.0.0.22:9001"); 
+                            const client = mqtt.connect("ws://11.0.0.19:9001"); 
 
                             // 2. Capture de l'élément HTML pour l'affichage dynamique du statut d'arrosage de la pompe
                             const valueElement_status_pompe = document.getElementById("mon_texte");
@@ -951,7 +951,7 @@ elif selected == "Analyse des données":
                 const cLum = new Chart(document.getElementById('chartLum'), preparerConfigChart('Lum (lx)', '#ffc107', 50));
 
                 // Connexion au broker MQTT via le canal websocket 
-                const broker = 'ws://11.0.0.22:9001';
+                const broker = 'ws://11.0.0.19:9001';
                 const topic_humidite = 'data/humidite/{choix_parcelle}';
                 const topic_temperature = 'data/temperature/{choix_parcelle}';
                 const topic_luminosite = 'data/luminosite/{choix_parcelle}';

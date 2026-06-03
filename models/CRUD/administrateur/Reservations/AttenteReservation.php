@@ -19,7 +19,7 @@ $id_res = $_POST["id_res"];
             $sqlRequest = "UPDATE reservation_parc 
                         INNER JOIN info_parc 
                         ON reservation_parc.Id_parc = info_parc.Id_parc
-                        SET Status_res = 'attente', Status_parc = 'dispo'
+                        SET Status_res = 'attente', Status_parc = 'dispo', Status_envoie = 0
                         WHERE reservation_parc.Id_res = :id_res";
 
             $pdoStatement = $MysqlClient->prepare($sqlRequest);

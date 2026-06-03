@@ -11,6 +11,7 @@
 </head>
 <body>
     <?php session_start(); ?>
+    <?php require_once(__DIR__.'/../../../models/CRUD/mail/MailAutomatise.php')?>
     <?php require_once(__DIR__.'/../../../models/CRUD/administrateur/Reservations/SelectReservation.php')?>
     <?php require_once(__DIR__.'/../Navigation/Navigation.php')?>
     <?php require_once(__DIR__.'/../../../models/CRUD/administrateur/Reservations/CountReservation.php')?>
@@ -107,14 +108,6 @@
                     <?php 
                         $today = new DateTime();
                         $todayFormatted = $today->format('Y-m-d');
-
-                        if ($reservation['Date_limite'] <= $todayFormatted AND $reservation['Status_envoie'] == 0){
-                            echo "<script> window.location.href = '../../../models/CRUD/mail/MailAutomatise.php'</script>;";
-                        } else if ($reservation['Date_fin'] == $todayFormatted AND $reservation['Status_envoie'] == 1){
-                            echo "<script> window.location.href = '../../../models/CRUD/mail/MailAutomatise.php'</script>;";
-                            //Pour vérifier que le fichier dont j'essaie d'accéder se trouve réellement au bon endroit j'utilise
-                            /*var_dump(file_exists(__DIR__.'/../CRUD/MailAutomatise.php'));*/
-                        }
                     ?>
                     <?php
                         $two_weeks_later = date("Y-m-d", strtotime("+14 days"));  // Seuil pour l'alerte jaune
